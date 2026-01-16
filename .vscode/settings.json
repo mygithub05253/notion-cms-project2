@@ -1,0 +1,6 @@
+{
+  "css.lint.unknownAtRules": "ignore",
+  "[powershell]": {
+    "files.encoding": "utf8bom"
+  }
+}
