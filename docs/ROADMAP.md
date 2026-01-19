@@ -51,46 +51,46 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
 
 기본 라우트 구조, 타입 정의, 레이아웃 골격을 완성하여 UI 개발의 기초를 마련합니다.
 
-#### Task 001: 프로젝트 구조 및 라우팅 설정 (우선순위)
+#### Task 001: 프로젝트 구조 및 라우팅 설정 ✅
 
-**상태**: 진행 예정
+**상태**: 완료
 **의존성**: 없음
 **기대 기간**: 1-2일
 
 **목표**: Next.js App Router 기반 모든 라우트 구조 생성 및 빈 페이지 컴포넌트 구현
 
 **구현 사항**:
-- [ ] 프로젝트 루트 레이아웃 구조 최적화 (이미 생성된 구조 검토)
-- [ ] 인증이 필요한 라우트 그룹 `(protected)` 확인 및 레이아웃 설정
-- [ ] 공개 라우트 생성: `/share/[token]` 페이지 구조
-- [ ] 모든 주요 페이지의 빈 껍데기 파일 생성:
-  - `/app/page.tsx` (홈/로그인)
-  - `/app/(protected)/dashboard/page.tsx`
-  - `/app/(protected)/invoices/page.tsx`
-  - `/app/(protected)/invoices/new/page.tsx`
-  - `/app/(protected)/invoices/[id]/page.tsx`
-  - `/app/share/[token]/page.tsx` (공개 목록)
-  - `/app/share/[token]/invoices/[id]/page.tsx` (공개 상세)
-- [ ] 라우트별 기본 Server Component 구조 설정
-- [ ] 네비게이션 링크 확인 (추후 layout 컴포넌트와 연동)
+- ✅ 프로젝트 루트 레이아웃 구조 최적화 (이미 생성된 구조 검토)
+- ✅ 인증이 필요한 라우트 그룹 `(protected)` 확인 및 레이아웃 설정
+- ✅ 공개 라우트 생성: `/share/[token]` 페이지 구조
+- ✅ 모든 주요 페이지의 빈 껍데기 파일 생성:
+  - ✅ `/app/page.tsx` (홈/로그인)
+  - ✅ `/app/(protected)/dashboard/page.tsx`
+  - ✅ `/app/(protected)/invoices/page.tsx`
+  - ✅ `/app/(protected)/invoices/new/page.tsx`
+  - ✅ `/app/(protected)/invoices/[id]/page.tsx`
+  - ✅ `/app/share/[token]/page.tsx` (공개 목록)
+  - ✅ `/app/share/[token]/invoices/[id]/page.tsx` (공개 상세)
+- ✅ 라우트별 기본 Server Component 구조 설정
+- ✅ 네비게이션 링크 확인 (추후 layout 컴포넌트와 연동)
 
 **수락 기준**:
-- 모든 주요 페이지에 접근 가능 (404 없음)
-- TypeScript 컴파일 에러 없음
-- 각 페이지에 간단한 제목 표시
+- ✅ 모든 주요 페이지에 접근 가능 (404 없음)
+- ✅ TypeScript 컴파일 에러 없음
+- ✅ 각 페이지에 간단한 제목 표시
 
 ---
 
-#### Task 002: 타입 정의 및 인터페이스 설계
+#### Task 002: 타입 정의 및 인터페이스 설계 ✅
 
-**상태**: 진행 예정
+**상태**: 완료
 **의존성**: Task 001
 **기대 기간**: 1-2일
 
 **목표**: TypeScript 타입 정의를 완료하고 데이터 모델의 구조를 코드로 명확히 함
 
 **구현 사항**:
-- [ ] `/types/index.ts` 파일 생성 및 기본 타입 정의:
+- ✅ `/types/index.ts` 파일 생성 및 기본 타입 정의:
   ```typescript
   // User 관련 타입
   - User { id, email, name, role, createdAt, updatedAt }
@@ -109,48 +109,58 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
   - LoginRequest { email, password }
   - LoginResponse { user, token }
   ```
-- [ ] 데이터 검증을 위한 Zod 스키마 정의:
-  - 사용자 입력 검증 (로그인 폼)
-  - 견적서 생성/수정 폼 검증
-  - 견적서 항목 검증
-- [ ] 폼 타입 정의 (React Hook Form과 연동)
+- ✅ 데이터 검증을 위한 Zod 스키마 정의:
+  - ✅ 사용자 입력 검증 (로그인 폼)
+  - ✅ 견적서 생성/수정 폼 검증
+  - ✅ 견적서 항목 검증
+- ✅ 폼 타입 정의 (React Hook Form과 연동)
 
 **수락 기준**:
-- 모든 핵심 타입이 `/types/index.ts`에 정의됨
-- Zod 스키마가 명확하고 재사용 가능함
-- TypeScript `any` 사용 최소화
+- ✅ 모든 핵심 타입이 `/types/index.ts`에 정의됨
+- ✅ Zod 스키마가 명확하고 재사용 가능함
+- ✅ TypeScript `any` 사용 최소화
 
 ---
 
-#### Task 003: 공통 레이아웃 및 네비게이션 골격
+#### Task 003: 공통 레이아웃 및 네비게이션 골격 ✅
 
-**상태**: 진행 예정
+**상태**: 완료
 **의존성**: Task 001
 **기대 기간**: 1-2일
 
 **목표**: 관리자와 클라이언트용 레이아웃 구조 및 네비게이션 컴포넌트 기초 구현
 
 **구현 사항**:
-- [ ] 루트 레이아웃 (`/app/layout.tsx`) 재검토 및 최적화:
-  - Theme Provider (라이트/다크 모드)
-  - Toast Provider (Sonner)
-  - 메타데이터 설정
-- [ ] 보호된 라우트 레이아웃 (`/app/(protected)/layout.tsx`) 생성:
-  - 헤더 컴포넌트 (사용자 정보, 로그아웃 버튼)
-  - 사이드바 컴포넌트 (네비게이션 링크 - 더미)
-  - 푸터 컴포넌트 (선택사항)
-- [ ] 공개 라우트 레이아웃 구조 설정:
-  - 최소 네비게이션 (목록으로 돌아가기 등)
-- [ ] 레이아웃 컴포넌트 파일 생성:
-  - `/components/layout/app-layout.tsx`
-  - `/components/layout/header.tsx`
-  - `/components/layout/sidebar.tsx`
-  - `/components/layout/footer.tsx`
+- ✅ 루트 레이아웃 (`/app/layout.tsx`) 재검토 및 최적화:
+  - ✅ Theme Provider (라이트/다크 모드)
+  - ✅ Toast Provider (Sonner)
+  - ✅ 메타데이터 설정
+- ✅ 보호된 라우트 레이아웃 (`/app/(protected)/layout.tsx`) 생성:
+  - ✅ 헤더 컴포넌트 (사용자 정보, 로그아웃 버튼)
+  - ✅ 사이드바 컴포넌트 (네비게이션 링크 - 더미)
+  - ✅ 푸터 컴포넌트 (선택사항)
+- ✅ 공개 라우트 레이아웃 구조 설정:
+  - ✅ 최소 네비게이션 (목록으로 돌아가기 등)
+- ✅ 레이아웃 컴포넌트 파일 생성:
+  - ✅ `/components/layout/app-layout.tsx`
+  - ✅ `/components/layout/header.tsx`
+  - ✅ `/components/layout/sidebar.tsx`
+  - ✅ `/components/layout/footer.tsx`
 
 **수락 기준**:
-- 레이아웃이 모든 페이지에 적용됨
-- 반응형 디자인 기본 구조 완성 (모바일 고려)
-- 네비게이션 링크 구조 명확 (실제 동작은 추후)
+- ✅ 레이아웃이 모든 페이지에 적용됨
+- ✅ 반응형 디자인 기본 구조 완성 (모바일 고려)
+- ✅ 네비게이션 링크 구조 명확 (실제 동작은 추후)
+
+---
+
+### Phase 1 완료 체크리스트
+
+- ✅ Task 001: 프로젝트 구조 및 라우팅 설정
+- ✅ Task 002: 타입 정의 및 인터페이스 설계
+- ✅ Task 003: 공통 레이아웃 및 네비게이션 골격
+
+**Phase 1 완료 상태**: 모든 필수 작업이 완료되었습니다. 애플리케이션의 기본 골격이 확립되었고, 다음 단계인 UI/UX 완성을 위한 기초가 마련되었습니다.
 
 ---
 
@@ -158,7 +168,7 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
 
 모든 페이지의 UI를 shadcn/ui와 더미 데이터로 완성하여 사용자 경험을 먼저 검증합니다.
 
-#### Task 004: 공통 UI 컴포넌트 라이브러리 구현
+#### Task 004: 공통 UI 컴포넌트 라이브러리 구현 (우선순위)
 
 **상태**: 진행 예정
 **의존성**: Task 002, Task 003
@@ -1122,6 +1132,6 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
 
 ---
 
-**로드맵 최종 수정일**: 2026년 1월 16일
-**버전**: 1.0
-**상태**: 개발 진행 예정
+**로드맵 최종 수정일**: 2026년 1월 19일
+**버전**: 1.1
+**상태**: Phase 1 완료, Phase 2 진행 준비 중
