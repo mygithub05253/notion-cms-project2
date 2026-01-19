@@ -6,15 +6,30 @@
 
 export default function ShareInvoicesPage({ params }: { params: { token: string } }) {
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold">공유 견적서 목록</h1>
-        <p className="text-slate-500">공유된 견적서를 확인합니다</p>
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      {/* 페이지 헤더 */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-bold text-foreground">공유 견적서 목록</h1>
+        <p className="text-sm text-muted-foreground">
+          공유된 견적서를 확인합니다
+        </p>
       </div>
 
-      {/* TODO: 공개 견적서 목록 구현 */}
-      <div className="text-slate-500">
-        공개 견적서 목록 개발 중... (Token: {params.token})
+      {/* 보안 정보 (토큰 기반 접근) */}
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
+        이 페이지는 공유 링크로 접근한 페이지입니다.
+      </div>
+
+      {/* 견적서 목록 테이블 */}
+      <div className="rounded-lg border border-border bg-card">
+        <div className="p-6 text-center text-muted-foreground">
+          공개 견적서 목록 테이블 개발 중...
+        </div>
+      </div>
+
+      {/* 페이지네이션 (향후 구현) */}
+      <div className="flex justify-center">
+        {/* TODO: 페이지네이션 추가 */}
       </div>
     </div>
   );

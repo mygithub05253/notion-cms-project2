@@ -6,15 +6,33 @@
 
 export default function InvoicesPage() {
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold">견적서 목록</h1>
-        <p className="text-slate-500">발급한 모든 견적서를 관리합니다</p>
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      {/* 페이지 헤더 */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-3xl font-bold text-foreground">견적서 목록</h1>
+          <p className="text-sm text-muted-foreground">
+            발급한 모든 견적서를 관리합니다
+          </p>
+        </div>
+        {/* TODO: 새 견적서 생성 버튼 추가 */}
       </div>
 
-      {/* TODO: 견적서 목록 테이블 구현 */}
-      <div className="text-slate-500">
-        견적서 목록 개발 중...
+      {/* 필터 및 검색 영역 (향후 구현) */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        {/* TODO: 검색창, 필터 드롭다운 등 추가 */}
+      </div>
+
+      {/* 견적서 목록 테이블 */}
+      <div className="rounded-lg border border-border bg-card">
+        <div className="p-6 text-center text-muted-foreground">
+          견적서 목록 테이블 개발 중...
+        </div>
+      </div>
+
+      {/* 페이지네이션 (향후 구현) */}
+      <div className="flex justify-center">
+        {/* TODO: 페이지네이션 추가 */}
       </div>
     </div>
   );
