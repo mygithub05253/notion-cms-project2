@@ -1,84 +1,120 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { InvoiceForm, invoiceSchema, type InvoiceFormData } from '@/components/features/invoice-form';
+import { ConfirmDialog } from '@/components/features/confirm-dialog';
+
 /**
- * 견적서 상세 페이지 (관리자 모드)
+ * 견적서 상세 및 편집 페이지 (관리자 모드)
  * F003, F005, F006, F007 기능 구현
  * 발급된 견적서를 조회하고 수정, 삭제, 공유할 수 있습니다
  */
 
+// Mock 데이터 (실제로는 API에서 조회)
+const mockInvoice: InvoiceFormData = {
+  title: '2025년 1월 A 프로젝트 견적서',
+  description: '웹사이트 개발 프로젝트 견적서입니다',
+  clientName: '홍길동',
+  clientEmail: 'client@example.com',
+  items: [
+    {
+      title: '웹사이트 개발',
+      description: '반응형 웹사이트 개발 (5페이지)',
+      quantity: 1,
+      unit: '식',
+      unitPrice: 5000000,
+      subtotal: 5000000,
+    },
+    {
+      title: '호스팅 설정',
+      description: '클라우드 호스팅 설정 및 배포',
+      quantity: 1,
+      unit: '식',
+      unitPrice: 500000,
+      subtotal: 500000,
+    },
+  ],
+};
+
 export default function InvoiceDetailPage({ params }: { params: { id: string } }) {
+  const router = useRouter();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const form = useForm<InvoiceFormData>({
+    resolver: zodResolver(invoiceSchema),
+    defaultValues: mockInvoice,
+  });
+
+  const onSubmit = async (data: InvoiceFormData) => {
+    try {
+      // TODO: 백엔드 API 연동
+      // const response = await fetch(`/api/invoices/${params.id}`, {
+      //   method: 'PATCH',
+      //   body: JSON.stringify(data),
+      // });
+      // const result = await response.json();
+
+      toast.success('견적서가 업데이트되었습니다');
+      setTimeout(() => router.push('/invoices'), 500);
+    } catch (error) {
+      toast.error('견적서 업데이트 중 오류가 발생했습니다');
+    }
+  };
+
+  const onCancel = () => {
+    router.back();
+  };
+
+  const onDeleteConfirm = async () => {
+    try {
+      setIsDeleting(true);
+
+      // TODO: 백엔드 API 연동
+      // const response = await fetch(`/api/invoices/${params.id}`, {
+      //   method: 'DELETE',
+      // });
+      // const result = await response.json();
+
+      toast.success('견적서가 삭제되었습니다');
+      setDeleteConfirmOpen(false);
+      setTimeout(() => router.push('/invoices'), 500);
+    } catch (error) {
+      toast.error('견적서 삭제 중 오류가 발생했습니다');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      {/* 페이지 헤더 및 액션 버튼 */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold text-foreground">견적서 상세</h1>
-          <p className="text-sm text-muted-foreground">
-            견적서 ID: {params.id}
-          </p>
-        </div>
-        {/* TODO: 수정, 삭제, 공유, 상태변경 버튼 추가 */}
-      </div>
+    <>
+      <InvoiceForm
+        title={`견적서 수정 - ${form.getValues('title')}`}
+        subtitle="견적서 정보를 수정합니다"
+        form={form}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+        showDeleteButton={true}
+        onDelete={() => setDeleteConfirmOpen(true)}
+        submitText="저장"
+        isDeleting={isDeleting}
+      />
 
-      {/* 상태 태그 (향후 구현) */}
-      <div className="flex gap-2">
-        {/* TODO: 상태 배지 추가 (대기, 승인, 거절 등) */}
-      </div>
-
-      {/* 견적서 상세 정보 */}
-      <div className="rounded-lg border border-border bg-card">
-        <div className="p-6">
-          <div className="space-y-6">
-            {/* 클라이언트 정보 */}
-            <div>
-              <h2 className="mb-4 text-lg font-semibold text-foreground">
-                클라이언트 정보
-              </h2>
-              {/* TODO: 클라이언트 상세 정보 표시 */}
-              <div className="text-sm text-muted-foreground">
-                클라이언트 정보 개발 중...
-              </div>
-            </div>
-
-            {/* 항목 목록 */}
-            <div>
-              <h2 className="mb-4 text-lg font-semibold text-foreground">
-                항목
-              </h2>
-              {/* TODO: 항목 테이블 구현 */}
-              <div className="text-sm text-muted-foreground">
-                항목 목록 개발 중...
-              </div>
-            </div>
-
-            {/* 금액 요약 */}
-            <div className="border-t border-border pt-6">
-              <div className="space-y-2">
-                {/* TODO: 소계, 세금, 총액 등 표시 */}
-                <div className="text-sm text-muted-foreground">
-                  금액 요약 개발 중...
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 활동 기록 (향후 구현) */}
-      <div className="rounded-lg border border-border bg-card">
-        <div className="p-6">
-          <h2 className="mb-4 text-lg font-semibold text-foreground">
-            활동 기록
-          </h2>
-          {/* TODO: 활동 타임라인 구현 */}
-          <div className="text-sm text-muted-foreground">
-            활동 기록 개발 중...
-          </div>
-        </div>
-      </div>
-
-      {/* 액션 버튼 */}
-      <div className="flex gap-3">
-        {/* TODO: 저장, 취소 버튼 추가 */}
-      </div>
-    </div>
+      {/* 삭제 확인 다이얼로그 */}
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        title="견적서 삭제"
+        description="정말로 이 견적서를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        confirmText="삭제"
+        cancelText="취소"
+        isDangerous={true}
+        onConfirm={onDeleteConfirm}
+        onCancel={() => setDeleteConfirmOpen(false)}
+      />
+    </>
   );
 }

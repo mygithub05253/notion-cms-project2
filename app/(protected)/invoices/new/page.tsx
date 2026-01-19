@@ -1,39 +1,69 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { InvoiceForm, invoiceSchema, type InvoiceFormData } from '@/components/features/invoice-form';
+
 /**
  * 견적서 생성 페이지
  * F004, F010 기능 구현
- * 새로운 견적서를 작성하고 시스템에 저장합니다
+ * InvoiceForm 컴포넌트를 활용한 동적 항목 관리
  */
 
 export default function NewInvoicePage() {
+  const router = useRouter();
+
+  const form = useForm<InvoiceFormData>({
+    resolver: zodResolver(invoiceSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      clientName: '',
+      clientEmail: '',
+      items: [
+        {
+          title: '',
+          description: '',
+          quantity: 1,
+          unit: '개',
+          unitPrice: 0,
+          subtotal: 0,
+        },
+      ],
+    },
+  });
+
+  const onSubmit = async (data: InvoiceFormData) => {
+    try {
+      // TODO: 백엔드 API 연동
+      // const response = await fetch('/api/invoices', {
+      //   method: 'POST',
+      //   body: JSON.stringify(data),
+      // });
+      // const result = await response.json();
+
+      toast.success('견적서가 저장되었습니다');
+      form.reset();
+      setTimeout(() => router.push('/invoices'), 500);
+    } catch (error) {
+      toast.error('견적서 저장 중 오류가 발생했습니다');
+    }
+  };
+
+  const onCancel = () => {
+    router.back();
+  };
+
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      {/* 페이지 헤더 */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold text-foreground">새 견적서 생성</h1>
-        <p className="text-sm text-muted-foreground">
-          새로운 견적서를 작성합니다
-        </p>
-      </div>
-
-      {/* 견적서 생성 폼 */}
-      <div className="rounded-lg border border-border bg-card">
-        <div className="p-6">
-          {/* TODO: 견적서 생성 폼 구현
-            - 클라이언트 정보 입력
-            - 항목 추가 (상품/서비스)
-            - 금액 계산
-            - 저장 및 공유 버튼
-          */}
-          <div className="text-center text-muted-foreground">
-            견적서 생성 폼 개발 중...
-          </div>
-        </div>
-      </div>
-
-      {/* 저장/취소 버튼 (향후 구현) */}
-      <div className="flex gap-3">
-        {/* TODO: 저장, 임시저장, 취소 버튼 추가 */}
-      </div>
-    </div>
+    <InvoiceForm
+      title="새 견적서 생성"
+      subtitle="견적서 기본 정보를 입력합니다"
+      form={form}
+      onSubmit={onSubmit}
+      onCancel={onCancel}
+      submitText="저장"
+    />
   );
 }
