@@ -4,33 +4,31 @@
  * 공유 토큰으로 접근하는 클라이언트가 견적서 목록을 확인합니다
  */
 
-export default function ShareInvoicesPage({ params }: { params: { token: string } }) {
+import { ShareHeader } from '@/components/features/share-header';
+import { ShareInvoicesContent } from './share-invoices-content';
+import { mockInvoices } from '@/lib/mock-data';
+
+export default function ShareInvoicesPage({
+  params,
+}: {
+  params: { token: string };
+}) {
+  const { token } = params;
+
+  // Mock 데이터에서 공유된 견적서 필터
+  // 실제 구현: API 호출로 토큰 기반 데이터 로드
+  // TODO: 실제 토큰 검증 및 데이터 페칭 로직 구현 (Phase 3)
+  const sharedInvoices = mockInvoices;
+
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      {/* 페이지 헤더 */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold text-foreground">공유 견적서 목록</h1>
-        <p className="text-sm text-muted-foreground">
-          공유된 견적서를 확인합니다
-        </p>
-      </div>
+    <div className="flex flex-col min-h-screen bg-background">
+      {/* 헤더 */}
+      <ShareHeader />
 
-      {/* 보안 정보 (토큰 기반 접근) */}
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
-        이 페이지는 공유 링크로 접근한 페이지입니다.
-      </div>
-
-      {/* 견적서 목록 테이블 */}
-      <div className="rounded-lg border border-border bg-card">
-        <div className="p-6 text-center text-muted-foreground">
-          공개 견적서 목록 테이블 개발 중...
-        </div>
-      </div>
-
-      {/* 페이지네이션 (향후 구현) */}
-      <div className="flex justify-center">
-        {/* TODO: 페이지네이션 추가 */}
-      </div>
+      {/* 메인 콘텐츠 */}
+      <main className="flex-1 container mx-auto px-4 py-8 sm:py-10 lg:py-12">
+        <ShareInvoicesContent token={token} invoices={sharedInvoices} />
+      </main>
     </div>
   );
 }
