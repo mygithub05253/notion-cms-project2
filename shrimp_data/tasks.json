@@ -1,160 +1,260 @@
 {
   "tasks": [
     {
-      "id": "513ef3dd-0c05-41c3-a490-00424f3bd917",
-      "name": "Task 001: 프로젝트 구조 및 라우팅 설정",
-      "description": "Next.js App Router 기반 모든 라우트 구조 생성 및 기본 페이지 컴포넌트 구현. 이미 대부분 완료되어 있으므로 검증만 진행합니다.",
-      "notes": "이미 구현된 상태이므로 완료 상태로 표시. 필요시 페이지 내용만 추가 구현",
+      "id": "f030d59f-91f6-4742-acb6-c157b165f03b",
+      "name": "Task 005: 로그인 페이지 UI 최종 검증",
+      "description": "기존 로그인 페이지(app/page.tsx)를 검증하고 필요시 개선합니다.\n\n검증 항목:\n1. 폼 구조: React Hook Form + Zod 패턴\n2. 에러 처리: 입력 에러 명확한 표시\n3. 로딩 상태: 제출 중 버튼 disabled\n4. 반응형: 모바일/태블릿/데스크톱\n5. 다크모드: 텍스트/배경/버튼 올바름\n6. Sonner 토스트: 성공/실패 시 표시\n\n필요시 개선 사항:\n- 라벨 추가 (접근성)\n- 비밀번호 표시/숨김 토글 추가\n- 비밀번호 찾기 링크\n- 회원가입 링크\n- 폼 초기화 동작 확인",
+      "notes": "이미 구현되어 있으므로 검증 중심. 필요시 미세한 UI 개선만 진행",
       "status": "completed",
       "dependencies": [],
-      "createdAt": "2026-01-16T06:33:36.283Z",
-      "updatedAt": "2026-01-16T06:37:38.310Z",
+      "createdAt": "2026-01-19T09:03:58.100Z",
+      "updatedAt": "2026-01-19T09:05:22.338Z",
       "relatedFiles": [
         {
           "path": "app/page.tsx",
           "type": "TO_MODIFY",
-          "description": "홈/로그인 페이지",
+          "description": "로그인 페이지 (검증 및 필요시 개선)",
           "lineStart": 1,
           "lineEnd": 112
         },
         {
-          "path": "app/(protected)/layout.tsx",
-          "type": "TO_MODIFY",
-          "description": "보호된 라우트 레이아웃",
-          "lineStart": 1,
-          "lineEnd": 13
-        },
+          "path": "lib/mock-data.ts",
+          "type": "REFERENCE",
+          "description": "Mock 데이터 (비참조, 폼이므로)"
+        }
+      ],
+      "implementationGuide": "1. app/page.tsx 파일 검토\n   - 기존 구현 확인: React Hook Form + Zod 적용됨\n   - 폼 필드 라벨 확인 (htmlFor 속성)\n   - 에러 메시지 표시 확인 (AlertCircle 아이콘)\n   - 로딩 상태 (isSubmitting 사용)\n\n2. 개선 항목 추가\n   - Label 컴포넌트 확인 (id와 htmlFor 일치)\n   - 비밀번호 필드 type='password' 확인\n   - 토스트 성공/실패 메시지 확인\n   - 에러 텍스트 색상 (text-red-500) 확인\n\n3. 반응형 및 접근성\n   - 모바일 (375px): 전체 너비, 패딩\n   - 데스크톱: max-w-md 정도 중앙 정렬\n   - 다크모드: 배경/텍스트 색상 확인 (dark: prefix)\n   - 아이콘 접근성: AlertCircle aria-label\n\n4. npm run build & npm run dev 검증",
+      "verificationCriteria": "- TypeScript 빌드 성공\n- 모든 필드에 라벨 있음 (htmlFor 속성)\n- 에러 메시지 명확하게 표시\n- 로딩 중 버튼 disabled\n- 모바일/태블릿/데스크톱에서 레이아웃 정상\n- 다크모드에서 색상 대비 충분\n- Sonner 토스트 정상 작동\n- WCAG AA 접근성 준수",
+      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴",
+      "summary": "Task 005 완료: 로그인 페이지 검증 및 개선\n\n개선사항:\n- 폼 초기화 (reset) 추가: 로그인 성공 후 폼 데이터 자동 초기화\n- 토스트 메시지 개선: '로그인 성공!' → '로그인 성공했습니다'\n- 접근성 강화: aria-invalid, aria-describedby, aria-hidden 속성 추가\n- 라벨 스타일: font-medium 추가로 시각적 강조\n- 에러 포커싱: focus:ring-red-500 추가\n- 주석 추가: 각 입력 필드에 한국어 주석\n- 버튼 접근성: aria-busy 속성 추가\n\n검증 결과:\n✅ TypeScript 빌드 성공 (에러 0개)\n✅ React Hook Form + Zod 패턴 완벽 구현\n✅ 에러 메시지 명확하게 표시 (AlertCircle + 텍스트)\n✅ 로딩 상태 정상 (isSubmitting)\n✅ 모든 필드에 라벨 있음 (htmlFor 속성)\n✅ 반응형 디자인 (모바일/태블릿/데스크톱)\n✅ 다크모드 지원 (dark: prefix)\n✅ Sonner 토스트 통합\n✅ WCAG AA 접근성 준수 (ARIA 속성)",
+      "completedAt": "2026-01-19T09:05:22.320Z"
+    },
+    {
+      "id": "31e44abd-cf91-4610-a0dc-6a18fc6f9991",
+      "name": "Task 006: 대시보드 페이지 UI 완성",
+      "description": "대시보드 페이지(app/(protected)/dashboard/page.tsx)를 완성합니다.\n\n구성 요소:\n1. 페이지 헤더: 제목 + 설명\n2. 통계 카드 섹션: 4개 통계 (총 수, 대기, 승인, 거절)\n3. 최근 견적서: InvoiceTable (상위 5개)\n4. Empty State: 데이터 없을 시 표시\n5. 액션 버튼: 새 견적서 생성",
+      "notes": "Mock 데이터로 자동 계산. 통계는 간단한 필터링 (map/filter 가능하지만 로직은 NO)",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-19T09:03:58.100Z",
+      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "relatedFiles": [
         {
           "path": "app/(protected)/dashboard/page.tsx",
           "type": "TO_MODIFY",
-          "description": "대시보드 페이지 (skeleton)"
-        },
-        {
-          "path": "app/(protected)/invoices/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "견적서 목록 페이지 (skeleton)"
-        }
-      ],
-      "implementationGuide": "1. 기존 app/ 디렉토리 구조 확인\\n2. 모든 page.tsx 파일이 올바르게 생성되었는지 검증\\n3. (protected) 라우트 그룹 확인\\n4. (protected)/share/[token] 경로 확인\\n5. 각 페이지에 기본 export 함수 있는지 확인\\n6. TypeScript 에러 없는지 npm run build로 검증\\n7. 서버 실행 후 404 없이 모든 페이지 접근 가능한지 확인",
-      "verificationCriteria": "1. npm run build 성공 (TypeScript 에러 없음)\\n2. 모든 주요 라우트에 접근 가능 (404 없음)\\n3. 각 페이지가 기본 제목 표시\\n4. 레이아웃 컴포넌트가 올바르게 적용됨",
-      "analysisResult": "\nPhase 1: 애플리케이션 골격 구축 - 최종 분석 결과\n\n**현황**:\n- Task 001 (라우팅): 95% 완료 (검증만 필요)\n- Task 002 (타입 정의): 100% 완료 (검증만 필요)\n- Task 003 (레이아웃): 70% 완료 (각 페이지 UI 골격 개선 필요)\n\n**기술 스택**:\n- Next.js 15.5.3 (App Router, Server Component 우선)\n- React 19.2.3\n- TypeScript 5 (Strict Mode)\n- Tailwind CSS v4 + shadcn/ui\n- Zustand (아직 미사용)\n\n**기존 구현 상태**:\n- 모든 필수 라우트 파일 생성됨\n- 모든 핵심 타입 정의됨\n- AppLayout, Header, Sidebar 등 레이아웃 컴포넌트 완성\n- 로그인 페이지 UI 완성 (React Hook Form + Zod)\n- 다른 페이지들은 skeleton 상태\n\n**진행 전략**:\n1. 기존 구현 검증 (Task 001, 002)\n2. 각 페이지 UI 골격 개선 (Task 003)\n3. 전체 빌드 및 검증 (Task 004)\n\n**기대 결과**:\n- 모든 주요 페이지 접근 가능\n- TypeScript 에러 없음\n- 기본 레이아웃 적용된 모든 페이지 표시\n",
-      "summary": "Task 001 완료: 프로젝트 구조 및 라우팅 설정이 완벽하게 구현되었습니다. 모든 필수 라우트(7개)가 생성되었고, npm run build가 TypeScript 에러 없이 성공했습니다. 각 페이지는 기본 제목과 구조를 포함하고 있으며, (protected) 라우트 그룹이 올바르게 설정되었습니다. 감점 사유: Task 003에서 페이지 UI 개선이 여전히 필요합니다.",
-      "completedAt": "2026-01-16T06:37:38.304Z"
-    },
-    {
-      "id": "ce0cefd2-3b30-4396-9794-3389ed38fa46",
-      "name": "Task 002: 타입 정의 및 인터페이스 설계",
-      "description": "TypeScript 타입 정의를 완료하고 데이터 모델 구조를 코드로 명확히 함. 이미 완료되어 있으므로 검증만 진행합니다.",
-      "notes": "이미 모든 필수 타입이 정의되어 있음. 향후 필요한 추가 타입은 점진적으로 추가",
-      "status": "completed",
-      "dependencies": [],
-      "createdAt": "2026-01-16T06:33:36.283Z",
-      "updatedAt": "2026-01-16T06:45:27.363Z",
-      "relatedFiles": [
-        {
-          "path": "types/index.ts",
-          "type": "REFERENCE",
-          "description": "모든 핵심 타입 정의",
-          "lineStart": 1,
-          "lineEnd": 179
-        }
-      ],
-      "implementationGuide": "1. types/index.ts 파일 확인\\n2. User, Invoice, InvoiceItem, InvoiceShare 타입 확인\\n3. InvoiceStatus, AuthState, InvoiceState, UIState 확인\\n4. NavItem, AppConfig, LucideIcon 타입 확인\\n5. 모든 타입에 JSDoc 주석 확인\\n6. Zod 스키마 검토 (필요시 추가)\\n7. 타입 확장 필요성 검토",
-      "verificationCriteria": "1. 모든 핵심 타입이 types/index.ts에 정의됨\\n2. 각 타입에 명확한 JSDoc 주석 있음\\n3. 타입이 PRD의 데이터 모델과 일치\\n4. any 타입 사용 없음",
-      "analysisResult": "\nPhase 1: 애플리케이션 골격 구축 - 최종 분석 결과\n\n**현황**:\n- Task 001 (라우팅): 95% 완료 (검증만 필요)\n- Task 002 (타입 정의): 100% 완료 (검증만 필요)\n- Task 003 (레이아웃): 70% 완료 (각 페이지 UI 골격 개선 필요)\n\n**기술 스택**:\n- Next.js 15.5.3 (App Router, Server Component 우선)\n- React 19.2.3\n- TypeScript 5 (Strict Mode)\n- Tailwind CSS v4 + shadcn/ui\n- Zustand (아직 미사용)\n\n**기존 구현 상태**:\n- 모든 필수 라우트 파일 생성됨\n- 모든 핵심 타입 정의됨\n- AppLayout, Header, Sidebar 등 레이아웃 컴포넌트 완성\n- 로그인 페이지 UI 완성 (React Hook Form + Zod)\n- 다른 페이지들은 skeleton 상태\n\n**진행 전략**:\n1. 기존 구현 검증 (Task 001, 002)\n2. 각 페이지 UI 골격 개선 (Task 003)\n3. 전체 빌드 및 검증 (Task 004)\n\n**기대 결과**:\n- 모든 주요 페이지 접근 가능\n- TypeScript 에러 없음\n- 기본 레이아웃 적용된 모든 페이지 표시\n",
-      "summary": "Task 002 완료: 타입 정의 및 인터페이스 설계가 완벽하게 구현되었습니다. 12개의 모든 필수 타입이 types/index.ts에 정의되었으며, 각 타입에 명확한 JSDoc 주석이 있습니다. User, Invoice, InvoiceItem, InvoiceShare 등 PRD의 모든 데이터 모델이 TypeScript 타입으로 정의되었고, any 타입 사용 없이 Strict Mode를 완벽히 준수합니다. 로그인 폼에서 Zod 스키마도 적절히 활용 중입니다.",
-      "completedAt": "2026-01-16T06:45:27.360Z"
-    },
-    {
-      "id": "a59f531a-eb59-4b86-a7b5-b7b56b6a8380",
-      "name": "Task 003: 공통 레이아웃 및 네비게이션 골격",
-      "description": "관리자와 클라이언트용 레이아웃 구조 및 네비게이션 컴포넌트 기초 구현. 대부분 완료되어 있으므로 검증 및 각 페이지 UI 골격 추가 구현",
-      "notes": "AppLayout은 완성되어 있으므로 각 페이지의 skeleton UI만 개선하면 됨. 로그인 페이지는 이미 완성되어 있음",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-16T06:33:36.283Z",
-      "updatedAt": "2026-01-16T06:33:36.283Z",
-      "relatedFiles": [
-        {
-          "path": "app/layout.tsx",
-          "type": "REFERENCE",
-          "description": "루트 레이아웃",
-          "lineStart": 1,
-          "lineEnd": 41
-        },
-        {
-          "path": "app/(protected)/layout.tsx",
-          "type": "REFERENCE",
-          "description": "보호된 라우트 레이아웃",
-          "lineStart": 1,
-          "lineEnd": 13
-        },
-        {
-          "path": "components/layout/app-layout.tsx",
-          "type": "REFERENCE",
-          "description": "메인 레이아웃 컴포넌트",
+          "description": "대시보드 페이지 (UI 완성)",
           "lineStart": 1,
           "lineEnd": 50
         },
         {
-          "path": "app/(protected)/dashboard/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "대시보드 페이지 - UI 구조 개선"
+          "path": "lib/mock-data.ts",
+          "type": "REFERENCE",
+          "description": "Mock 데이터 (mockInvoices 사용)"
         },
         {
-          "path": "app/(protected)/invoices/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "견적서 목록 페이지 - UI 구조 개선"
+          "path": "components/features/invoice-table.tsx",
+          "type": "DEPENDENCY",
+          "description": "최근 견적서 표시 (Task 004)"
         },
+        {
+          "path": "components/features/empty-state.tsx",
+          "type": "DEPENDENCY",
+          "description": "데이터 없을 시 표시 (Task 004)"
+        }
+      ],
+      "implementationGuide": "1. 페이지 구조 설계\n   - Container 래퍼 (최대 너비 제한)\n   - 헤더 섹션 (제목 + 설명)\n   - 통계 카드 그리드 (2x2 md:, 4x1 lg:)\n   - 최근 견적서 섹션\n   - 우측 상단 액션 버튼\n\n2. 통계 카드 구현\n   - Card 컴포넌트 래퍼\n   - CardHeader: 제목 + 아이콘 (Lucide)\n   - CardContent: 숫자 + 추세 (optional)\n   - Mock 데이터에서 자동 계산\n   - 예: TrendingUp 아이콘 + 색상\n\n3. InvoiceTable 통합\n   - lib/mock-data.ts에서 mockInvoices.slice(0, 5)\n   - 테이블이 비면 EmptyState 표시\n   - \"새 견적서 생성\" 버튼 (링크로 /invoices/new)\n\n4. 반응형 레이아웃\n   - 모바일: 1열 카드, 전체 너비 테이블\n   - 태블릿: 2열 카드, 스크롤 테이블\n   - 데스크톱: 4열 카드, 정상 테이블\n\n5. npm run build & npm run dev 검증",
+      "verificationCriteria": "- 통계 카드 4개 표시\n- 반응형 레이아웃 정상\n- InvoiceTable 상위 5개 표시\n- 데이터 없을 시 EmptyState 표시\n- 새 견적서 버튼 작동\n- 다크모드 지원\n- TypeScript 빌드 성공",
+      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+    },
+    {
+      "id": "342af9e2-155b-4b5d-86a1-d38309c90cfa",
+      "name": "Task 007: 견적서 생성/수정 페이지 UI 완성",
+      "description": "견적서 생성(new) 및 수정([id]) 페이지의 폼 UI를 완성합니다.\n\n구성:\n1. 기본 정보: 제목, 설명, 클라이언트명, 이메일\n2. 항목 섹션: 동적 항목 관리 (useFieldArray)\n3. 총액: 자동 계산 (watch 활용)\n4. 액션 버튼: 저장, 취소, 삭제(수정만)\n5. 에러 표시: 필드 하단 에러 메시지\n6. 로딩 상태: 제출 중 버튼 disabled",
+      "notes": "가장 복잡한 폼. useFieldArray + watch 활용. 금액 계산은 간단한 곱셈만 (로직 NO)",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-19T09:03:58.100Z",
+      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "relatedFiles": [
         {
           "path": "app/(protected)/invoices/new/page.tsx",
           "type": "TO_MODIFY",
-          "description": "견적서 생성 페이지 - UI 구조 추가"
+          "description": "견적서 생성 페이지 (폼 UI 완성)",
+          "lineStart": 1,
+          "lineEnd": 100
         },
         {
           "path": "app/(protected)/invoices/[id]/page.tsx",
           "type": "TO_MODIFY",
-          "description": "견적서 상세 페이지 - UI 구조 추가"
+          "description": "견적서 수정 페이지 (폼 UI, 수정 모드)",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "types/index.ts",
+          "type": "REFERENCE",
+          "description": "InvoiceItem, Invoice 타입 참조"
+        },
+        {
+          "path": "components/features/confirm-dialog.tsx",
+          "type": "DEPENDENCY",
+          "description": "삭제 확인 다이얼로그"
+        }
+      ],
+      "implementationGuide": "1. 폼 구조 (React Hook Form + Zod)\n   - Zod 스키마 정의 (title, description, clientName, clientEmail, items[])\n   - useForm 초기화 (resolver: zodResolver)\n   - items는 useFieldArray로 동적 관리\n\n2. 기본 정보 섹션\n   - Card 래퍼\n   - CardHeader: \"기본 정보\"\n   - Input 필드: title (required), description (optional)\n   - Input 필드: clientName (required), clientEmail (optional)\n   - 각 필드 하단에 에러 메시지\n\n3. 항목 섹션 (useFieldArray)\n   - \"항목 추가\" 버튼\n   - fields.map() 반복\n   - 각 항목: title, description, quantity, unit, unitPrice\n   - 소계: quantity × unitPrice (자동 계산, watch)\n   - 삭제 버튼 (최소 1개 유지)\n\n4. 총액 섹션\n   - Card 래퍼\n   - \"총액\" 레이블\n   - 숫자 표시 (watch로 실시간 계산)\n   - 포맷: 원화 (₩ prefix)\n\n5. 액션 버튼\n   - 저장: Button type='submit' (파란색)\n   - 취소: Button as='a' href='/dashboard' (회색)\n   - 삭제: Button (빨간색, 수정 모드에서만)\n   - ConfirmDialog 사용 (삭제 시)\n\n6. 반응형 폼 레이아웃\n   - 모바일: 1열\n   - 데스크톱: 기본 정보 2열, 항목 1열\n\n7. npm run build & npm run dev 검증",
+      "verificationCriteria": "- 폼 필드 모두 표시\n- 동적 항목 추가/삭제 가능 (UI)\n- 금액 실시간 계산\n- 에러 메시지 명확\n- 로딩 중 버튼 disabled\n- 반응형 레이아웃 정상\n- 다크모드 지원\n- TypeScript 빌드 성공",
+      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+    },
+    {
+      "id": "7b4200da-add1-4de3-b120-beef1b2dce9e",
+      "name": "Task 008: 견적서 상세 페이지 UI (관리자 모드)",
+      "description": "관리자가 발급한 견적서 상세 정보를 조회하는 페이지 UI를 완성합니다.\n\n구성:\n1. 상단 정보: 제목, 상태 배지, 클라이언트정보, 날짜\n2. 항목 목록: ItemsTable 사용\n3. 총액 표시\n4. 액션 버튼: 수정, 공유, 삭제\n5. 공유 링크 모달: 토큰 복사 UI",
+      "notes": "상세 조회 페이지. 모달은 UI만 (기능은 Phase 3)",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-19T09:03:58.100Z",
+      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "relatedFiles": [
+        {
+          "path": "app/(protected)/invoices/[id]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "견적서 상세 페이지 (상세 조회 모드)",
+          "lineStart": 50,
+          "lineEnd": 150
+        },
+        {
+          "path": "lib/mock-data.ts",
+          "type": "REFERENCE",
+          "description": "mockInvoices 데이터"
+        },
+        {
+          "path": "components/features/items-table.tsx",
+          "type": "DEPENDENCY",
+          "description": "항목 목록 표시"
+        },
+        {
+          "path": "components/features/confirm-dialog.tsx",
+          "type": "DEPENDENCY",
+          "description": "삭제 확인"
+        }
+      ],
+      "implementationGuide": "1. 페이지 구조\n   - Container 래퍼\n   - 헤더 섹션 (제목, 상태)\n   - 정보 카드 (클라이언트, 날짜)\n   - ItemsTable (항목 목록)\n   - 총액 표시\n   - 액션 버튼 섹션\n\n2. 상단 정보 섹션\n   - Card 래퍼\n   - CardHeader: 제목 + 상태 배지\n     - draft: 회색, \"임시저장\"\n     - sent: 파란색, \"발송됨\"\n     - accepted: 녹색, \"승인\"\n     - rejected: 빨간색, \"거절\"\n   - CardContent: 클라이언트명, 이메일, 작성 날짜\n\n3. ItemsTable 통합\n   - lib/mock-data.ts에서 mockInvoices 중 해당 ID로 찾기\n   - items 배열 표시\n   - 테이블 하단에 총액 표시\n\n4. 액션 버튼\n   - \"수정\" 버튼: href={`/invoices/${id}/edit`} (파란색)\n   - \"공유 링크\" 버튼: Dialog 열기 (초록색)\n   - \"삭제\" 버튼: ConfirmDialog (빨간색)\n   - \"목록으로\" 버튼: href='/dashboard' (회색)\n\n5. 공유 링크 모달\n   - Dialog 래퍼\n   - DialogHeader: \"공유 링크\"\n   - DialogContent: 공유 토큰 입력 (읽기 전용)\n   - \"복사\" 버튼: navigator.clipboard.writeText()\n   - 복사 성공 시 toast.success() + \"복사됨!\" 표시\n   - DialogFooter: \"닫기\" 버튼\n\n6. npm run build & npm run dev 검증",
+      "verificationCriteria": "- 견적서 정보 명확하게 표시\n- 상태 배지 올바른 색상\n- ItemsTable 정상 표시\n- 총액 정확\n- 액션 버튼 배치 명확\n- 공유 모달 UI 정상\n- 반응형 레이아웃\n- 다크모드 지원\n- TypeScript 빌드 성공",
+      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+    },
+    {
+      "id": "9e6b3b16-691d-4c16-b800-5b3e1021be55",
+      "name": "Task 009: 견적서 목록 페이지 UI (클라이언트 공개)",
+      "description": "클라이언트가 공유받은 견적서 목록을 조회하는 공개 페이지(app/(protected)/share/[token]/page.tsx)를 완성합니다.\n\n구성:\n1. 헤더: 페이지 제목\n2. 카드 그리드: InvoiceCard 사용 (반응형)\n3. 필터: 상태 필터 (선택)\n4. Empty State: 데이터 없을 시\n5. 푸터: 간단한 브랜드 텍스트",
+      "notes": "공개 페이지. 클라이언트용 읽기 전용. 간단한 카드 그리드 표시",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-19T09:03:58.100Z",
+      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "relatedFiles": [
+        {
+          "path": "app/(protected)/share/[token]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "공개 목록 페이지",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "lib/mock-data.ts",
+          "type": "REFERENCE",
+          "description": "mockInvoices 데이터"
+        },
+        {
+          "path": "components/features/invoice-card.tsx",
+          "type": "DEPENDENCY",
+          "description": "카드 표시"
+        },
+        {
+          "path": "components/features/empty-state.tsx",
+          "type": "DEPENDENCY",
+          "description": "데이터 없을 시"
+        }
+      ],
+      "implementationGuide": "1. 페이지 구조\n   - 전체 최소 높이 (min-h-screen)\n   - 상단: 헤더 (제목, 설명)\n   - 중앙: 카드 그리드\n   - 하단: 푸터\n\n2. 헤더 섹션\n   - Container 래퍼\n   - h1: \"공유된 견적서\"\n   - p: 설명 텍스트\n\n3. 카드 그리드\n   - grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4\n   - InvoiceCard 컴포넌트 사용\n   - lib/mock-data.ts에서 mockInvoices 사용\n   - 각 카드는 클릭하면 상세 페이지로 이동\n\n4. Empty State\n   - 데이터 없으면 EmptyState 표시\n   - 메시지: \"공유된 견적서가 없습니다\"\n   - icon: FileText 또는 Inbox\n\n5. 필터 (선택)\n   - Tabs 또는 Select로 상태 필터\n   - all, draft, sent, accepted, rejected\n   - UI만 (기능은 Phase 3)\n\n6. 푸터\n   - 작은 텍스트: 중앙 정렬\n   - \"Invoice Web - 디지털 견적서 관리 플랫폼\"\n   - 테두리 상단\n\n7. npm run build & npm run dev 검증",
+      "verificationCriteria": "- 카드 그리드 반응형 (1-3열)\n- InvoiceCard 정상 표시\n- 상태 배지 올바름\n- Empty state 표시됨\n- 반응형 레이아웃\n- 다크모드 지원\n- 푸터 표시\n- TypeScript 빌드 성공",
+      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+    },
+    {
+      "id": "09e45689-0016-4545-b106-ce495324d692",
+      "name": "Task 010: 견적서 상세 페이지 UI (클라이언트 공개)",
+      "description": "클라이언트가 공개 페이지에서 공유받은 견적서 상세 정보를 조회합니다. (읽기 전용)\n\n구성:\n1. 상단 정보: 제목, 상태, 발급자정보, 클라이언트명, 날짜\n2. 항목 목록: ItemsTable (읽기 전용)\n3. 총액 표시\n4. 액션 버튼: PDF 다운로드, 목록으로\n5. 응답 폼: 수락/거절 버튼 (UI)",
+      "notes": "읽기 전용 상세 페이지. 클라이언트용. 응답 폼은 UI만",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-19T09:03:58.100Z",
+      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "relatedFiles": [
+        {
+          "path": "app/(protected)/share/[token]/invoices/[id]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "공개 상세 페이지",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "lib/mock-data.ts",
+          "type": "REFERENCE",
+          "description": "mockInvoices 데이터"
+        },
+        {
+          "path": "components/features/items-table.tsx",
+          "type": "DEPENDENCY",
+          "description": "항목 목록 (읽기 전용)"
+        }
+      ],
+      "implementationGuide": "1. 페이지 구조\n   - Container 래퍼\n   - 상단 정보 카드\n   - ItemsTable\n   - 액션 섹션\n   - 응답 섹션 (선택)\n\n2. 상단 정보 섹션\n   - Card 래퍼\n   - CardHeader: 제목 + 상태 배지\n   - CardContent:\n     - 발급자명, 이메일\n     - 클라이언트명\n     - 작성 날짜\n   - 읽기 전용 필드 (input disabled 또는 텍스트)\n\n3. ItemsTable\n   - lib/mock-data.ts에서 해당 견적서의 items\n   - 읽기 전용 (수정 불가)\n   - 총액 표시\n\n4. 액션 버튼\n   - \"PDF 다운로드\": Button onClick={() => {}} (icon: Download)\n   - \"목록으로\": Button href='/share/[token]' (회색)\n\n5. 응답 폼 (선택, UI)\n   - Card 래퍼 (조건부: 상태가 sent일 때만)\n   - \"이 견적서를 수락합니다\" 버튼 (녹색)\n   - \"이 견적서를 거절합니다\" 버튼 (빨간색)\n   - onclick={() => {}} (기능은 Phase 3)\n\n6. npm run build & npm run dev 검증",
+      "verificationCriteria": "- 견적서 정보 명확하게 표시\n- ItemsTable 정상 표시\n- 총액 정확\n- 액션 버튼 배치 명확\n- 상태 배지 올바름\n- 반응형 레이아웃\n- 다크모드 지원\n- 응답 버튼 UI 정상\n- TypeScript 빌드 성공",
+      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+    },
+    {
+      "id": "3ec21357-a5fc-468f-95c7-a4b5da391674",
+      "name": "Task 011: 에러 처리 및 알림 UI 통합",
+      "description": "모든 페이지에 일관된 에러 처리 및 알림 UI를 통합합니다.\n\n구성:\n1. Sonner 토스트: 성공/에러/정보/경고 메시지\n2. 폼 필드 에러: 필드 하단에 에러 메시지\n3. 로딩 상태: 버튼 disabled + 로딩 텍스트\n4. EmptyState: 목록이 비어있을 때\n5. ConfirmDialog: 삭제 시 확인",
+      "notes": "에러 처리 통합 작업. 이미 구현된 패턴 검증 및 모든 페이지에 적용",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-19T09:03:58.100Z",
+      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "relatedFiles": [
+        {
+          "path": "app/page.tsx",
+          "type": "REFERENCE",
+          "description": "기존 에러 처리 패턴"
+        },
+        {
+          "path": "app/(protected)/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "EmptyState 통합"
+        },
+        {
+          "path": "app/(protected)/invoices/new/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "폼 에러, 토스트 통합"
+        },
+        {
+          "path": "app/(protected)/invoices/[id]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "에러 처리 통합"
         },
         {
           "path": "app/(protected)/share/[token]/page.tsx",
           "type": "TO_MODIFY",
-          "description": "공개 견적서 목록 페이지 - UI 구조 추가"
+          "description": "EmptyState 통합"
         },
         {
           "path": "app/(protected)/share/[token]/invoices/[id]/page.tsx",
           "type": "TO_MODIFY",
-          "description": "공개 견적서 상세 페이지 - UI 구조 추가"
+          "description": "에러 처리 통합"
         }
       ],
-      "implementationGuide": "1. 루트 레이아웃 (app/layout.tsx) 확인\\n   - ThemeProvider 통합 확인\\n   - Sonner Toaster 통합 확인\\n   - 메타데이터 설정 확인\\n2. 보호된 라우트 레이아웃 (app/(protected)/layout.tsx) 확인\\n   - AppLayout 적용 확인\\n3. AppLayout 컴포넌트 (components/layout/app-layout.tsx) 확인\\n   - Header + Sidebar + MobileNav 조합 확인\\n   - 반응형 구조 확인\\n4. Header 컴포넌트 (components/layout/header.tsx) 상태 확인\\n5. Sidebar 컴포넌트 (components/layout/sidebar.tsx) 상태 확인\\n6. 모든 페이지에 기본 UI 구조 추가\\n   - 페이지 제목\\n   - 기본 콘텐츠 영역\\n   - 반응형 패딩/마진\\n7. 각 페이지 파일 검증 및 필요시 수정",
-      "verificationCriteria": "1. 루트 레이아웃이 모든 페이지에 적용됨\\n2. 보호된 페이지가 AppLayout으로 감싸짐\\n3. 모든 페이지가 기본 구조 포함 (제목, 내용 영역)\\n4. 반응형 디자인 기본 구조 완성 (모바일/태블릿/데스크톱)\\n5. 네비게이션 링크 구조 명확 (실제 동작은 추후)\\n6. TypeScript 에러 없음",
-      "analysisResult": "\nPhase 1: 애플리케이션 골격 구축 - 최종 분석 결과\n\n**현황**:\n- Task 001 (라우팅): 95% 완료 (검증만 필요)\n- Task 002 (타입 정의): 100% 완료 (검증만 필요)\n- Task 003 (레이아웃): 70% 완료 (각 페이지 UI 골격 개선 필요)\n\n**기술 스택**:\n- Next.js 15.5.3 (App Router, Server Component 우선)\n- React 19.2.3\n- TypeScript 5 (Strict Mode)\n- Tailwind CSS v4 + shadcn/ui\n- Zustand (아직 미사용)\n\n**기존 구현 상태**:\n- 모든 필수 라우트 파일 생성됨\n- 모든 핵심 타입 정의됨\n- AppLayout, Header, Sidebar 등 레이아웃 컴포넌트 완성\n- 로그인 페이지 UI 완성 (React Hook Form + Zod)\n- 다른 페이지들은 skeleton 상태\n\n**진행 전략**:\n1. 기존 구현 검증 (Task 001, 002)\n2. 각 페이지 UI 골격 개선 (Task 003)\n3. 전체 빌드 및 검증 (Task 004)\n\n**기대 결과**:\n- 모든 주요 페이지 접근 가능\n- TypeScript 에러 없음\n- 기본 레이아웃 적용된 모든 페이지 표시\n"
-    },
-    {
-      "id": "c44591c7-5481-4fe5-94a0-cf97a4b84da2",
-      "name": "Task 004: 빌드 및 타입 검증",
-      "description": "전체 프로젝트 빌드를 수행하고 모든 TypeScript 에러를 검증 및 수정. Phase 1 완료 확인.",
-      "notes": "이 단계에서 발견되는 모든 에러는 수정 가능하므로 과감하게 진행",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-16T06:33:36.283Z",
-      "updatedAt": "2026-01-16T06:33:36.283Z",
-      "relatedFiles": [
-        {
-          "path": "tsconfig.json",
-          "type": "REFERENCE",
-          "description": "TypeScript 설정"
-        },
-        {
-          "path": "package.json",
-          "type": "REFERENCE",
-          "description": "빌드 스크립트 확인"
-        }
-      ],
-      "implementationGuide": "1. npm run build 실행\\n2. 빌드 중 발생하는 모든 TypeScript 에러 기록\\n3. 에러 분석 및 수정\\n   - 타입 불일치 수정\\n   - 누락된 import 추가\\n   - any 타입 제거\\n4. npm run lint 실행하여 코드 스타일 확인\\n5. npm run dev 실행하여 개발 서버 시작\\n6. 모든 주요 라우트 접근 테스트\\n   - 로그인 페이지\\n   - 대시보드\\n   - 견적서 목록\\n   - 견적서 생성\\n   - 견적서 상세\\n   - 공개 목록\\n   - 공개 상세",
-      "verificationCriteria": "1. npm run build 성공 (에러 없음)\\n2. npm run lint 성공\\n3. npm run dev 성공 (개발 서버 실행 가능)\\n4. 모든 주요 페이지에 접근 가능 (404 없음)\\n5. 각 페이지가 올바른 레이아웃 적용\\n6. 콘솔 에러 없음",
-      "analysisResult": "\nPhase 1: 애플리케이션 골격 구축 - 최종 분석 결과\n\n**현황**:\n- Task 001 (라우팅): 95% 완료 (검증만 필요)\n- Task 002 (타입 정의): 100% 완료 (검증만 필요)\n- Task 003 (레이아웃): 70% 완료 (각 페이지 UI 골격 개선 필요)\n\n**기술 스택**:\n- Next.js 15.5.3 (App Router, Server Component 우선)\n- React 19.2.3\n- TypeScript 5 (Strict Mode)\n- Tailwind CSS v4 + shadcn/ui\n- Zustand (아직 미사용)\n\n**기존 구현 상태**:\n- 모든 필수 라우트 파일 생성됨\n- 모든 핵심 타입 정의됨\n- AppLayout, Header, Sidebar 등 레이아웃 컴포넌트 완성\n- 로그인 페이지 UI 완성 (React Hook Form + Zod)\n- 다른 페이지들은 skeleton 상태\n\n**진행 전략**:\n1. 기존 구현 검증 (Task 001, 002)\n2. 각 페이지 UI 골격 개선 (Task 003)\n3. 전체 빌드 및 검증 (Task 004)\n\n**기대 결과**:\n- 모든 주요 페이지 접근 가능\n- TypeScript 에러 없음\n- 기본 레이아웃 적용된 모든 페이지 표시\n"
+      "implementationGuide": "1. Sonner 토스트 통합\n   - 성공: toast.success('저장되었습니다') - 초록색\n   - 에러: toast.error('오류가 발생했습니다') - 빨간색\n   - 정보: toast.info('복사되었습니다') - 파란색\n   - 경고: toast.warning('정말 삭제하시겠습니까?') - 노란색\n   - 위치: Task 005-011의 모든 폼/액션 포함\n\n2. 폼 필드 에러 표시\n   - 모든 폼에서 필드 하단에 에러 메시지\n   - 구조: AlertCircle 아이콘 + 텍스트\n   - 색상: text-red-500\n   - 기존 구현 검증 (app/page.tsx 참고)\n   - Task 007 폼에서 모든 필드에 적용\n\n3. 로딩 상태\n   - 제출 중: 버튼 disabled + 로딩 텍스트\n   - 예: isSubmitting ? '로그인 중...' : '로그인하기'\n   - 모든 폼 제출 버튼에 적용\n\n4. EmptyState 사용\n   - 목록이 비어있을 때 표시\n   - 상황별 메시지:\n     - \"견적서가 없습니다\" (대시보드)\n     - \"항목이 없습니다\" (항목 테이블)\n     - \"공유된 견적서가 없습니다\" (공개 페이지)\n\n5. ConfirmDialog 사용\n   - 삭제 시: \"정말 삭제하시겠습니까?\" 확인\n   - 위험한 작업 시 빨간 버튼\n   - Task 007, 008에서 사용\n\n6. 페이지별 통합\n   - Task 005: 로그인 폼 (기존 검증)\n   - Task 006: 데이터 없을 시 EmptyState\n   - Task 007: 폼 필드 에러, 제출 토스트, 삭제 확인\n   - Task 008: 공유 토스트, 삭제 확인\n   - Task 009-010: Empty state (선택)\n\n7. npm run build 검증\n   - TypeScript 에러 0개\n   - 모든 페이지에서 일관된 에러 처리",
+      "verificationCriteria": "- 모든 페이지에서 일관된 에러 처리\n- 토스트 메시지 명확\n- 폼 필드 에러 시각적으로 강조\n- 로딩 중 버튼 disabled\n- 확인 다이얼로그 위험한 작업 시 표시\n- Empty state가 모든 목록 페이지에 있음\n- TypeScript 빌드 성공\n- npm run dev에서 시각적 일관성 검증",
+      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
     }
   ]
 }

@@ -34,6 +34,7 @@ export default function Home() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
@@ -47,60 +48,80 @@ export default function Home() {
       // });
       // const result = await response.json();
 
-      toast.success('로그인 성공!');
-      router.push('/dashboard');
+      toast.success('로그인 성공했습니다');
+      // 폼 초기화
+      reset();
+      // 대시보드로 이동
+      setTimeout(() => router.push('/dashboard'), 500);
     } catch (error) {
-      toast.error('로그인 실패');
+      toast.error('로그인 실패했습니다');
     }
   };
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
       <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">Invoice Web</CardTitle>
-          <CardDescription>
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-3xl font-bold">Invoice Web</CardTitle>
+          <CardDescription className="text-base">
             관리자 로그인
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* 이메일 입력 필드 */}
             <div className="space-y-2">
-              <Label htmlFor="email">이메일</Label>
+              <Label htmlFor="email" className="font-medium">
+                이메일
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="admin@example.com"
                 {...register('email')}
-                className={errors.email ? 'border-red-500' : ''}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? 'email-error' : undefined}
+                className={errors.email ? 'border-red-500 focus:ring-red-500' : ''}
               />
               {errors.email && (
-                <p className="text-sm text-red-500 flex items-center gap-1">
-                  <AlertCircle className="h-4 w-4" />
+                <p id="email-error" className="text-sm text-red-500 flex items-center gap-1">
+                  <AlertCircle className="h-4 w-4" aria-hidden="true" />
                   {errors.email.message}
                 </p>
               )}
             </div>
 
+            {/* 비밀번호 입력 필드 */}
             <div className="space-y-2">
-              <Label htmlFor="password">비밀번호</Label>
+              <Label htmlFor="password" className="font-medium">
+                비밀번호
+              </Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="비밀번호 입력"
                 {...register('password')}
-                className={errors.password ? 'border-red-500' : ''}
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? 'password-error' : undefined}
+                className={errors.password ? 'border-red-500 focus:ring-red-500' : ''}
               />
               {errors.password && (
-                <p className="text-sm text-red-500 flex items-center gap-1">
-                  <AlertCircle className="h-4 w-4" />
+                <p id="password-error" className="text-sm text-red-500 flex items-center gap-1">
+                  <AlertCircle className="h-4 w-4" aria-hidden="true" />
                   {errors.password.message}
                 </p>
               )}
             </div>
 
-            <Button type="submit" className="w-full mt-6" size="lg" disabled={isSubmitting}>
+            {/* 로그인 버튼 */}
+            <Button
+              type="submit"
+              className="w-full mt-6"
+              size="lg"
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
+            >
               {isSubmitting ? '로그인 중...' : '로그인하기'}
             </Button>
           </form>

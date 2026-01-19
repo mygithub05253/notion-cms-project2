@@ -63,16 +63,23 @@ export type InvoiceStatus = 'draft' | 'sent' | 'accepted' | 'rejected';
 /**
  * 견적서 항목 타입
  * PRD: InvoiceItem 데이터 모델
+ * Notion Items 데이터베이스와 매핑
  */
 export interface InvoiceItem {
   /** 항목 ID (UUID) */
   id: string;
   /** 소속 견적서 ID */
   invoiceId: string;
+  /** 항목 제목 (Notion Title 필드) */
+  title: string;
+  /** 카테고리 (Notion Category 필드) */
+  category?: string;
   /** 항목 설명 (상품/서비스명) */
   description: string;
   /** 수량 */
   quantity: number;
+  /** 단위 (예: 개, 시간, 일 - Notion Unit 필드) */
+  unit: string;
   /** 단가 */
   unitPrice: number;
   /** 소계 (수량 × 단가) */

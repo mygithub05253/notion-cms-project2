@@ -8,12 +8,12 @@ import { ShareHeader } from '@/components/features/share-header';
 import { ShareInvoicesContent } from './share-invoices-content';
 import { mockInvoices } from '@/lib/mock-data';
 
-export default function ShareInvoicesPage({
+export default async function ShareInvoicesPage({
   params,
 }: {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 }) {
-  const { token } = params;
+  const { token } = await params;
 
   // Mock 데이터에서 공유된 견적서 필터
   // 실제 구현: API 호출로 토큰 기반 데이터 로드
