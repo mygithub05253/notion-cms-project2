@@ -58,15 +58,25 @@ const statusConfig: Record<
   },
 };
 
+/**
+ * 공개 견적서 상세 페이지 렌더링
+ * 클라이언트가 승인/거절 응답 가능
+ * F010 기능 구현
+ */
 export function ShareInvoiceDetailContent({
   invoice,
   token,
 }: ShareInvoiceDetailContentProps) {
   const router = useRouter();
+  // 승인 버튼 로딩 상태
   const [isApproving, setIsApproving] = useState(false);
+  // 거절 버튼 로딩 상태
   const [isRejecting, setIsRejecting] = useState(false);
 
-  // 발급자 정보 조회
+  /**
+   * Mock 데이터에서 발급자 정보 조회
+   * TODO: 백엔드 API 연동 - GET /api/users/:id
+   */
   const admin = mockUsers.find((user) => user.id === invoice.createdBy);
 
   // 금액 포맷팅 (원화)

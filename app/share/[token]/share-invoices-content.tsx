@@ -8,20 +8,30 @@ import { FileText } from 'lucide-react';
 
 /**
  * 공유 견적서 목록 콘텐츠 컴포넌트
- * 토큰 기반 공개 페이지에서 견적서 목록 표시
+ * 클라이언트 모드: 토큰 기반 공개 페이지에서 공유받은 견적서 목록 표시
+ * F009 기능 구현 - 공유받은 견적서 카드 그리드 표시
+ * - 견적서 카드 그리드 표시 (반응형)
+ * - 통계 정보 표시 (총 건수, 상태 분포)
+ * - 비어있을 때 EmptyState 표시
  */
 
+/** 공유 견적서 목록 콘텐츠 Props */
 interface ShareInvoicesContentProps {
-  /** 공유 토큰 */
+  /** 공유 토큰 (URL에서 추출) */
   token: string;
-  /** 공유된 견적서 목록 */
+  /** 공유된 견적서 목록 배열 */
   invoices: Invoice[];
 }
 
+/**
+ * 공유 견적서 목록 렌더링
+ * 반응형 그리드로 견적서 카드 표시, 호버 시 상세 페이지로 이동
+ */
 export function ShareInvoicesContent({
   token,
   invoices,
 }: ShareInvoicesContentProps) {
+  // 견적서 존재 여부 확인
   const hasInvoices = invoices && invoices.length > 0;
 
   return (

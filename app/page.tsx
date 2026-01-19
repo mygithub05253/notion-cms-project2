@@ -16,6 +16,10 @@ import { toast } from 'sonner';
  * 관리자 인증 (F001)
  */
 
+/**
+ * 로그인 폼 유효성 검사 스키마
+ * Zod로 정의된 로그인 입력 형식 검증 규칙
+ */
 const loginSchema = z.object({
   email: z.string()
     .min(1, '이메일을 입력해주세요')
@@ -25,11 +29,23 @@ const loginSchema = z.object({
     .min(6, '비밀번호는 최소 6글자 이상이어야 합니다'),
 });
 
+/** 로그인 폼 데이터 타입 */
 type LoginFormData = z.infer<typeof loginSchema>;
 
+/**
+ * 로그인 페이지 컴포넌트
+ * 관리자 인증을 처리하는 페이지 (F001)
+ * React Hook Form + Zod를 사용하여 폼 유효성 검사 및 제출 처리
+ */
 export default function Home() {
   const router = useRouter();
 
+  /**
+   * React Hook Form 초기화
+   * - email, password 필드와 에러 상태 관리
+   * - Zod resolver를 통한 자동 유효성 검사
+   * - isSubmitting으로 제출 중 상태 표시
+   */
   const {
     register,
     handleSubmit,
@@ -39,6 +55,13 @@ export default function Home() {
     resolver: zodResolver(loginSchema),
   });
 
+  /**
+   * 폼 제출 핸들러
+   * TODO: 백엔드 API 연동
+   * - POST /api/auth/login 호출
+   * - 성공 시: 토스트 + 폼 초기화 + 대시보드로 이동
+   * - 실패 시: 에러 토스트 표시
+   */
   const onSubmit = async (data: LoginFormData) => {
     try {
       // TODO: 백엔드 API 연동
@@ -48,12 +71,14 @@ export default function Home() {
       // });
       // const result = await response.json();
 
+      // 로그인 성공 토스트 (success 타입)
       toast.success('로그인 성공했습니다');
-      // 폼 초기화
+      // 폼 필드 초기화
       reset();
-      // 대시보드로 이동
+      // 500ms 후 대시보드로 리다이렉트
       setTimeout(() => router.push('/dashboard'), 500);
     } catch (error) {
+      // 로그인 실패 토스트 (error 타입)
       toast.error('로그인 실패했습니다');
     }
   };
@@ -70,7 +95,7 @@ export default function Home() {
 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* 이메일 입력 필드 */}
+            {/* 이메일 입력 필드 및 에러 표시 */}
             <div className="space-y-2">
               <Label htmlFor="email" className="font-medium">
                 이메일
@@ -83,7 +108,9 @@ export default function Home() {
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? 'email-error' : undefined}
                 className={errors.email ? 'border-red-500 focus:ring-red-500' : ''}
+                disabled={isSubmitting}
               />
+              {/* 이메일 필드 에러 메시지 및 아이콘 */}
               {errors.email && (
                 <p id="email-error" className="text-sm text-red-500 flex items-center gap-1">
                   <AlertCircle className="h-4 w-4" aria-hidden="true" />
@@ -92,7 +119,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* 비밀번호 입력 필드 */}
+            {/* 비밀번호 입력 필드 및 에러 표시 */}
             <div className="space-y-2">
               <Label htmlFor="password" className="font-medium">
                 비밀번호
@@ -105,7 +132,9 @@ export default function Home() {
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? 'password-error' : undefined}
                 className={errors.password ? 'border-red-500 focus:ring-red-500' : ''}
+                disabled={isSubmitting}
               />
+              {/* 비밀번호 필드 에러 메시지 및 아이콘 */}
               {errors.password && (
                 <p id="password-error" className="text-sm text-red-500 flex items-center gap-1">
                   <AlertCircle className="h-4 w-4" aria-hidden="true" />
@@ -114,7 +143,8 @@ export default function Home() {
               )}
             </div>
 
-            {/* 로그인 버튼 */}
+            {/* 로그인 제출 버튼 */}
+            {/* 제출 중에는 disabled 상태 + aria-busy 속성으로 로딩 상태 표시 */}
             <Button
               type="submit"
               className="w-full mt-6"

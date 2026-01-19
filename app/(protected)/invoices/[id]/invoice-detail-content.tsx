@@ -60,28 +60,46 @@ const statusConfig: Record<
   },
 };
 
+/** 공유 모달 상태 인터페이스 */
 interface ShareModalState {
+  /** 모달 열림/닫힘 상태 */
   open: boolean;
+  /** 공유 토큰 (고유한 링크 생성용) */
   token: string;
+  /** 만료 기한 표시 텍스트 */
   expiresAt: string;
 }
 
+/** 견적서 상세 콘텐츠 컴포넌트 Props */
 interface InvoiceDetailContentProps {
+  /** 조회할 견적서 ID */
   id: string;
 }
 
+/**
+ * 견적서 상세 콘텐츠 컴포넌트
+ * 관리자 모드: 발급한 견적서의 정보 조회, 수정, 공유, 삭제 기능 제공
+ * F002, F006, F008 기능 구현
+ */
 export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
   const router = useRouter();
+  // 삭제 확인 다이얼로그 상태
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  // 공유 설정 모달 상태 (열림/닫힘, 토큰, 만료 기한)
   const [shareModalOpen, setShareModalOpen] = useState<ShareModalState>({
     open: false,
     token: `share-${Math.random().toString(36).substring(2, 11)}`,
     expiresAt: '무제한',
   });
+  // 만료 기한 설정 (7, 14, 30, never)
   const [expirationDays, setExpirationDays] = useState('never');
+  // 삭제 중 상태 (로딩 표시)
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Mock 데이터에서 견적서 조회
+  /**
+   * Mock 데이터에서 견적서와 발급자 조회
+   * TODO: 백엔드 API 연동 - GET /api/invoices/:id
+   */
   const invoice = mockInvoices.find((inv) => inv.id === id);
   const admin = mockUsers.find((user) => user.id === invoice?.createdBy);
 

@@ -9,6 +9,7 @@ import {
   Plus,
   RefreshCw,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { mockInvoices } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,21 +36,27 @@ export default function DashboardPage() {
   // 최근 5개 견적서 (역순)
   const recentInvoices = mockInvoices.slice(-5).reverse();
 
-  // 새로고침 핸들러
+  /**
+   * 대시보드 새로고침 핸들러
+   * TODO: 백엔드 API 연동 - 견적서 목록 갱신
+   */
   const handleRefresh = () => {
-    // TODO: 토스트 알림 구현 (use-toast 훅 추가 후)
-    console.log('대시보드가 새로고쳐졌습니다');
+    toast.success('대시보드가 새로고쳐졌습니다');
   };
 
-  // 편집 핸들러
+  /**
+   * 견적서 편집 페이지로 이동
+   * TODO: 백엔드 API 연동 - 견적서 데이터 조회 후 편집 페이지로 이동
+   */
   const handleEdit = (id: string) => {
-    // TODO: 편집 페이지로 네비게이션 구현 (/invoices/:id/edit)
     console.log(`견적서 ID: ${id.slice(0, 8)}을 편집합니다.`);
   };
 
-  // 삭제 핸들러
+  /**
+   * 견적서 삭제 핸들러
+   * TODO: 백엔드 API 연동 - 견적서 삭제
+   */
   const handleDelete = (id: string) => {
-    // TODO: 삭제 로직 구현
     console.log(`견적서 ID: ${id.slice(0, 8)}을 삭제했습니다.`);
   };
 
