@@ -51,7 +51,7 @@ export default function NewInvoicePage() {
   const onSubmit = async (data: InvoiceFormData) => {
     try {
       // 동적 임포트로 순환 의존성 방지
-      const { createInvoiceApi } = await import('@/lib/api-invoices');
+      const { createInvoiceApi } = await import('@/lib/api-invoice');
       const { useInvoiceStore } = await import('@/store/useInvoiceStore');
       const store = useInvoiceStore();
 

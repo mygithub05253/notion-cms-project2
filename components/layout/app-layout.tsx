@@ -9,7 +9,7 @@ import { ThemeToggle } from '@/components/features/theme-toggle';
 import { UserNav } from '@/components/features/user-nav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
-import { clearAuthData } from '@/hooks/useLocalStorage';
+import { toast } from 'sonner';
 
 interface AppLayoutProps {
   /** 페이지 콘텐츠 */
@@ -29,12 +29,12 @@ export function AppLayout({ children, className }: AppLayoutProps) {
 
   // 로그아웃 핸들러
   const handleLogout = () => {
-    // 인증 데이터 제거
-    clearAuthData();
     // 스토어에서 사용자 정보 제거
     logout();
+    // 로그아웃 성공 토스트 표시
+    toast.success('로그아웃 되었습니다!');
     // 로그인 페이지로 리디렉션
-    router.push('/auth/login');
+    router.push('/');
   };
 
   return (

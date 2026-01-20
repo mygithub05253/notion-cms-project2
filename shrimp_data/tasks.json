@@ -1,173 +1,133 @@
 {
   "tasks": [
     {
-      "id": "1a20ec84-7cef-49c6-b949-49d577037b32",
-      "name": "Task 016-1: 견적서 생성 페이지 API 연동",
-      "description": "/invoices/new/page.tsx 페이지에 견적서 생성 API 연동을 완료합니다.\n\n현재 상태: InvoiceForm 컴포넌트가 완성되어 있고, onSubmit 핸들러에 TODO 주석이 있음\n\n구현 내용:\n1. useInvoiceStore에서 addInvoice 액션 import\n2. onSubmit 함수에 createInvoiceApi 호출 로직 추가\n3. API 호출 후 useInvoiceStore().addInvoice() 호출\n4. 성공 시: toast.success 표시 + 폼 초기화 + router.push로 상세 페이지 이동\n5. 실패 시: toast.error 표시 + 상태 유지\n6. 로딩 상태 처리 (form.formState.isSubmitting 활용)\n\n검증:\n- 폼 제출 시 API 호출 확인\n- 로딩 상태 표시 확인\n- 에러 시 토스트 메시지 확인",
-      "notes": "createInvoiceApi 함수는 이미 /lib/api-invoices.ts에 존재함. 폼 데이터 타입(InvoiceFormData)과 API 요청 타입(CreateInvoiceRequest) 호환성 확인 필요. displayOrder 필드 추가 가능.",
-      "status": "pending",
+      "id": "7d1d1aa2-02f9-4953-867d-e4bd8e4a60e2",
+      "name": "Task 014-1: AuthGuard 컴포넌트 및 useAuth 훅 구현",
+      "description": "인증된 사용자만 접근 가능하도록 하는 AuthGuard 컴포넌트와 useAuth 훅 구현.",
+      "notes": "ClientComponent 필수. useRouter.push() 사용.",
+      "status": "completed",
       "dependencies": [],
-      "createdAt": "2026-01-20T06:08:04.247Z",
-      "updatedAt": "2026-01-20T06:08:04.247Z",
+      "createdAt": "2026-01-20T09:10:20.575Z",
+      "updatedAt": "2026-01-20T09:10:53.235Z",
       "relatedFiles": [
         {
-          "path": "app/(protected)/invoices/new/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "onSubmit 함수에 API 연동 로직 추가",
-          "lineStart": 52,
-          "lineEnd": 70
-        },
-        {
-          "path": "lib/api-invoices.ts",
-          "type": "REFERENCE",
-          "description": "createInvoiceApi 함수 참조"
-        },
-        {
-          "path": "store/useInvoiceStore.ts",
-          "type": "REFERENCE",
-          "description": "addInvoice 액션 참조"
-        }
-      ],
-      "implementationGuide": "1. /invoices/new/page.tsx 수정\n   - useInvoiceStore import 추가\n   - onSubmit 함수 구현:\n     try {\n       const response = await createInvoiceApi(data);\n       useInvoiceStore().addInvoice(response);\n       toast.success('견적서가 생성되었습니다');\n       form.reset();\n       router.push(`/invoices/${response.id}`);\n     } catch (error) {\n       toast.error('견적서 생성 실패');\n     }\n   - 로딩 상태 처리 (isSubmitting)",
-      "verificationCriteria": "1. npm run build 성공\n2. 새 견적서 생성 페이지에서 폼 작성 후 저장 시 API 호출 확인\n3. 성공 시 toast.success 메시지 표시\n4. 상세 페이지로 자동 이동\n5. 실패 시 적절한 에러 메시지 표시",
-      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
-    },
-    {
-      "id": "86fc7a7f-a085-4129-ad85-752f486835e5",
-      "name": "Task 016-2: 견적서 수정 기능 구현",
-      "description": "견적서 상세 페이지에서 수정 기능을 구현합니다.\n\n현재 상태: /invoices/[id]/invoice-detail-content.tsx는 조회 기능만 구현, 수정 폼이 없음\n\n구현 방식 선택:\n1. invoice-detail-content.tsx에 수정 모드 추가 (더 복잡하지만 페이지 흐름 유지)\n2. 새로운 invoice-edit-content.tsx 파일 생성 (관심사 분리, 유지보수 용이)\n\n권장: 방식 2 (새로운 파일) - /invoices/[id]/invocie-edit-content.tsx\n\n구현 내용:\n1. InvoiceForm 컴포넌트 재사용\n2. useEffect에서 fetchInvoiceById() 호출\n3. 데이터 로드 후 form.reset() 으로 폼에 미리 채우기\n4. onSubmit에서 updateInvoiceApi() 호출\n5. useInvoiceStore().updateInvoice() 호출\n6. 성공 시: toast.success + 페이지 새로고침 또는 목록으로 이동\n7. 실패 시: toast.error\n\n항목 관리:\n- items 배열 수정 가능\n- 기존 항목 수정/삭제\n- 새 항목 추가\n- 소계 자동 계산",
-      "notes": "InvoiceForm의 showDeleteButton prop은 false로 설정 (상세 페이지에서 삭제 담당). 기존 데이터와 새 데이터의 형식 호환성 확인 필요. updateInvoiceApi는 부분 업데이트 지원(?).",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-20T06:08:04.247Z",
-      "updatedAt": "2026-01-20T06:08:04.247Z",
-      "relatedFiles": [
-        {
-          "path": "app/(protected)/invoices/[id]/invoice-edit-content.tsx",
+          "path": "components/features/auth-guard.tsx",
           "type": "CREATE",
-          "description": "수정 폼 컴포넌트 생성"
+          "description": "보호된 라우트 컴포넌트"
         },
         {
-          "path": "app/(protected)/invoices/[id]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "수정 모드 판단 로직 추가 (선택)"
-        },
-        {
-          "path": "components/features/invoice-form.tsx",
-          "type": "REFERENCE",
-          "description": "InvoiceForm 컴포넌트 재사용"
-        },
-        {
-          "path": "store/useInvoiceStore.ts",
-          "type": "REFERENCE",
-          "description": "updateInvoice 액션 참조"
-        }
-      ],
-      "implementationGuide": "1. 새 파일 생성: app/(protected)/invoices/[id]/invoice-edit-content.tsx\n   - InvoiceForm 컴포넌트 import\n   - useForm, useInvoiceStore, useRouter import\n   - useEffect에서 fetchInvoiceById(id) 호출\n   - onSubmit에서 updateInvoiceApi(id, data) 호출\n   - form.reset(invoiceData) 로 기존 데이터 로드\n\n2. /invoices/[id]/page.tsx 수정 (선택)\n   - invoice-edit-content.tsx import 추가\n   - 수정 모드 여부 판단 (query parameter 또는 상태로)\n\n3. 수정 버튼 구현\n   - 상세 페이지에서 \"수정\" 버튼 클릭\n   - 수정 모드로 전환 (또는 edit 페이지로 이동)",
-      "verificationCriteria": "1. 상세 페이지 편집 버튼 클릭 시 수정 폼 표시\n2. 기존 데이터가 폼에 미리 로드됨\n3. 폼 수정 후 저장 시 API 호출 확인\n4. 성공 시 toast.success 메시지 + 페이지 업데이트\n5. 실패 시 에러 메시지 표시",
-      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
-    },
-    {
-      "id": "319352d7-5ba8-433e-90d4-df36634b08af",
-      "name": "Task 016-3: 견적서 삭제 기능 구현",
-      "description": "견적서 상세 페이지에서 삭제 기능을 구현합니다.\n\n현재 상태: invoice-detail-content.tsx에 \"삭제\" 버튼 UI는 있지만 기능 구현 없음\n\n구현 내용:\n1. \"삭제\" 버튼 클릭 시 ConfirmDialog 표시\n2. 확인 시: deleteInvoiceApi(id) 호출\n3. useInvoiceStore().deleteInvoice(id) 호출\n4. 성공 시: toast.success 표시 + 목록 페이지로 이동\n5. 실패 시: toast.error 표시 + 상태 유지\n6. 삭제 중 로딩 상태 표시 (isDeleting 플래그)\n\n삭제 확인 다이얼로그:\n- 제목: \"견적서 삭제\"\n- 메시지: \"이 견적서를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.\"\n- 확인/취소 버튼",
-      "notes": "ConfirmDialog 컴포넌트 존재 여부 확인 필요. 없으면 Dialog + Button으로 직접 구현. 삭제 후 목록 페이지로 이동할 때 500ms 지연으로 토스트가 보임을 보장.",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-20T06:08:04.247Z",
-      "updatedAt": "2026-01-20T06:08:04.247Z",
-      "relatedFiles": [
-        {
-          "path": "app/(protected)/invoices/[id]/invoice-detail-content.tsx",
-          "type": "TO_MODIFY",
-          "description": "handleDelete 함수 구현, ConfirmDialog 렌더링"
-        },
-        {
-          "path": "lib/api-invoices.ts",
-          "type": "REFERENCE",
-          "description": "deleteInvoiceApi 함수 참조"
-        },
-        {
-          "path": "store/useInvoiceStore.ts",
-          "type": "REFERENCE",
-          "description": "deleteInvoice 액션 참조"
-        },
-        {
-          "path": "components/features/confirm-dialog.tsx",
-          "type": "REFERENCE",
-          "description": "ConfirmDialog 컴포넌트 참조 (있으면)"
-        }
-      ],
-      "implementationGuide": "1. invoice-detail-content.tsx 수정\n   - useState로 isDeleting 상태 관리\n   - deleteInvoiceApi, useInvoiceStore import\n   - handleDelete 함수 구현:\n     const handleDelete = async () => {\n       setIsDeleting(true);\n       try {\n         await deleteInvoiceApi(id);\n         await useInvoiceStore().deleteInvoice(id);\n         toast.success('견적서가 삭제되었습니다');\n         setTimeout(() => router.push('/invoices'), 500);\n       } catch (error) {\n         toast.error('삭제 실패');\n         setIsDeleting(false);\n       }\n     }\n   - ConfirmDialog 렌더링 (삭제 버튼 클릭 시)\n   - 삭제 중 버튼 disabled 처리",
-      "verificationCriteria": "1. 상세 페이지 삭제 버튼 클릭 시 확인 다이얼로그 표시\n2. 확인 선택 시 deleteInvoiceApi 호출 확인\n3. 성공 시 toast.success 메시지 표시\n4. 목록 페이지로 자동 이동\n5. 실패 시 에러 메시지 표시, 페이지 유지",
-      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
-    },
-    {
-      "id": "5340e33e-5eb7-4c1f-bdec-2813d7c2cf35",
-      "name": "Task 016-4: 항목 동적 관리 검증",
-      "description": "InvoiceForm 컴포넌트의 항목 동적 관리 기능이 정상 작동하는지 검증합니다.\n\n현재 상태: InvoiceForm에 useFieldArray로 항목 관리가 구현되어 있음\n\n검증 내용:\n1. \"항목 추가\" 버튼 클릭 시 새 항목 행 추가\n2. 기존 항목 수정 가능 (title, description, quantity, unitPrice)\n3. 수량 또는 단가 변경 시 소계 자동 계산 (quantity * unitPrice)\n4. \"항목 삭제\" 버튼으로 행 제거 가능\n5. 모든 항목 소계의 합 = 총액 (하단에 표시)\n6. 최소 1개 항목 필수 (폼 제출 시 검증)\n\n테스트 시나리오:\n- 항목 5개 추가 후 일부 삭제\n- 수량/단가 변경 시 소계 계산 확인\n- 모든 항목 삭제 시도 (에러 표시)\n- 생성/수정 시 항목 데이터 정상 저장",
-      "notes": "이미 완성된 기능이므로 주로 검증 작업. InvoiceForm의 코드를 읽고 동작 확인만 하면 됨. 필요시 미세 조정.",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-20T06:08:04.247Z",
-      "updatedAt": "2026-01-20T06:08:04.247Z",
-      "relatedFiles": [
-        {
-          "path": "components/features/invoice-form.tsx",
-          "type": "REFERENCE",
-          "description": "항목 관리 로직 확인"
-        }
-      ],
-      "implementationGuide": "1. InvoiceForm 컴포넌트 검증 (수정 불필요, 이미 구현됨)\n   - useFieldArray의 fields, append, remove 함수 확인\n   - watch를 활용한 소계 계산 확인\n   - 총액 계산 로직 확인\n\n2. 테스트 시나리오 실행 (브라우저 또는 Playwright)\n   - 생성 페이지에서 항목 추가/삭제 확인\n   - 수정 페이지에서 기존 항목 수정 확인\n   - 폼 제출 시 항목 데이터 정상 전송 확인",
-      "verificationCriteria": "1. \"항목 추가\" 버튼으로 새 행 추가 가능\n2. 항목 수정 시 소계 자동 계산\n3. \"항목 삭제\" 버튼으로 행 제거 가능\n4. 최소 1개 항목 필수 (폼 제출 시 에러)\n5. 생성/수정 후 항목 데이터 정상 저장",
-      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
-    },
-    {
-      "id": "997147e6-affb-4b17-95ad-9cb3f36bb7d1",
-      "name": "Task 016-5: 폼 검증 기능 확인",
-      "description": "인보이스 폼의 Zod 기반 검증이 정상 작동하는지 확인합니다.\n\n검증 필드:\n1. title: 필수, 1-100글자\n2. clientName: 필수, 1-50글자\n3. clientEmail: 선택, 유효한 이메일 형식\n4. description: 선택, 0-500글자\n5. items: 최소 1개, 각 항목의 필드 검증\n   - title: 필수\n   - description: 필수\n   - quantity: 최소 1\n   - unitPrice: 최소 0\n   - unit: 필수\n\n테스트 시나리오:\n- 필수 필드 누락 시 에러 메시지 표시\n- 이메일 형식 검증\n- 글자 수 제한 검증\n- 항목 없이 제출 시도 (에러)\n- 모든 검증 통과 후 정상 제출",
-      "notes": "invoiceSchema는 이미 완성되어 있으므로 주로 검증 작업. 필요시 에러 메시지 개선.",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-20T06:08:04.247Z",
-      "updatedAt": "2026-01-20T06:08:04.247Z",
-      "relatedFiles": [
-        {
-          "path": "components/features/invoice-form.tsx",
-          "type": "REFERENCE",
-          "description": "invoiceSchema 및 검증 로직 확인",
-          "lineStart": 20,
-          "lineEnd": 62
-        }
-      ],
-      "implementationGuide": "1. invoiceSchema (invoice-form.tsx에서) 검증\n   - 각 필드의 검증 규칙 확인\n   - 에러 메시지 한국어 확인\n\n2. 테스트 시나리오 실행 (브라우저)\n   - 빈 폼 제출 → 필드 에러 표시 확인\n   - 이메일 형식 오류 입력 → 에러 표시\n   - 항목 없이 제출 → 에러 표시\n   - 유효한 데이터로 제출 → 성공",
-      "verificationCriteria": "1. 필수 필드 누락 시 에러 메시지 표시\n2. 이메일 형식 검증 작동\n3. 글자 수 제한 검증 작동\n4. 항목 최소 1개 필수 검증\n5. 모든 검증 통과 후 정상 제출",
-      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
-    },
-    {
-      "id": "eaef21d5-e441-4713-be4d-ad40985f8ac8",
-      "name": "Task 016-6: Playwright E2E 테스트 작성 및 실행",
-      "description": "Task 016 CRUD 기능의 전체 E2E 테스트를 Playwright로 작성하고 실행합니다.\n\n테스트 시나리오:\n1. 생성 플로우: 폼 입력 → 저장 → 상세 페이지 확인\n2. 수정 플로우: 기존 데이터 로드 → 수정 → 저장 → 변경 확인\n3. 삭제 플로우: 삭제 버튼 → 확인 모달 → 삭제 → 목록 확인\n4. 항목 관리: 항목 추가/삭제/계산\n5. 폼 검증: 필수 필드, 이메일 형식, 항목 최소 1개\n6. 오류 처리: 네트워크 오류 시나리오 (선택)\n\n테스트 파일: tests/task-016-invoice-crud.spec.ts\n\n테스트 범위:\n- 모든 CRUD 작업 정상 작동\n- 에러 메시지 정확함\n- 토스트 알림 표시\n- UI 상태 변화 확인",
-      "notes": "Playwright 테스트는 UI 기반 테스트로, API 호출이 실제로 일어남. 백엔드 API가 정상 작동해야 테스트 성공. Mock API 사용 고려 (선택).",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-20T06:08:04.247Z",
-      "updatedAt": "2026-01-20T06:08:04.247Z",
-      "relatedFiles": [
-        {
-          "path": "tests/task-016-invoice-crud.spec.ts",
+          "path": "hooks/useAuth.ts",
           "type": "CREATE",
-          "description": "E2E 테스트 파일 생성"
-        },
-        {
-          "path": "tests/task-015-invoice-query.spec.ts",
-          "type": "REFERENCE",
-          "description": "기존 테스트 참고"
+          "description": "인증 상태 훅"
         }
       ],
-      "implementationGuide": "1. 테스트 파일 생성: tests/task-016-invoice-crud.spec.ts\n\n2. 테스트 케이스 작성:\n   - test('생성 플로우: 폼 입력 → 저장 → 상세 페이지')\n   - test('수정 플로우: 기존 데이터 로드 → 수정 → 저장')\n   - test('삭제 플로우: 삭제 버튼 → 확인 → 완료')\n   - test('항목 관리: 추가/삭제/계산')\n   - test('폼 검증: 필수 필드 누락')\n   - test('폼 검증: 이메일 형식')\n   - test('폼 검증: 항목 최소 1개')\n\n3. 테스트 실행: npm run mcp:playwright 또는 npx playwright test\n\n4. 결과 확인:\n   - 모든 테스트 pass 여부\n   - 실패 시 원인 파악 및 수정",
-      "verificationCriteria": "1. Playwright 테스트 모두 pass\n2. 생성/수정/삭제 플로우 정상 작동\n3. 폼 검증 에러 메시지 표시\n4. 토스트 알림 표시\n5. UI 상태 변화 확인",
-      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
+      "implementationGuide": "AuthGuard 컴포넌트는 useAuthStore.currentUser 확인하고 미인증 사용자를 로그인 페이지로 리디렉션. useAuth 훅은 useAuthStore를 래핑하여 간편한 접근 제공.",
+      "verificationCriteria": "AuthGuard로 보호된 페이지는 미인증 사용자 접근 시 /로 리디렉션.",
+      "analysisResult": "Task 014는 useAuthStore, useLocalStorage 등 이미 구현된 인증 기반을 활용하여 로그인/로그아웃 UI 연동, AuthGuard 컴포넌트, 권한 관리를 구현합니다.",
+      "summary": "AuthGuard 컴포넌트(components/features/auth-guard.tsx)와 useAuth 훅(hooks/useAuth.ts) 구현 완료. AuthGuard는 미인증 사용자를 / 페이지로 리디렉션하고 requiredRole로 역할 기반 접근 제어 지원. useAuth 훅은 useAuthStore를 래핑하여 간편한 인증 상태 접근 제공.",
+      "completedAt": "2026-01-20T09:10:53.231Z"
+    },
+    {
+      "id": "5e289e3d-8819-4150-875a-054d991d1319",
+      "name": "Task 014-2: 로그인 페이지 API 연동",
+      "description": "/app/page.tsx 로그인 폼에 useAuthStore().login() API 연동.",
+      "notes": "폼 구조와 검증은 이미 완성됨.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-01-20T09:10:20.575Z",
+      "updatedAt": "2026-01-20T09:11:57.473Z",
+      "relatedFiles": [
+        {
+          "path": "app/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "로그인 폼 API 연동"
+        }
+      ],
+      "implementationGuide": "app/page.tsx onSubmit에 useAuthStore.login() 호출. 성공 시 router.push('/dashboard'), 실패 시 에러 표시.",
+      "verificationCriteria": "로그인 성공 시 /dashboard로 이동. 실패 시 에러 토스트 표시.",
+      "analysisResult": "Task 014는 useAuthStore, useLocalStorage 등 이미 구현된 인증 기반을 활용하여 로그인/로그아웃 UI 연동, AuthGuard 컴포넌트, 권한 관리를 구현합니다.",
+      "summary": "로그인 페이지 API 연동 완료. /app/page.tsx를 로그인 폼으로 수정. React Hook Form + Zod 검증, useAuth().login() 호출, 성공 시 /dashboard로 리디렉션, 실패 시 에러 토스트 표시. 로딩 상태 관리 포함.",
+      "completedAt": "2026-01-20T09:11:57.469Z"
+    },
+    {
+      "id": "10ccb161-455a-48a3-a658-b55f2e7b9996",
+      "name": "Task 014-3: 헤더에 로그아웃 버튼 추가",
+      "description": "헤더에 로그아웃 버튼 추가 및 기능 구현.",
+      "notes": "user-nav.tsx 파일 확인 후 추가.",
+      "status": "in_progress",
+      "dependencies": [],
+      "createdAt": "2026-01-20T09:10:20.575Z",
+      "updatedAt": "2026-01-20T09:12:06.043Z",
+      "relatedFiles": [
+        {
+          "path": "components/features/user-nav.tsx",
+          "type": "TO_MODIFY",
+          "description": "로그아웃 버튼 추가"
+        }
+      ],
+      "implementationGuide": "useAuth 훅으로 logout 호출. 클릭 시 useAuthStore.logout() 실행 및 로그인 페이지로 리디렉션.",
+      "verificationCriteria": "로그아웃 버튼 클릭 시 토큰 삭제되고 로그인 페이지로 이동.",
+      "analysisResult": "Task 014는 useAuthStore, useLocalStorage 등 이미 구현된 인증 기반을 활용하여 로그인/로그아웃 UI 연동, AuthGuard 컴포넌트, 권한 관리를 구현합니다."
+    },
+    {
+      "id": "17dd7169-648b-4cd0-bd41-214254f0906c",
+      "name": "Task 014-4: 보호된 라우트 레이아웃 설정",
+      "description": "(protected) 라우트 그룹에 AuthGuard 적용.",
+      "notes": "라우트 그룹이 이미 설정되어 있음.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-20T09:10:20.575Z",
+      "updatedAt": "2026-01-20T09:10:20.575Z",
+      "relatedFiles": [
+        {
+          "path": "app/(protected)/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "AuthGuard 적용"
+        }
+      ],
+      "implementationGuide": "(protected)/layout.tsx에서 모든 children을 AuthGuard로 감싸기.",
+      "verificationCriteria": "미인증 사용자 접근 시 자동으로 /로 리디렉션.",
+      "analysisResult": "Task 014는 useAuthStore, useLocalStorage 등 이미 구현된 인증 기반을 활용하여 로그인/로그아웃 UI 연동, AuthGuard 컴포넌트, 권한 관리를 구현합니다."
+    },
+    {
+      "id": "af569252-0eb1-4df1-85b6-37c354c4d641",
+      "name": "Task 014-5: 권한 기반 라우트 접근 제어",
+      "description": "관리자만 대시보드 접근, 클라이언트는 공유 페이지만 접근.",
+      "notes": "역할 기반 접근 제어 구현.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-20T09:10:20.575Z",
+      "updatedAt": "2026-01-20T09:10:20.575Z",
+      "relatedFiles": [
+        {
+          "path": "components/features/auth-guard.tsx",
+          "type": "TO_MODIFY",
+          "description": "requiredRole prop 추가"
+        }
+      ],
+      "implementationGuide": "AuthGuard에 requiredRole prop 추가. app/(protected)/layout.tsx에서 requiredRole='admin' 설정.",
+      "verificationCriteria": "admin 역할만 /dashboard 접근 가능.",
+      "analysisResult": "Task 014는 useAuthStore, useLocalStorage 등 이미 구현된 인증 기반을 활용하여 로그인/로그아웃 UI 연동, AuthGuard 컴포넌트, 권한 관리를 구현합니다."
+    },
+    {
+      "id": "e5b8d238-d4ff-427e-b6d2-f3f6946d14f0",
+      "name": "Task 014-6: 초기 인증 상태 복구 및 build 검증",
+      "description": "앱 로드 시 localStorage에서 토큰 복구. npm run build 성공 확인.",
+      "notes": "initializeAuth는 이미 구현됨. 초기화 시점만 확인.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-20T09:10:20.575Z",
+      "updatedAt": "2026-01-20T09:10:20.575Z",
+      "relatedFiles": [
+        {
+          "path": "app/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "인증 상태 초기화"
+        }
+      ],
+      "implementationGuide": "app/layout.tsx에서 useEffect로 initializeAuth() 호출. npm run build 실행하여 에러 확인 및 수정.",
+      "verificationCriteria": "페이지 새로고침 후에도 로그인 상태 유지. npm run build 성공.",
+      "analysisResult": "Task 014는 useAuthStore, useLocalStorage 등 이미 구현된 인증 기반을 활용하여 로그인/로그아웃 UI 연동, AuthGuard 컴포넌트, 권한 관리를 구현합니다."
     }
   ]
 }

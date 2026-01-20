@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,35 +13,6 @@ import { ConfirmDialog } from '@/components/features/confirm-dialog';
  * F007 기능 구현 - 발급된 견적서를 수정하고 삭제할 수 있음
  * InvoiceForm 컴포넌트를 활용하여 견적서 수정 폼과 삭제 확인 다이얼로그 제공
  */
-
-/**
- * Mock 데이터 (실제로는 API에서 조회)
- * TODO: 백엔드 API 연동 - GET /api/invoices/:id
- */
-const mockInvoice: InvoiceFormData = {
-  title: '2025년 1월 A 프로젝트 견적서',
-  description: '웹사이트 개발 프로젝트 견적서입니다',
-  clientName: '홍길동',
-  clientEmail: 'client@example.com',
-  items: [
-    {
-      title: '웹사이트 개발',
-      description: '반응형 웹사이트 개발 (5페이지)',
-      quantity: 1,
-      unit: '식',
-      unitPrice: 5000000,
-      subtotal: 5000000,
-    },
-    {
-      title: '호스팅 설정',
-      description: '클라우드 호스팅 설정 및 배포',
-      quantity: 1,
-      unit: '식',
-      unitPrice: 500000,
-      subtotal: 500000,
-    },
-  ],
-};
 
 /** 견적서 편집 콘텐츠 컴포넌트 Props */
 interface InvoiceEditContentProps {
@@ -57,44 +28,96 @@ interface InvoiceEditContentProps {
  */
 export function InvoiceEditContent({ id }: InvoiceEditContentProps) {
   const router = useRouter();
+  // 초기 로딩 상태
+  const [isLoading, setIsLoading] = useState(true);
   // 삭제 확인 다이얼로그 상태
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   // 삭제 중 상태 (로딩 표시)
   const [isDeleting, setIsDeleting] = useState(false);
+  // 업데이트 중 상태
+  const [isUpdating, setIsUpdating] = useState(false);
 
   /**
    * React Hook Form 초기화
-   * Mock 데이터로 폼 필드 채우기
-   * TODO: 실제로는 API에서 조회한 데이터로 초기화
+   * 빈 기본값으로 시작하고, API에서 데이터를 받으면 폼을 업데이트
    */
   const form = useForm<InvoiceFormData>({
     resolver: zodResolver(invoiceSchema),
-    defaultValues: mockInvoice,
+    defaultValues: {
+      title: '',
+      description: '',
+      clientName: '',
+      clientEmail: '',
+      items: [
+        {
+          title: '',
+          description: '',
+          quantity: 1,
+          unit: '개',
+          unitPrice: 0,
+          subtotal: 0,
+        },
+      ],
+    },
   });
 
   /**
+   * 견적서 데이터 로드
+   * 컴포넌트 마운트 시 API에서 견적서 정보 조회
+   */
+  useEffect(() => {
+    const loadInvoice = async () => {
+      try {
+        setIsLoading(true);
+        const { getInvoiceApi } = await import('@/lib/api-invoice');
+        const invoice = await getInvoiceApi(id);
+
+        // 폼에 데이터 채우기
+        form.reset({
+          title: invoice.title,
+          description: invoice.description,
+          clientName: invoice.clientName,
+          clientEmail: invoice.clientEmail,
+          items: invoice.items,
+        });
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : '견적서를 불러올 수 없습니다';
+        toast.error(errorMessage);
+        router.back();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInvoice();
+  }, [id, form, router]);
+
+  /**
    * 견적서 업데이트 핸들러
-   * TODO: 백엔드 API 연동
-   * - PATCH /api/invoices/:id 호출
-   * - 성공 시: 성공 토스트 + 견적서 목록으로 이동
-   * - 실패 시: 에러 토스트 표시
+   * updateInvoiceApi를 호출하여 서버에 변경사항 저장
    */
   const onSubmit = async (data: InvoiceFormData) => {
     try {
-      // TODO: 백엔드 API 연동
-      // const response = await fetch(`/api/invoices/${id}`, {
-      //   method: 'PATCH',
-      //   body: JSON.stringify(data),
-      // });
-      // const result = await response.json();
+      setIsUpdating(true);
+      const { updateInvoiceApi } = await import('@/lib/api-invoice');
+      const { useInvoiceStore } = await import('@/store/useInvoiceStore');
 
-      // 업데이트 성공 토스트 (success 타입)
+      // API 호출로 견적서 업데이트
+      const updatedInvoice = await updateInvoiceApi(id, data);
+
+      // Zustand store에 업데이트된 견적서 저장
+      const store = useInvoiceStore();
+      store.updateInvoice(id, updatedInvoice);
+
+      // 업데이트 성공 토스트
       toast.success('견적서가 업데이트되었습니다');
       // 500ms 후 견적서 목록으로 이동
       setTimeout(() => router.push('/invoices'), 500);
     } catch (error) {
-      // 업데이트 실패 토스트 (error 타입)
-      toast.error('견적서 업데이트 중 오류가 발생했습니다');
+      const errorMessage = error instanceof Error ? error.message : '견적서 업데이트 중 오류가 발생했습니다';
+      toast.error(errorMessage);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -108,29 +131,29 @@ export function InvoiceEditContent({ id }: InvoiceEditContentProps) {
 
   /**
    * 삭제 확인 핸들러
-   * TODO: 백엔드 API 연동
-   * - DELETE /api/invoices/:id 호출
-   * - 성공 시: 성공 토스트 + 견적서 목록으로 이동
-   * - 실패 시: 에러 토스트 표시
+   * deleteInvoiceApi를 호출하여 견적서 삭제
    */
   const onDeleteConfirm = async () => {
     try {
       setIsDeleting(true);
+      const { deleteInvoiceApi } = await import('@/lib/api-invoice');
+      const { useInvoiceStore } = await import('@/store/useInvoiceStore');
 
-      // TODO: 백엔드 API 연동
-      // const response = await fetch(`/api/invoices/${id}`, {
-      //   method: 'DELETE',
-      // });
-      // const result = await response.json();
+      // API 호출로 견적서 삭제
+      await deleteInvoiceApi(id);
 
-      // 삭제 성공 토스트 (success 타입)
+      // Zustand store에서 견적서 제거
+      const store = useInvoiceStore();
+      store.deleteInvoice(id);
+
+      // 삭제 성공 토스트
       toast.success('견적서가 삭제되었습니다');
       setDeleteConfirmOpen(false);
       // 500ms 후 견적서 목록으로 이동
       setTimeout(() => router.push('/invoices'), 500);
     } catch (error) {
-      // 삭제 실패 토스트 (error 타입)
-      toast.error('견적서 삭제 중 오류가 발생했습니다');
+      const errorMessage = error instanceof Error ? error.message : '견적서 삭제 중 오류가 발생했습니다';
+      toast.error(errorMessage);
     } finally {
       setIsDeleting(false);
     }

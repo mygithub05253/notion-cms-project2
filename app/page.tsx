@@ -1,156 +1,148 @@
 'use client';
 
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Lock, Share2, ArrowRight } from 'lucide-react';
-import { Container } from '@/components/layout/container';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Lock } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 /**
- * 홈 페이지 (랜딩 페이지)
- * 클라이언트와 관리자를 위한 진입점
- * - 관리자: 로그인하여 견적서 관리
- * - 클라이언트: 공유 링크로 견적서 조회
+ * 로그인 페이지
+ * 관리자가 계정으로 로그인하여 견적서를 관리합니다
  */
-export default function Home() {
+
+// 로그인 폼 검증 스키마
+const loginSchema = z.object({
+  email: z.string().email('올바른 이메일 주소를 입력하세요'),
+  password: z.string().min(6, '비밀번호는 최소 6자 이상이어야 합니다'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
+export default function LoginPage() {
+  const router = useRouter();
+  const { isAuthenticated, login, isLoading } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 이미 로그인한 사용자는 대시보드로 리디렉션
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    setIsSubmitting(true);
+    try {
+      // useAuthStore의 login 액션 호출
+      await login(data.email, data.password);
+
+      // 성공 토스트
+      toast.success('로그인 성공했습니다!');
+
+      // 대시보드로 리디렉션
+      router.push('/dashboard');
+    } catch (error) {
+      // 에러 토스트
+      const errorMessage = error instanceof Error ? error.message : '로그인에 실패했습니다.';
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // 로딩 중이면 아무것도 표시하지 않음
+  if (isLoading) {
+    return null;
+  }
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
-      {/* 헤더 */}
-      <header className="border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm sticky top-0 z-50">
-        <Container className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-2 font-bold text-xl">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold">
-              I
-            </div>
-            <span>Invoice Web</span>
-          </div>
-        </Container>
-      </header>
-
-      {/* 메인 콘텐츠 */}
-      <Container className="flex items-center justify-center min-h-[calc(100vh-64px)] py-16">
-        <div className="w-full max-w-4xl">
-          {/* 타이틀 */}
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-slate-50 dark:via-slate-100 dark:to-slate-200 bg-clip-text text-transparent">
-              디지털 견적서 관리
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              관리자와 클라이언트 간의 견적서 관리를 간편하게 해보세요
-            </p>
-          </div>
-
-          {/* 카드 그리드 */}
-          <div className="grid md:grid-cols-2 gap-6 mb-12">
-            {/* 관리자 카드 */}
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-card via-card to-slate-50 dark:to-slate-900/50 group overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-transparent to-transparent group-hover:from-blue-500/10 transition-all duration-300" />
-              <CardHeader className="relative">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <Lock className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl">관리자</CardTitle>
-                <CardDescription className="text-base">
-                  견적서를 생성하고 관리합니다
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative space-y-4">
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 dark:text-blue-400 mt-1">✓</span>
-                    <span>새로운 견적서 작성</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 dark:text-blue-400 mt-1">✓</span>
-                    <span>견적서 수정 및 삭제</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 dark:text-blue-400 mt-1">✓</span>
-                    <span>공유 링크 생성</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 dark:text-blue-400 mt-1">✓</span>
-                    <span>PDF 다운로드</span>
-                  </li>
-                </ul>
-                <Link href="/auth/login" className="block">
-                  <Button className="w-full mt-6 gap-2 group/btn">
-                    로그인하기
-                    <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* 클라이언트 카드 */}
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-card via-card to-slate-50 dark:to-slate-900/50 group overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 via-transparent to-transparent group-hover:from-green-500/10 transition-all duration-300" />
-              <CardHeader className="relative">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                    <Share2 className="h-6 w-6 text-green-600 dark:text-green-400" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl">클라이언트</CardTitle>
-                <CardDescription className="text-base">
-                  공유된 견적서를 조회합니다
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative space-y-4">
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 dark:text-green-400 mt-1">✓</span>
-                    <span>공유 링크로 접근</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 dark:text-green-400 mt-1">✓</span>
-                    <span>견적서 내용 조회</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 dark:text-green-400 mt-1">✓</span>
-                    <span>PDF 다운로드</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 dark:text-green-400 mt-1">✓</span>
-                    <span>인증 불필요</span>
-                  </li>
-                </ul>
-                <Button
-                  variant="outline"
-                  className="w-full mt-6 gap-2 group/btn"
-                  disabled
-                >
-                  <FileText className="h-4 w-4" />
-                  공유 링크를 통해 접근
-                </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  관리자가 공유한 링크로 직접 접근하세요
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* 안내 텍스트 */}
-          <Card className="border-0 shadow-md bg-gradient-to-r from-blue-50 via-blue-50 to-purple-50 dark:from-blue-900/20 dark:via-blue-900/20 dark:to-purple-900/20">
-            <CardContent className="pt-6">
-              <div className="flex gap-4">
-                <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold mb-2">클라이언트는 어떻게 접근하나요?</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    관리자가 견적서를 작성한 후, &quot;공유 링크 생성&quot;을 통해 만든 고유 URL을 클라이언트에게 공유하면, 클라이언트는 로그인 없이 해당 링크로 견적서를 확인할 수 있습니다.
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    예: <code className="bg-black/10 dark:bg-white/10 px-2 py-1 rounded text-xs font-mono">https://example.com/share/abc123/invoices</code>
-                  </p>
-                </div>
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="space-y-2 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-lg">
+                I
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </Container>
+            </div>
+            <CardTitle className="text-2xl">Invoice Web</CardTitle>
+            <CardDescription>관리자 로그인</CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* 이메일 필드 */}
+              <div className="space-y-2">
+                <Label htmlFor="email">이메일</Label>
+                <Input
+                  id="email"
+                  placeholder="user@example.com"
+                  type="email"
+                  {...register('email')}
+                  aria-invalid={errors.email ? 'true' : 'false'}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  disabled={isSubmitting}
+                />
+                {errors.email && (
+                  <p id="email-error" className="text-sm text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              {/* 비밀번호 필드 */}
+              <div className="space-y-2">
+                <Label htmlFor="password">비밀번호</Label>
+                <Input
+                  id="password"
+                  placeholder="••••••••"
+                  type="password"
+                  {...register('password')}
+                  aria-invalid={errors.password ? 'true' : 'false'}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                  disabled={isSubmitting}
+                />
+                {errors.password && (
+                  <p id="password-error" className="text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              {/* 로그인 버튼 */}
+              <Button
+                type="submit"
+                className="w-full gap-2 mt-6"
+                disabled={isSubmitting}
+              >
+                <Lock className="h-4 w-4" />
+                {isSubmitting ? '로그인 중...' : '로그인'}
+              </Button>
+            </form>
+
+            {/* 안내 텍스트 */}
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              테스트 계정: admin@example.com / password123
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </main>
   );
 }

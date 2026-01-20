@@ -37,7 +37,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       // 동적 임포트로 순환 의존성 방지
-      const { getInvoicesApi } = await import('@/lib/api-invoices');
+      const { getInvoicesApi } = await import('@/lib/api-invoice');
 
       // 백엔드 API 호출
       const invoices = await getInvoicesApi();
@@ -57,7 +57,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       // 동적 임포트로 순환 의존성 방지
-      const { getInvoiceApi } = await import('@/lib/api-invoices');
+      const { getInvoiceApi } = await import('@/lib/api-invoice');
 
       // 백엔드 API 호출
       const invoice = await getInvoiceApi(id);
@@ -90,7 +90,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       // 동적 임포트로 순환 의존성 방지
-      const { updateInvoiceApi } = await import('@/lib/api-invoices');
+      const { updateInvoiceApi } = await import('@/lib/api-invoice');
 
       // 백엔드 API 호출
       const updatedInvoice = await updateInvoiceApi(id, updates as any);
@@ -119,7 +119,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       // 동적 임포트로 순환 의존성 방지
-      const { deleteInvoiceApi } = await import('@/lib/api-invoices');
+      const { deleteInvoiceApi } = await import('@/lib/api-invoice');
 
       // 백엔드 API 호출
       await deleteInvoiceApi(id);
