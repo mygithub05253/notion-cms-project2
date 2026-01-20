@@ -36,12 +36,12 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
   fetchInvoices: async () => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: 백엔드 API 호출
-      // const response = await fetch('/api/invoices');
-      // const data = await response.json();
-      // set({ invoices: data });
+      // 동적 임포트로 순환 의존성 방지
+      const { getInvoicesApi } = await import('@/lib/api-invoices');
 
-      set({ isLoading: false });
+      // 백엔드 API 호출
+      const invoices = await getInvoicesApi();
+      set({ invoices, isLoading: false });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '견적서 조회 실패';
       set({
@@ -56,12 +56,12 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
   fetchInvoiceById: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: 백엔드 API 호출
-      // const response = await fetch(`/api/invoices/${id}`);
-      // const data = await response.json();
-      // set({ selectedInvoice: data });
+      // 동적 임포트로 순환 의존성 방지
+      const { getInvoiceApi } = await import('@/lib/api-invoices');
 
-      set({ isLoading: false });
+      // 백엔드 API 호출
+      const invoice = await getInvoiceApi(id);
+      set({ selectedInvoice: invoice, isLoading: false });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : '견적서 조회 실패';
       set({
@@ -77,33 +77,68 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     set({ selectedInvoice: invoice });
   },
 
-  // 견적서 추가
+  // 견적서 추가 (로컬 상태만 업데이트, 실제 저장은 페이지에서 처리)
   addInvoice: (invoice: Invoice) => {
     set((state) => ({
       invoices: [...state.invoices, invoice],
+      selectedInvoice: invoice,
     }));
   },
 
   // 견적서 수정
-  updateInvoice: (id: string, updates: Partial<Invoice>) => {
-    set((state) => ({
-      invoices: state.invoices.map((invoice) =>
-        invoice.id === id ? { ...invoice, ...updates } : invoice
-      ),
-      selectedInvoice:
-        state.selectedInvoice?.id === id
-          ? { ...state.selectedInvoice, ...updates }
-          : state.selectedInvoice,
-    }));
+  updateInvoice: async (id: string, updates: Partial<Invoice>) => {
+    set({ isLoading: true, error: null });
+    try {
+      // 동적 임포트로 순환 의존성 방지
+      const { updateInvoiceApi } = await import('@/lib/api-invoices');
+
+      // 백엔드 API 호출
+      const updatedInvoice = await updateInvoiceApi(id, updates as any);
+
+      // 상태 업데이트
+      set((state) => ({
+        invoices: state.invoices.map((invoice) =>
+          invoice.id === id ? updatedInvoice : invoice
+        ),
+        selectedInvoice:
+          state.selectedInvoice?.id === id ? updatedInvoice : state.selectedInvoice,
+        isLoading: false,
+      }));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '견적서 수정 실패';
+      set({
+        error: errorMessage,
+        isLoading: false,
+      });
+      throw error;
+    }
   },
 
   // 견적서 삭제
-  deleteInvoice: (id: string) => {
-    set((state) => ({
-      invoices: state.invoices.filter((invoice) => invoice.id !== id),
-      selectedInvoice:
-        state.selectedInvoice?.id === id ? null : state.selectedInvoice,
-    }));
+  deleteInvoice: async (id: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      // 동적 임포트로 순환 의존성 방지
+      const { deleteInvoiceApi } = await import('@/lib/api-invoices');
+
+      // 백엔드 API 호출
+      await deleteInvoiceApi(id);
+
+      // 상태 업데이트
+      set((state) => ({
+        invoices: state.invoices.filter((invoice) => invoice.id !== id),
+        selectedInvoice:
+          state.selectedInvoice?.id === id ? null : state.selectedInvoice,
+        isLoading: false,
+      }));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '견적서 삭제 실패';
+      set({
+        error: errorMessage,
+        isLoading: false,
+      });
+      throw error;
+    }
   },
 
   // 에러 메시지 설정
