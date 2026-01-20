@@ -1,17 +1,19 @@
 'use client';
 
 import { create } from 'zustand';
-import type { Invoice } from '@/types';
+import type { Invoice, InvoiceShare } from '@/types';
 
 /**
  * 견적서 상태 관리 스토어 (Zustand)
- * 견적서 목록, 선택된 견적서, CRUD 기능을 관리합니다
+ * 견적서 목록, 선택된 견적서, CRUD 기능 및 공유 링크를 관리합니다
  */
 interface InvoiceStore {
   // 상태
   invoices: Invoice[];
   selectedInvoice: Invoice | null;
+  shareLinks: InvoiceShare[];
   isLoading: boolean;
+  isSharing: boolean;
   error: string | null;
 
   // 액션
@@ -21,6 +23,13 @@ interface InvoiceStore {
   addInvoice: (invoice: Invoice) => void;
   updateInvoice: (id: string, invoice: Partial<Invoice>) => void;
   deleteInvoice: (id: string) => void;
+
+  // 공유 링크 액션
+  createShareLink: (invoiceId: string, expiresAt?: Date) => Promise<void>;
+  deleteShareLink: (shareId: string) => Promise<void>;
+  getMyShareLinks: () => Promise<void>;
+
+  // 유틸리티
   setError: (error: string | null) => void;
   clearError: () => void;
 }
@@ -29,7 +38,9 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
   // 초기 상태
   invoices: [],
   selectedInvoice: null,
+  shareLinks: [],
   isLoading: false,
+  isSharing: false,
   error: null,
 
   // 견적서 목록 조회
@@ -136,6 +147,81 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
       set({
         error: errorMessage,
         isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  // 공유 링크 생성
+  createShareLink: async (invoiceId: string, expiresAt?: Date) => {
+    set({ isSharing: true, error: null });
+    try {
+      // 동적 임포트로 순환 의존성 방지
+      const { createShareLinkApi } = await import('@/lib/api-share');
+
+      // 백엔드 API 호출
+      const response = await createShareLinkApi(invoiceId, expiresAt);
+
+      // 상태 업데이트
+      set((state) => ({
+        shareLinks: [...state.shareLinks, response.shareLink],
+        isSharing: false,
+      }));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '공유 링크 생성 실패';
+      set({
+        error: errorMessage,
+        isSharing: false,
+      });
+      throw error;
+    }
+  },
+
+  // 공유 링크 삭제
+  deleteShareLink: async (shareId: string) => {
+    set({ isSharing: true, error: null });
+    try {
+      // 동적 임포트로 순환 의존성 방지
+      const { deleteShareLinkApi } = await import('@/lib/api-share');
+
+      // 백엔드 API 호출
+      await deleteShareLinkApi(shareId);
+
+      // 상태 업데이트
+      set((state) => ({
+        shareLinks: state.shareLinks.filter((link) => link.id !== shareId),
+        isSharing: false,
+      }));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '공유 링크 삭제 실패';
+      set({
+        error: errorMessage,
+        isSharing: false,
+      });
+      throw error;
+    }
+  },
+
+  // 내 공유 링크 목록 조회
+  getMyShareLinks: async () => {
+    set({ isSharing: true, error: null });
+    try {
+      // 동적 임포트로 순환 의존성 방지
+      const { getMyShareLinksApi } = await import('@/lib/api-share');
+
+      // 백엔드 API 호출
+      const shareLinks = await getMyShareLinksApi();
+
+      // 상태 업데이트
+      set({
+        shareLinks,
+        isSharing: false,
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '공유 링크 조회 실패';
+      set({
+        error: errorMessage,
+        isSharing: false,
       });
       throw error;
     }

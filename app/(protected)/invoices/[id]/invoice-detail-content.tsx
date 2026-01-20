@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { Copy, Share2, Pencil, Trash2, ArrowLeft } from 'lucide-react';
+import { Copy, Share2, Pencil, Trash2, ArrowLeft, Download } from 'lucide-react';
 
 import { useInvoiceStore } from '@/store/useInvoiceStore';
 import { mockUsers } from '@/lib/mock-data';
@@ -32,6 +32,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { ItemsTable } from '@/components/features/items-table';
 import { ConfirmDialog } from '@/components/features/confirm-dialog';
+import { generateInvoicePdf } from '@/lib/invoice-pdf';
 import { cn } from '@/lib/utils';
 
 // 상태 배지 색상 및 라벨 매핑
@@ -84,7 +85,7 @@ interface InvoiceDetailContentProps {
  */
 export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
   const router = useRouter();
-  const { selectedInvoice, isLoading, error, fetchInvoiceById, deleteInvoice } = useInvoiceStore();
+  const { selectedInvoice, isLoading, error, isSharing, fetchInvoiceById, deleteInvoice, createShareLink } = useInvoiceStore();
 
   // 삭제 확인 다이얼로그 상태
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -168,10 +169,32 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
     }
   };
 
-  // 공유 설정 완료
-  const handleShareComplete = () => {
-    toast.success('공유 설정이 완료되었습니다');
-    setShareModalOpen({ ...shareModalOpen, open: false });
+  // 공유 설정 완료 - 공유 링크 생성
+  const handleShareComplete = async () => {
+    if (!invoice) return;
+
+    try {
+      // 만료 기한 계산
+      let expiresAt: Date | undefined;
+      const today = new Date();
+
+      if (expirationDays === '7') {
+        expiresAt = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+      } else if (expirationDays === '14') {
+        expiresAt = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+      } else if (expirationDays === '30') {
+        expiresAt = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+      }
+      // expirationDays === 'never'이면 expiresAt은 undefined
+
+      // 공유 링크 생성 API 호출
+      await createShareLink(invoice.id, expiresAt);
+
+      toast.success('공유 링크가 생성되었습니다');
+      setShareModalOpen({ ...shareModalOpen, open: false });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : '공유 링크 생성 중 오류가 발생했습니다');
+    }
   };
 
   // 견적서 수정 페이지로 이동
@@ -191,6 +214,31 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
       toast.error('견적서 삭제 중 오류가 발생했습니다');
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  // PDF 다운로드
+  const handleDownloadPDF = async () => {
+    try {
+      const toastId = toast.loading('PDF 다운로드 준비 중...');
+
+      // 견적서 콘텐츠 요소가 존재하는지 확인
+      const element = document.getElementById('invoice-pdf-content');
+      if (!element) {
+        toast.dismiss(toastId);
+        toast.error('PDF로 변환할 콘텐츠를 찾을 수 없습니다');
+        return;
+      }
+
+      // PDF 생성 및 다운로드
+      await generateInvoicePdf('invoice-pdf-content', selectedInvoice);
+
+      toast.dismiss(toastId);
+      toast.success('PDF 다운로드가 시작되었습니다');
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'PDF 다운로드 중 오류가 발생했습니다'
+      );
     }
   };
 
@@ -216,8 +264,10 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
         </Button>
       </div>
 
-      {/* 상단 정보 섹션 */}
-      <Card>
+      {/* PDF 콘텐츠 영역 */}
+      <div id="invoice-pdf-content" className="space-y-6">
+        {/* 상단 정보 섹션 */}
+        <Card>
         <CardHeader className="pb-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             {/* 왼쪽: 제목 및 클라이언트 정보 */}
@@ -321,6 +371,7 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
           </CardContent>
         </Card>
       )}
+      </div>
 
       {/* 액션 버튼 섹션 */}
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
@@ -343,6 +394,15 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
           >
             <ArrowLeft className="h-4 w-4" />
             <span>뒤로가기</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={handleDownloadPDF}
+            className="flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            <span>PDF 다운로드</span>
           </Button>
 
           <Button
@@ -453,7 +513,9 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
             >
               닫기
             </Button>
-            <Button onClick={handleShareComplete}>공유 설정 완료</Button>
+            <Button onClick={handleShareComplete} disabled={isSharing}>
+            {isSharing ? '생성 중...' : '공유 설정 완료'}
+          </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

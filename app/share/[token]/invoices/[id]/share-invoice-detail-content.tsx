@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   CheckCircle,
   XCircle,
+  AlertCircle,
 } from 'lucide-react';
 
 import { Invoice, InvoiceStatus } from '@/types/index';
@@ -19,6 +20,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ItemsTable } from '@/components/features/items-table';
+import { EmptyState } from '@/components/features/empty-state';
+import { generateInvoicePdf } from '@/lib/invoice-pdf';
 import { cn } from '@/lib/utils';
 
 /**
@@ -28,10 +31,12 @@ import { cn } from '@/lib/utils';
  */
 
 interface ShareInvoiceDetailContentProps {
-  /** 견적서 데이터 */
-  invoice: Invoice;
+  /** 견적서 데이터 (초기값) */
+  invoice?: Invoice | null;
   /** 공유 토큰 */
   token: string;
+  /** 견적서 ID */
+  invoiceId: string;
 }
 
 // 상태 배지 색상 및 라벨 매핑
@@ -64,19 +69,99 @@ const statusConfig: Record<
  * F010 기능 구현
  */
 export function ShareInvoiceDetailContent({
-  invoice,
+  invoice: initialInvoice,
   token,
+  invoiceId,
 }: ShareInvoiceDetailContentProps) {
   const router = useRouter();
+  // 견적서 데이터
+  const [invoice, setInvoice] = useState<Invoice | null>(initialInvoice || null);
+  // 로딩 상태
+  const [isLoading, setIsLoading] = useState(!initialInvoice);
+  // 토큰 유효 여부
+  const [isValidToken, setIsValidToken] = useState(true);
+  // 에러 메시지
+  const [error, setError] = useState<string | null>(null);
   // 승인 버튼 로딩 상태
   const [isApproving, setIsApproving] = useState(false);
   // 거절 버튼 로딩 상태
   const [isRejecting, setIsRejecting] = useState(false);
 
-  /**
-   * Mock 데이터에서 발급자 정보 조회
-   * TODO: 백엔드 API 연동 - GET /api/users/:id
-   */
+  // 토큰 검증 및 견적서 조회
+  useEffect(() => {
+    const validateAndFetchInvoice = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // 토큰 검증
+        const { validateShareTokenApi } = await import('@/lib/api-share');
+        const isValid = await validateShareTokenApi(token);
+
+        if (!isValid) {
+          setIsValidToken(false);
+          setError('유효하지 않거나 만료된 공유 링크입니다.');
+          setIsLoading(false);
+          return;
+        }
+
+        // 견적서가 없으면 API에서 조회
+        if (!initialInvoice) {
+          const { getSharedInvoiceApi } = await import('@/lib/api-share');
+          const fetchedInvoice = await getSharedInvoiceApi(token, invoiceId);
+          setInvoice(fetchedInvoice);
+        }
+
+        setIsValidToken(true);
+        setIsLoading(false);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : '견적서 조회 실패';
+        setError(errorMessage);
+        setIsValidToken(false);
+        setIsLoading(false);
+      }
+    };
+
+    if (!initialInvoice) {
+      validateAndFetchInvoice();
+    } else {
+      setIsLoading(false);
+    }
+  }, [token, invoiceId, initialInvoice]);
+
+  // 토큰이 유효하지 않은 경우
+  if (!isValidToken || !invoice) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center min-h-screen py-12">
+        <EmptyState
+          icon={AlertCircle}
+          title="접근할 수 없습니다"
+          description={error || '유효하지 않거나 만료된 공유 링크입니다'}
+        />
+        <Button
+          onClick={() => router.push('/')}
+          variant="outline"
+          className="mt-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          홈으로 돌아가기
+        </Button>
+      </div>
+    );
+  }
+
+  // 로딩 상태 또는 견적서 없음
+  if (isLoading || !invoice) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center min-h-screen py-12">
+        <div className="text-center space-y-2">
+          <p className="text-muted-foreground">견적서를 불러오는 중입니다...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 발급자 정보 조회
   const admin = mockUsers.find((user) => user.id === invoice.createdBy);
 
   // 금액 포맷팅 (원화)
@@ -133,13 +218,28 @@ export function ShareInvoiceDetailContent({
   };
 
   // PDF 다운로드 핸들러
-  const handleDownloadPDF = () => {
-    // TODO: 백엔드 API 연동 - PDF 생성 및 다운로드
-    const toastId = toast.loading('PDF 다운로드 준비 중...');
-    setTimeout(() => {
+  const handleDownloadPDF = async () => {
+    try {
+      const toastId = toast.loading('PDF 다운로드 준비 중...');
+
+      // 견적서 콘텐츠 요소가 존재하는지 확인
+      const element = document.getElementById('invoice-pdf-content');
+      if (!element) {
+        toast.dismiss(toastId);
+        toast.error('PDF로 변환할 콘텐츠를 찾을 수 없습니다');
+        return;
+      }
+
+      // PDF 생성 및 다운로드
+      await generateInvoicePdf('invoice-pdf-content', invoice);
+
       toast.dismiss(toastId);
-      toast.success('다운로드가 시작되었습니다');
-    }, 1500);
+      toast.success('PDF 다운로드가 시작되었습니다');
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'PDF 다운로드 중 오류가 발생했습니다'
+      );
+    }
   };
 
   // 목록으로 돌아가기
@@ -150,7 +250,7 @@ export function ShareInvoiceDetailContent({
   const status = statusConfig[invoice.status];
 
   return (
-    <div className="space-y-6">
+    <div id="invoice-pdf-content" className="space-y-6">
       {/* 상단 정보 섹션 */}
       <Card>
         <CardHeader className="pb-4">

@@ -43,7 +43,11 @@ export default async function ShareInvoiceDetailPage({
 
       {/* 메인 콘텐츠 */}
       <main className="flex-1 container mx-auto max-w-4xl px-4 py-8 sm:py-10 lg:py-12">
-        <ShareInvoiceDetailContent invoice={invoice} token={token} />
+        <ShareInvoiceDetailContent
+          invoice={invoice}
+          token={token}
+          invoiceId={id}
+        />
       </main>
     </div>
   );
