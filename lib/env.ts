@@ -15,6 +15,22 @@ export interface NotionConfig {
   databaseId: string;
   /** Notion Items 데이터베이스 ID */
   itemsDatabaseId: string;
+  /** Notion Shares 데이터베이스 ID (선택) */
+  sharesDatabaseId?: string;
+  /** Notion Users 데이터베이스 ID (선택) */
+  usersDatabaseId?: string;
+}
+
+/**
+ * 애플리케이션 환경 변수 설정 타입
+ */
+export interface AppConfig {
+  /** 애플리케이션 URL */
+  appUrl: string;
+  /** API URL */
+  apiUrl: string;
+  /** JWT 비밀키 */
+  jwtSecret: string;
 }
 
 /**
@@ -33,6 +49,8 @@ export function getNotionConfig(): NotionConfig {
   const apiKey = process.env.NOTION_API_KEY;
   const databaseId = process.env.NOTION_DATABASE_ID;
   const itemsDatabaseId = process.env.NOTION_ITEMS_DATABASE_ID;
+  const sharesDatabaseId = process.env.NOTION_SHARES_DATABASE_ID;
+  const usersDatabaseId = process.env.NOTION_USERS_DATABASE_ID;
 
   // API 키 검증
   if (!apiKey) {
@@ -62,7 +80,40 @@ export function getNotionConfig(): NotionConfig {
     apiKey,
     databaseId,
     itemsDatabaseId,
+    sharesDatabaseId: sharesDatabaseId || undefined,
+    usersDatabaseId: usersDatabaseId || undefined,
   };
+}
+
+/**
+ * 애플리케이션 환경 변수 반환
+ *
+ * @returns {AppConfig} 애플리케이션 설정 객체
+ */
+export function getAppConfig(): AppConfig {
+  return {
+    appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
+    jwtSecret: process.env.JWT_SECRET || 'default-secret-change-in-production',
+  };
+}
+
+/**
+ * Shares 데이터베이스 ID 반환
+ *
+ * @returns {string | undefined} Shares 데이터베이스 ID
+ */
+export function getSharesDatabaseId(): string | undefined {
+  return process.env.NOTION_SHARES_DATABASE_ID || undefined;
+}
+
+/**
+ * Users 데이터베이스 ID 반환
+ *
+ * @returns {string | undefined} Users 데이터베이스 ID
+ */
+export function getUsersDatabaseId(): string | undefined {
+  return process.env.NOTION_USERS_DATABASE_ID || undefined;
 }
 
 /**
