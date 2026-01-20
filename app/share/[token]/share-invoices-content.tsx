@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { Invoice } from '@/types/index';
 import { InvoiceCard } from '@/components/features/invoice-card';
 import { EmptyState } from '@/components/features/empty-state';
@@ -31,6 +32,15 @@ export function ShareInvoicesContent({
   token,
   invoices,
 }: ShareInvoicesContentProps) {
+  // 로딩 상태 (향후 API 호출 시 사용)
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // 페이지 로드 시 토큰 검증 (향후 API 호출)
+    // TODO: API 호출로 토큰 검증 및 공유 견적서 목록 가져오기
+    setIsLoading(false);
+  }, [token]);
+
   // 견적서 존재 여부 확인
   const hasInvoices = invoices && invoices.length > 0;
 

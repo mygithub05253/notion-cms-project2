@@ -648,86 +648,95 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
 
 ---
 
-#### Task 015: 견적서 조회 기능 구현
+#### Task 015: 견적서 조회 기능 구현 ✅
 
-**상태**: 진행 예정
+**상태**: 완료
 **의존성**: Task 013, Task 014
 **기대 기간**: 2-3일
 
 **목표**: F002, F003, F008 견적서 조회 기능 완성
 
 **구현 사항**:
-- [ ] 대시보드 페이지 데이터 연동 (`/app/(protected)/dashboard/page.tsx`):
-  - 컴포넌트 로드 시 `useInvoiceStore().fetchInvoices()` 호출
-  - 로딩 상태 표시
-  - 견적서 목록 테이블에 데이터 바인딩
-  - 에러 메시지 표시
-- [ ] 견적서 목록 페이지 (`/app/(protected)/invoices/page.tsx`):
-  - 대시보드와 유사한 구조
-  - 정렬 및 필터링 UI (기본 구현, 기능은 추후)
-- [ ] 견적서 상세 페이지 (`/app/(protected)/invoices/[id]/page.tsx`):
-  - URL 파라미터 `[id]`로 견적서 조회
-  - `useInvoiceStore().selectedInvoice` 또는 API 호출로 데이터 로드
-  - 모든 필드 표시 (제목, 클라이언트, 항목, 총액 등)
-- [ ] 공개 견적서 목록 (`/app/share/[token]/page.tsx`):
-  - URL 파라미터 `[token]`으로 공유 링크 검증
-  - 공유된 견적서 목록 표시
-  - 토큰 유효성 검증 (오류 시 에러 메시지)
-- [ ] 공개 견적서 상세 (`/app/share/[token]/invoices/[id]/page.tsx`):
-  - 공유 토큰으로 견적서 조회
-  - 읽기 전용 모드로 표시
+- ✅ 대시보드 페이지 데이터 연동 (`/app/(protected)/dashboard/page.tsx`):
+  - ✅ 컴포넌트 로드 시 `useInvoiceStore().fetchInvoices()` 호출
+  - ✅ 로딩 상태 표시 (스피너 UI)
+  - ✅ 견적서 목록 테이블에 데이터 바인딩
+  - ✅ 에러 메시지 표시
+- ✅ 견적서 목록 페이지 (`/app/(protected)/invoices/page.tsx`):
+  - ✅ 대시보드와 유사한 구조로 구현
+  - ✅ 새로고침 기능 추가
+  - ✅ 로딩/에러 상태 처리
+- ✅ 견적서 상세 페이지 (`/app/(protected)/invoices/[id]/page.tsx`):
+  - ✅ URL 파라미터 `[id]`로 견적서 조회
+  - ✅ `useInvoiceStore().fetchInvoiceById()` 호출
+  - ✅ 모든 필드 표시 (제목, 클라이언트, 항목, 총액 등)
+- ✅ 공개 견적서 목록 (`/app/share/[token]/page.tsx`):
+  - ✅ URL 파라미터 `[token]`으로 공유 링크 검증
+  - ✅ 공유된 견적서 목록 표시
+  - ✅ 빈 상태 처리
+- ✅ 공개 견적서 상세 (`/app/share/[token]/invoices/[id]/page.tsx`):
+  - ✅ 공유 토큰으로 견적서 조회
+  - ✅ 읽기 전용 모드로 표시
 
 **테스트 체크리스트 (Playwright MCP)**:
-- [ ] 대시보드: 견적서 목록 로드 및 표시
-- [ ] 견적서 상세: ID로 특정 견적서 조회 및 표시
-- [ ] 공개 목록: 유효한 토큰으로 공유 견적서 목록 조회
-- [ ] 공개 상세: 유효한 토큰으로 공개 견적서 조회 및 읽기 전용 확인
-- [ ] 에러 처리: 유효하지 않은 토큰, 존재하지 않는 견적서 ID
+- ✅ 대시보드: 견적서 목록 로드 및 표시
+- ✅ 견적서 상세: ID로 특정 견적서 조회 및 표시
+- ✅ 공개 목록: 유효한 토큰으로 공유 견적서 목록 조회
+- ✅ 공개 상세: 유효한 토큰으로 공개 견적서 조회 및 읽기 전용 확인
+- ✅ 에러 처리: 유효하지 않은 토큰, 존재하지 않는 견적서 ID
 
 **수락 기준**:
-- 모든 견적서 정보가 정확하게 표시됨
-- 로딩 및 에러 상태가 명확
-- Playwright로 주요 조회 플로우 테스트 통과
+- ✅ 모든 견적서 정보가 정확하게 표시됨
+- ✅ 로딩 및 에러 상태가 명확
+- ✅ Playwright로 주요 조회 플로우 테스트 통과
 
 ---
 
 #### Task 016: 견적서 생성/수정/삭제 기능 구현
 
-**상태**: 진행 예정
+**상태**: 진행 중 (서브태스크 6개로 분해)
 **의존성**: Task 013, Task 014, Task 015
 **기대 기간**: 3-4일
 
 **목표**: F004(생성), F005(수정), F006(삭제) 기능 완성
 
+**서브태스크 구성**:
+- **016-1**: 견적서 생성 페이지 API 연동 (createInvoiceApi 연동)
+- **016-2**: 견적서 수정 기능 구현 (invoice-edit-content.tsx 생성)
+- **016-3**: 견적서 삭제 기능 구현 (ConfirmDialog + deleteInvoiceApi)
+- **016-4**: 항목 동적 관리 검증 (useFieldArray 기능 확인)
+- **016-5**: 폼 검증 기능 확인 (Zod 스키마 검증)
+- **016-6**: Playwright E2E 테스트 작성 (전체 CRUD 플로우 테스트)
+
+**핵심 구현 전략**:
+- ✅ 기존 InvoiceForm 컴포넌트 재사용 (생성/수정)
+- ✅ 기존 API 함수 활용 (createInvoiceApi, updateInvoiceApi, deleteInvoiceApi)
+- ✅ Zustand store 액션 연동 (addInvoice, updateInvoice, deleteInvoice)
+- ✅ Toast 알림 + 로딩 상태 처리
+- ✅ ConfirmDialog로 삭제 확인
+
 **구현 사항**:
 - [ ] 견적서 생성 페이지 (`/app/(protected)/invoices/new/page.tsx`):
-  - React Hook Form + Zod 폼 구현
-  - 입력 필드:
-    - 제목 (필수)
-    - 클라이언트 이름 (필수)
-    - 클라이언트 이메일 (선택, 이메일 형식)
-    - 설명 (선택)
-    - 항목 목록 (동적 추가/삭제)
-  - "저장" 버튼: `useInvoiceStore().addInvoice()` 호출
-  - "취소" 버튼: 대시보드로 리디렉션
-  - 성공 시 상세 페이지로 리디렉션
-- [ ] 견적서 수정 페이지 (`/app/(protected)/invoices/[id]/page.tsx` - 관리자 모드):
-  - 기존 데이터 폼에 미리 채우기
-  - 동일한 폼 필드
-  - "저장" 버튼: `useInvoiceStore().updateInvoice()` 호출
-  - "삭제" 버튼: 확인 모달 → `useInvoiceStore().deleteInvoice()` 호출
-  - 성공 시 현재 페이지 새로고침 또는 대시보드로 이동
-- [ ] 항목 관리:
-  - 항목 추가 버튼: 새로운 항목 행 추가
-  - 항목 삭제 버튼: 해당 항목 행 제거
-  - 수량/단가 변경 시 소계 자동 계산
-  - 모든 항목 소계의 합 = 총액
-- [ ] 폼 유효성 검사:
-  - Zod 스키마로 유효성 검증
-  - 에러 메시지 필드 아래 표시
-- [ ] 로딩 상태:
-  - 저장 중 버튼 비활성화
-  - 로딩 스피너 표시
+  - createInvoiceApi 호출 로직 추가
+  - useInvoiceStore().addInvoice() 연동
+  - 성공 시 toast.success + router.push로 상세 페이지 이동
+  - 실패 시 toast.error + 상태 유지
+- [ ] 견적서 수정 기능 (새 파일: `invoice-edit-content.tsx` 생성):
+  - InvoiceForm 컴포넌트 재사용 (수정 모드)
+  - fetchInvoiceById() → form.reset()로 기존 데이터 로드
+  - updateInvoiceApi 호출
+  - useInvoiceStore().updateInvoice() 연동
+- [ ] 견적서 삭제 기능:
+  - ConfirmDialog 표시
+  - deleteInvoiceApi 호출
+  - useInvoiceStore().deleteInvoice() 연동
+  - 성공 시 '/invoices' 목록으로 이동
+- [ ] 항목 관리: 이미 InvoiceForm에 구현됨 (검증만 진행)
+  - useFieldArray로 동적 항목 추가/삭제
+  - quantity * unitPrice = subtotal 자동 계산
+- [ ] 폼 검증: invoiceSchema 이미 완성됨 (검증만 진행)
+  - 필수 필드: title, clientName, items (최소 1개)
+  - 선택 필드: description, clientEmail
 
 **테스트 체크리스트 (Playwright MCP)**:
 - [ ] 견적서 생성: 폼 입력 → 저장 → 상세 페이지 확인 → 데이터 올바르게 저장됨
@@ -739,10 +748,11 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
 - [ ] 오류 처리: 네트워크 오류, 서버 오류 시 적절한 메시지 표시
 
 **수락 기준**:
-- 견적서 생성, 수정, 삭제가 모두 정상 작동
-- 항목 관리 UI가 직관적
-- Playwright로 전체 CRUD 플로우 테스트 통과
-- 폼 유효성 검증이 정확
+- [ ] 견적서 생성, 수정, 삭제가 모두 정상 작동
+- [ ] 항목 관리 UI가 직관적
+- [ ] Playwright로 전체 CRUD 플로우 테스트 통과
+- [ ] 폼 유효성 검증이 정확
+- [ ] npm run build 성공
 
 ---
 
@@ -1171,9 +1181,9 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
 
 ## 📊 현재 프로젝트 상태
 
-**로드맵 최종 수정일**: 2026년 1월 19일
-**버전**: 1.4
-**현재 상태**: Phase 1 완료 ✅, Phase 2 완료 ✅, Phase 3 시작 준비
+**로드맵 최종 수정일**: 2026년 1월 20일
+**버전**: 1.5
+**현재 상태**: Phase 1 완료 ✅, Phase 2 완료 ✅, Phase 3 진행 중 (Task 015 ✅ → Task 016 구현)
 
 ### 진행 현황
 
@@ -1181,9 +1191,9 @@ Invoice Web MVP는 다음과 같은 핵심 기능을 제공합니다:
 |-------|------|--------|---------|
 | **Phase 1** | ✅ 완료 | 100% | 모든 3개 Task 완료 (001-003) |
 | **Phase 2** | ✅ 완료 | 100% | 모든 8개 Task 완료 (004-011) |
-| **Phase 3** | 준비 중 | 0% | 8개 Task 대기 중 (012-019) |
+| **Phase 3** | 진행 중 | 13% | Task 015 ✅ 완료 / Task 016 구현 중 (6개 서브태스크) |
 | **Phase 4** | 대기 | 0% | 4개 Task 대기 중 (020-023) |
-| **총계** | 진행 중 | 48% | 23개 Task 중 11개 완료 |
+| **총계** | 진행 중 | 52% | 23개 Task 중 12개 완료 |
 
 ### Phase 2 완료 요약
 

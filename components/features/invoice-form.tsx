@@ -9,6 +9,8 @@ import { AlertCircle, Plus, Trash2 } from 'lucide-react';
 import { useForm, useFieldArray, Controller, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Container } from '@/components/layout/container';
+import { cn } from '@/lib/utils';
 
 /**
  * 견적서 폼 컴포넌트
@@ -124,21 +126,21 @@ export function InvoiceForm({
   }, 0);
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+    <Container className="flex flex-1 flex-col gap-8 py-8">
       {/* 페이지 헤더 */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-        <p className="text-sm text-muted-foreground">{subtitle}</p>
+      <div className="flex flex-col gap-2">
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">{title}</h1>
+        <p className="text-base text-muted-foreground">{subtitle}</p>
       </div>
 
       {/* 견적서 폼 */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         {/* 섹션 1: 기본 정보 */}
-        <Card>
+        <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-card via-card to-muted/20">
           <CardHeader>
-            <CardTitle className="text-lg">기본 정보</CardTitle>
+            <CardTitle className="text-lg font-semibold">기본 정보</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8">
             {/* 제목 필드 */}
             <div className="space-y-2">
               <Label htmlFor="title" className="font-medium">
@@ -232,9 +234,9 @@ export function InvoiceForm({
         </Card>
 
         {/* 섹션 2: 견적서 항목 */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-lg">견적서 항목</CardTitle>
+        <Card className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-card via-card to-muted/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-border/50">
+            <CardTitle className="text-lg font-semibold">견적서 항목</CardTitle>
             <Button
               type="button"
               onClick={() =>
@@ -254,7 +256,7 @@ export function InvoiceForm({
               항목 추가
             </Button>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6 pt-6">
             {fields.length === 0 && (
               <p className="text-center text-muted-foreground py-8">
                 항목을 추가해주세요
@@ -269,7 +271,7 @@ export function InvoiceForm({
               return (
                 <div
                   key={field.id}
-                  className="relative rounded-lg border border-border bg-card/50 p-4 sm:p-6 space-y-4"
+                  className="relative rounded-lg border border-border/60 bg-gradient-to-br from-muted/40 via-card to-muted/20 p-6 sm:p-8 space-y-6 hover:border-border/100 transition-colors duration-200"
                 >
                   {/* 항목 번호 및 삭제 버튼 */}
                   <div className="flex items-center justify-between">
@@ -291,7 +293,7 @@ export function InvoiceForm({
                   </div>
 
                   {/* 항목 필드들 - 반응형 그리드 */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
                     {/* 제목 */}
                     <div className="md:col-span-1 lg:col-span-2 space-y-2">
                       <Label
@@ -508,9 +510,9 @@ export function InvoiceForm({
         </Card>
 
         {/* 섹션 3: 총액 */}
-        <Card className="bg-muted">
-          <CardContent className="pt-6">
-            <div className="space-y-3">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-primary/5 via-card to-primary/10">
+          <CardContent className="pt-8">
+            <div className="space-y-5">
               {/* 소계 */}
               <div className="flex justify-end items-center gap-4">
                 <span className="text-sm font-medium text-muted-foreground">소계:</span>
@@ -575,6 +577,6 @@ export function InvoiceForm({
           </div>
         </div>
       </form>
-    </div>
+    </Container>
   );
 }

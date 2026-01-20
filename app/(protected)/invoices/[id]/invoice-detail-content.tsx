@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Copy, Share2, Pencil, Trash2, ArrowLeft } from 'lucide-react';
 
-import { mockInvoices, mockUsers } from '@/lib/mock-data';
+import { useInvoiceStore } from '@/store/useInvoiceStore';
+import { mockUsers } from '@/lib/mock-data';
 import { InvoiceStatus } from '@/types/index';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -83,6 +84,8 @@ interface InvoiceDetailContentProps {
  */
 export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
   const router = useRouter();
+  const { selectedInvoice, isLoading, error, fetchInvoiceById, deleteInvoice } = useInvoiceStore();
+
   // 삭제 확인 다이얼로그 상태
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   // 공유 설정 모달 상태 (열림/닫힘, 토큰, 만료 기한)
@@ -96,19 +99,39 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
   // 삭제 중 상태 (로딩 표시)
   const [isDeleting, setIsDeleting] = useState(false);
 
-  /**
-   * Mock 데이터에서 견적서와 발급자 조회
-   * TODO: 백엔드 API 연동 - GET /api/invoices/:id
-   */
-  const invoice = mockInvoices.find((inv) => inv.id === id);
+  // 페이지 로드 시 견적서 상세 조회
+  useEffect(() => {
+    fetchInvoiceById(id).catch(() => {
+      // 에러는 store의 error 상태에서 처리됨
+    });
+  }, [id, fetchInvoiceById]);
+
+  const invoice = selectedInvoice;
   const admin = mockUsers.find((user) => user.id === invoice?.createdBy);
 
-  if (!invoice) {
+  // 로딩 중일 때
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-4xl space-y-6 px-4 py-8">
+        <div className="flex items-center justify-center py-12">
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            <p className="text-muted-foreground">견적서를 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태 또는 데이터 없을 때
+  if (!invoice || error) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">견적서를 찾을 수 없습니다.</p>
+            <p className="text-center text-muted-foreground">
+              {error ? error : '견적서를 찾을 수 없습니다.'}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -160,12 +183,7 @@ export function InvoiceDetailContent({ id }: InvoiceDetailContentProps) {
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-
-      // TODO: 백엔드 API 연동
-      // const response = await fetch(`/api/invoices/${id}`, {
-      //   method: 'DELETE',
-      // });
-
+      await deleteInvoice(id);
       toast.success('견적서가 삭제되었습니다');
       setDeleteConfirmOpen(false);
       setTimeout(() => router.push('/invoices'), 500);

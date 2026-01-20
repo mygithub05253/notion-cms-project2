@@ -2,16 +2,13 @@
  * Notion Invoices API
  *
  * GET /api/notion/invoices - 모든 견적서 목록 조회
+ * POST /api/notion/invoices - 견적서 생성
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { getNotionClient, getInvoicesDatabaseId } from '@/lib/notion-client';
-import {
-  notionPageToInvoice,
-  handleNotionError,
-} from '@/lib/notion-helpers';
-import { GetInvoicesResponse } from '@/types/api';
+import { getInvoices, createInvoice } from '@/lib/services';
+import type { GetInvoicesResponse, CreateInvoiceResponse } from '@/types/api';
+import type { InvoiceStatus } from '@/types';
 
 /**
  * GET /api/notion/invoices
@@ -25,65 +22,36 @@ import { GetInvoicesResponse } from '@/types/api';
  * @example
  * // 요청
  * GET /api/notion/invoices
+ * GET /api/notion/invoices?status=draft
+ * GET /api/notion/invoices?clientName=홍길동
  *
  * // 성공 응답 (200)
  * {
  *   "success": true,
  *   "data": {
- *     "invoices": [
- *       {
- *         "id": "...",
- *         "title": "견적서 제목",
- *         "clientName": "클라이언트",
- *         "totalAmount": 1000000,
- *         "status": "draft",
- *         "items": [],
- *         "createdAt": "2026-01-19T...",
- *         "updatedAt": "2026-01-19T..."
- *       }
- *     ],
- *     "total": 1
+ *     "invoices": [...],
+ *     "total": 10
  *   }
- * }
- *
- * @example
- * // 실패 응답 (500)
- * {
- *   "success": false,
- *   "error": "Notion API 인증에 실패했습니다. API 키를 확인하세요."
  * }
  */
 export async function GET(
   request: NextRequest
 ): Promise<NextResponse<GetInvoicesResponse>> {
   try {
-    const notion = getNotionClient();
-    const databaseId = getInvoicesDatabaseId();
+    // URL에서 필터 파라미터 추출
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status') as InvoiceStatus | null;
+    const clientName = searchParams.get('clientName');
 
-    // Notion 데이터베이스 쿼리
-    // Created At 기준 최신순 정렬
-    const response = await (notion.databases as any).query({
-      database_id: databaseId,
-      sorts: [
-        {
-          property: 'Created At',
-          direction: 'descending',
-        },
-      ],
-    });
+    // 필터 옵션 구성
+    const filters: { status?: InvoiceStatus; clientName?: string } = {};
+    if (status) filters.status = status;
+    if (clientName) filters.clientName = clientName;
 
-    // 타입 가드: PageObjectResponse만 필터링 (partial page 제외)
-    const invoices = (response.results as any[])
-      .filter((page): page is PageObjectResponse => 'properties' in page)
-      .map((page) => {
-        try {
-          return notionPageToInvoice(page);
-        } catch (error) {
-          console.error('견적서 변환 실패:', error);
-          return null;
-        }
-      })
-      .filter((invoice) => invoice !== null) as ReturnType<typeof notionPageToInvoice>[];
+    // 서비스 레이어 호출
+    const invoices = await getInvoices(
+      Object.keys(filters).length > 0 ? filters : undefined
+    );
 
     return NextResponse.json({
       success: true,
@@ -98,7 +66,137 @@ export async function GET(
     return NextResponse.json(
       {
         success: false,
-        error: handleNotionError(error),
+        error: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST /api/notion/invoices
+ *
+ * 새 견적서를 생성합니다.
+ *
+ * @param request - NextRequest (CreateInvoiceRequest body)
+ * @returns CreateInvoiceResponse - 생성된 견적서
+ *
+ * @example
+ * // 요청
+ * POST /api/notion/invoices
+ * {
+ *   "title": "웹사이트 개발 견적서",
+ *   "description": "2026년 1분기 프로젝트",
+ *   "clientName": "ABC 회사",
+ *   "clientEmail": "contact@abc.com",
+ *   "items": [
+ *     {
+ *       "title": "디자인",
+ *       "description": "웹사이트 UI/UX 디자인",
+ *       "quantity": 1,
+ *       "unit": "식",
+ *       "unitPrice": 5000000,
+ *       "displayOrder": 1
+ *     }
+ *   ]
+ * }
+ *
+ * // 성공 응답 (201)
+ * {
+ *   "success": true,
+ *   "data": { "invoice": {...} }
+ * }
+ */
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<CreateInvoiceResponse>> {
+  try {
+    // 요청 본문 파싱
+    const body = await request.json();
+
+    // 필수 필드 검증
+    if (!body.title || typeof body.title !== 'string') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: '견적서 제목은 필수입니다.',
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!body.clientName || typeof body.clientName !== 'string') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: '클라이언트 이름은 필수입니다.',
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: '최소 1개 이상의 항목이 필요합니다.',
+        },
+        { status: 400 }
+      );
+    }
+
+    // 항목 필드 검증
+    for (let i = 0; i < body.items.length; i++) {
+      const item = body.items[i];
+      if (!item.title || !item.description) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `항목 ${i + 1}: 제목과 설명은 필수입니다.`,
+          },
+          { status: 400 }
+        );
+      }
+      if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `항목 ${i + 1}: 수량은 0보다 커야 합니다.`,
+          },
+          { status: 400 }
+        );
+      }
+      if (typeof item.unitPrice !== 'number' || item.unitPrice < 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `항목 ${i + 1}: 단가는 0 이상이어야 합니다.`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // TODO: 인증된 사용자 ID 가져오기 (현재는 임시 값)
+    const createdBy = 'admin';
+
+    // 서비스 레이어 호출
+    const invoice = await createInvoice(body, createdBy);
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: { invoice },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('견적서 생성 실패:', error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
       },
       { status: 500 }
     );

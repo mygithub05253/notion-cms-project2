@@ -1,11 +1,15 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Sidebar } from '@/components/layout/sidebar';
 import { MobileNav } from '@/components/features/mobile-nav';
 import { ThemeToggle } from '@/components/features/theme-toggle';
+import { UserNav } from '@/components/features/user-nav';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import { clearAuthData } from '@/hooks/useLocalStorage';
 
 interface AppLayoutProps {
   /** 페이지 콘텐츠 */
@@ -20,12 +24,33 @@ interface AppLayoutProps {
  * 반응형 지원 (Desktop/Tablet/Mobile)
  */
 export function AppLayout({ children, className }: AppLayoutProps) {
+  const router = useRouter();
+  const { currentUser, logout } = useAuth();
+
+  // 로그아웃 핸들러
+  const handleLogout = () => {
+    // 인증 데이터 제거
+    clearAuthData();
+    // 스토어에서 사용자 정보 제거
+    logout();
+    // 로그인 페이지로 리디렉션
+    router.push('/auth/login');
+  };
+
   return (
     <div className="flex h-screen flex-col">
       {/* 헤더 */}
       <Header
         rightSlot={
           <div className="flex items-center gap-2">
+            {currentUser && (
+              <UserNav
+                name={currentUser.name}
+                email={currentUser.email}
+                image={currentUser.image}
+                onLogout={handleLogout}
+              />
+            )}
             <ThemeToggle />
           </div>
         }

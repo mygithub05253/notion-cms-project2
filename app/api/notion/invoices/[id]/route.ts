@@ -1,18 +1,18 @@
 /**
- * Notion Invoice 상세 조회 API
+ * Notion Invoice 상세 API
  *
  * GET /api/notion/invoices/[id] - 특정 견적서 상세 조회 (항목 포함)
+ * PUT /api/notion/invoices/[id] - 견적서 수정
+ * DELETE /api/notion/invoices/[id] - 견적서 삭제
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { getNotionClient, getItemsDatabaseId } from '@/lib/notion-client';
-import {
-  notionPageToInvoice,
-  notionPageToInvoiceItem,
-  handleNotionError,
-} from '@/lib/notion-helpers';
-import { GetInvoiceResponse } from '@/types/api';
+import { getInvoiceById, updateInvoice, deleteInvoice } from '@/lib/services';
+import type {
+  GetInvoiceResponse,
+  UpdateInvoiceResponse,
+  DeleteInvoiceResponse,
+} from '@/types/api';
 
 /**
  * GET /api/notion/invoices/[id]
@@ -23,128 +23,18 @@ import { GetInvoiceResponse } from '@/types/api';
  * @param request - NextRequest
  * @param params - { id: string } - 견적서 페이지 ID
  * @returns GetInvoiceResponse - 견적서 상세 정보 (항목 포함)
- *
- * @example
- * // 요청
- * GET /api/notion/invoices/abc123def456...
- *
- * // 성공 응답 (200)
- * {
- *   "success": true,
- *   "data": {
- *     "invoice": {
- *       "id": "abc123def456...",
- *       "title": "견적서 제목",
- *       "clientName": "클라이언트",
- *       "totalAmount": 1000000,
- *       "status": "draft",
- *       "items": [
- *         {
- *           "id": "item-id",
- *           "invoiceId": "abc123def456...",
- *           "title": "웹사이트 디자인",
- *           "quantity": 2,
- *           "unitPrice": 500000,
- *           "subtotal": 1000000,
- *           "displayOrder": 1
- *         }
- *       ],
- *       "createdAt": "2026-01-19T...",
- *       "updatedAt": "2026-01-19T..."
- *     }
- *   }
- * }
- *
- * @example
- * // 견적서 없음 (404)
- * {
- *   "success": false,
- *   "error": "요청한 데이터를 찾을 수 없습니다."
- * }
- *
- * @example
- * // 인증 실패 (500)
- * {
- *   "success": false,
- *   "error": "Notion API 인증에 실패했습니다. API 키를 확인하세요."
- * }
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<GetInvoiceResponse>> {
   try {
-    const notion = getNotionClient();
     const { id } = await params;
 
-    // 1. 견적서 페이지 조회
-    const page = await notion.pages.retrieve({ page_id: id });
+    // 서비스 레이어 호출
+    const invoice = await getInvoiceById(id);
 
-    // Properties 필드가 없으면 유효하지 않은 페이지
-    if (!('properties' in page)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: '요청한 데이터를 찾을 수 없습니다.',
-        },
-        { status: 404 }
-      );
-    }
-
-    // 2. Notion Page를 Invoice로 변환
-    const invoice = notionPageToInvoice(page);
-
-    // 3. Items 데이터베이스에서 해당 견적서의 항목 조회
-    const itemsDatabaseId = getItemsDatabaseId();
-
-    try {
-      const itemsResponse = await (notion.databases as any).query({
-        database_id: itemsDatabaseId,
-        filter: {
-          property: 'Invoice',
-          relation: {
-            contains: id,
-          },
-        },
-        sorts: [
-          {
-            property: 'Display Order',
-            direction: 'ascending',
-          },
-        ],
-      });
-
-      // 타입 가드: PageObjectResponse만 필터링
-      const items = (itemsResponse.results as any[])
-        .filter((page): page is PageObjectResponse => 'properties' in page)
-        .map((page) => {
-          try {
-            return notionPageToInvoiceItem(page);
-          } catch (error) {
-            console.error('항목 변환 실패:', error);
-            return null;
-          }
-        })
-        .filter((item) => item !== null);
-
-      // 4. Invoice에 항목 배열 할당
-      invoice.items = items as any;
-    } catch (itemsError) {
-      // Items 데이터베이스 조회 실패 시 에러 로깅하지만 응답은 계속 진행
-      // (견적서는 반환하되 항목 없음)
-      console.warn('항목 조회 실패 (견적서는 반환됨):', itemsError);
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: { invoice },
-    });
-  } catch (error) {
-    console.error('견적서 상세 조회 실패:', error);
-
-    // 페이지를 찾을 수 없는 경우
-    const errorMessage = error instanceof Error ? error.message : '';
-    if (errorMessage.includes('object_not_found') || errorMessage.includes('not found')) {
+    if (!invoice) {
       return NextResponse.json(
         {
           success: false,
@@ -154,10 +44,193 @@ export async function GET(
       );
     }
 
+    return NextResponse.json({
+      success: true,
+      data: { invoice },
+    });
+  } catch (error) {
+    console.error('견적서 상세 조회 실패:', error);
+
     return NextResponse.json(
       {
         success: false,
-        error: handleNotionError(error),
+        error: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PUT /api/notion/invoices/[id]
+ *
+ * 견적서를 수정합니다.
+ *
+ * @param request - NextRequest (UpdateInvoiceRequest body)
+ * @param params - { id: string } - 견적서 페이지 ID
+ * @returns UpdateInvoiceResponse - 수정된 견적서
+ *
+ * @example
+ * // 요청
+ * PUT /api/notion/invoices/abc123
+ * {
+ *   "title": "수정된 제목",
+ *   "status": "sent",
+ *   "items": [...]
+ * }
+ *
+ * // 성공 응답 (200)
+ * {
+ *   "success": true,
+ *   "data": { "invoice": {...} }
+ * }
+ */
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse<UpdateInvoiceResponse>> {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+
+    // 견적서 존재 여부 확인
+    const existingInvoice = await getInvoiceById(id);
+    if (!existingInvoice) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: '수정할 견적서를 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
+    }
+
+    // 항목 데이터 검증 (있는 경우)
+    if (body.items && Array.isArray(body.items)) {
+      for (let i = 0; i < body.items.length; i++) {
+        const item = body.items[i];
+        if (!item.title || !item.description) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `항목 ${i + 1}: 제목과 설명은 필수입니다.`,
+            },
+            { status: 400 }
+          );
+        }
+        if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `항목 ${i + 1}: 수량은 0보다 커야 합니다.`,
+            },
+            { status: 400 }
+          );
+        }
+        if (typeof item.unitPrice !== 'number' || item.unitPrice < 0) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `항목 ${i + 1}: 단가는 0 이상이어야 합니다.`,
+            },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    // 상태 검증 (있는 경우)
+    if (body.status) {
+      const validStatuses = ['draft', 'sent', 'accepted', 'rejected'];
+      if (!validStatuses.includes(body.status)) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `잘못된 상태 값입니다. (draft, sent, accepted, rejected 중 선택)`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // 서비스 레이어 호출
+    const invoice = await updateInvoice(id, body);
+
+    return NextResponse.json({
+      success: true,
+      data: { invoice },
+    });
+  } catch (error) {
+    console.error('견적서 수정 실패:', error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/notion/invoices/[id]
+ *
+ * 견적서를 삭제(아카이브)합니다.
+ *
+ * @param request - NextRequest
+ * @param params - { id: string } - 견적서 페이지 ID
+ * @returns DeleteInvoiceResponse - 삭제 결과
+ *
+ * @example
+ * // 요청
+ * DELETE /api/notion/invoices/abc123
+ *
+ * // 성공 응답 (200)
+ * {
+ *   "success": true,
+ *   "data": {
+ *     "id": "abc123",
+ *     "message": "견적서가 삭제되었습니다."
+ *   }
+ * }
+ */
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse<DeleteInvoiceResponse>> {
+  try {
+    const { id } = await params;
+
+    // 견적서 존재 여부 확인
+    const existingInvoice = await getInvoiceById(id);
+    if (!existingInvoice) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: '삭제할 견적서를 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
+    }
+
+    // 서비스 레이어 호출
+    await deleteInvoice(id);
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        id,
+        message: '견적서가 삭제되었습니다.',
+      },
+    });
+  } catch (error) {
+    console.error('견적서 삭제 실패:', error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.',
       },
       { status: 500 }
     );

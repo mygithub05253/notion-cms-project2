@@ -1,260 +1,173 @@
 {
   "tasks": [
     {
-      "id": "f030d59f-91f6-4742-acb6-c157b165f03b",
-      "name": "Task 005: 로그인 페이지 UI 최종 검증",
-      "description": "기존 로그인 페이지(app/page.tsx)를 검증하고 필요시 개선합니다.\n\n검증 항목:\n1. 폼 구조: React Hook Form + Zod 패턴\n2. 에러 처리: 입력 에러 명확한 표시\n3. 로딩 상태: 제출 중 버튼 disabled\n4. 반응형: 모바일/태블릿/데스크톱\n5. 다크모드: 텍스트/배경/버튼 올바름\n6. Sonner 토스트: 성공/실패 시 표시\n\n필요시 개선 사항:\n- 라벨 추가 (접근성)\n- 비밀번호 표시/숨김 토글 추가\n- 비밀번호 찾기 링크\n- 회원가입 링크\n- 폼 초기화 동작 확인",
-      "notes": "이미 구현되어 있으므로 검증 중심. 필요시 미세한 UI 개선만 진행",
-      "status": "completed",
-      "dependencies": [],
-      "createdAt": "2026-01-19T09:03:58.100Z",
-      "updatedAt": "2026-01-19T09:05:22.338Z",
-      "relatedFiles": [
-        {
-          "path": "app/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "로그인 페이지 (검증 및 필요시 개선)",
-          "lineStart": 1,
-          "lineEnd": 112
-        },
-        {
-          "path": "lib/mock-data.ts",
-          "type": "REFERENCE",
-          "description": "Mock 데이터 (비참조, 폼이므로)"
-        }
-      ],
-      "implementationGuide": "1. app/page.tsx 파일 검토\n   - 기존 구현 확인: React Hook Form + Zod 적용됨\n   - 폼 필드 라벨 확인 (htmlFor 속성)\n   - 에러 메시지 표시 확인 (AlertCircle 아이콘)\n   - 로딩 상태 (isSubmitting 사용)\n\n2. 개선 항목 추가\n   - Label 컴포넌트 확인 (id와 htmlFor 일치)\n   - 비밀번호 필드 type='password' 확인\n   - 토스트 성공/실패 메시지 확인\n   - 에러 텍스트 색상 (text-red-500) 확인\n\n3. 반응형 및 접근성\n   - 모바일 (375px): 전체 너비, 패딩\n   - 데스크톱: max-w-md 정도 중앙 정렬\n   - 다크모드: 배경/텍스트 색상 확인 (dark: prefix)\n   - 아이콘 접근성: AlertCircle aria-label\n\n4. npm run build & npm run dev 검증",
-      "verificationCriteria": "- TypeScript 빌드 성공\n- 모든 필드에 라벨 있음 (htmlFor 속성)\n- 에러 메시지 명확하게 표시\n- 로딩 중 버튼 disabled\n- 모바일/태블릿/데스크톱에서 레이아웃 정상\n- 다크모드에서 색상 대비 충분\n- Sonner 토스트 정상 작동\n- WCAG AA 접근성 준수",
-      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴",
-      "summary": "Task 005 완료: 로그인 페이지 검증 및 개선\n\n개선사항:\n- 폼 초기화 (reset) 추가: 로그인 성공 후 폼 데이터 자동 초기화\n- 토스트 메시지 개선: '로그인 성공!' → '로그인 성공했습니다'\n- 접근성 강화: aria-invalid, aria-describedby, aria-hidden 속성 추가\n- 라벨 스타일: font-medium 추가로 시각적 강조\n- 에러 포커싱: focus:ring-red-500 추가\n- 주석 추가: 각 입력 필드에 한국어 주석\n- 버튼 접근성: aria-busy 속성 추가\n\n검증 결과:\n✅ TypeScript 빌드 성공 (에러 0개)\n✅ React Hook Form + Zod 패턴 완벽 구현\n✅ 에러 메시지 명확하게 표시 (AlertCircle + 텍스트)\n✅ 로딩 상태 정상 (isSubmitting)\n✅ 모든 필드에 라벨 있음 (htmlFor 속성)\n✅ 반응형 디자인 (모바일/태블릿/데스크톱)\n✅ 다크모드 지원 (dark: prefix)\n✅ Sonner 토스트 통합\n✅ WCAG AA 접근성 준수 (ARIA 속성)",
-      "completedAt": "2026-01-19T09:05:22.320Z"
-    },
-    {
-      "id": "31e44abd-cf91-4610-a0dc-6a18fc6f9991",
-      "name": "Task 006: 대시보드 페이지 UI 완성",
-      "description": "대시보드 페이지(app/(protected)/dashboard/page.tsx)를 완성합니다.\n\n구성 요소:\n1. 페이지 헤더: 제목 + 설명\n2. 통계 카드 섹션: 4개 통계 (총 수, 대기, 승인, 거절)\n3. 최근 견적서: InvoiceTable (상위 5개)\n4. Empty State: 데이터 없을 시 표시\n5. 액션 버튼: 새 견적서 생성",
-      "notes": "Mock 데이터로 자동 계산. 통계는 간단한 필터링 (map/filter 가능하지만 로직은 NO)",
+      "id": "1a20ec84-7cef-49c6-b949-49d577037b32",
+      "name": "Task 016-1: 견적서 생성 페이지 API 연동",
+      "description": "/invoices/new/page.tsx 페이지에 견적서 생성 API 연동을 완료합니다.\n\n현재 상태: InvoiceForm 컴포넌트가 완성되어 있고, onSubmit 핸들러에 TODO 주석이 있음\n\n구현 내용:\n1. useInvoiceStore에서 addInvoice 액션 import\n2. onSubmit 함수에 createInvoiceApi 호출 로직 추가\n3. API 호출 후 useInvoiceStore().addInvoice() 호출\n4. 성공 시: toast.success 표시 + 폼 초기화 + router.push로 상세 페이지 이동\n5. 실패 시: toast.error 표시 + 상태 유지\n6. 로딩 상태 처리 (form.formState.isSubmitting 활용)\n\n검증:\n- 폼 제출 시 API 호출 확인\n- 로딩 상태 표시 확인\n- 에러 시 토스트 메시지 확인",
+      "notes": "createInvoiceApi 함수는 이미 /lib/api-invoices.ts에 존재함. 폼 데이터 타입(InvoiceFormData)과 API 요청 타입(CreateInvoiceRequest) 호환성 확인 필요. displayOrder 필드 추가 가능.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-19T09:03:58.100Z",
-      "updatedAt": "2026-01-19T09:03:58.100Z",
-      "relatedFiles": [
-        {
-          "path": "app/(protected)/dashboard/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "대시보드 페이지 (UI 완성)",
-          "lineStart": 1,
-          "lineEnd": 50
-        },
-        {
-          "path": "lib/mock-data.ts",
-          "type": "REFERENCE",
-          "description": "Mock 데이터 (mockInvoices 사용)"
-        },
-        {
-          "path": "components/features/invoice-table.tsx",
-          "type": "DEPENDENCY",
-          "description": "최근 견적서 표시 (Task 004)"
-        },
-        {
-          "path": "components/features/empty-state.tsx",
-          "type": "DEPENDENCY",
-          "description": "데이터 없을 시 표시 (Task 004)"
-        }
-      ],
-      "implementationGuide": "1. 페이지 구조 설계\n   - Container 래퍼 (최대 너비 제한)\n   - 헤더 섹션 (제목 + 설명)\n   - 통계 카드 그리드 (2x2 md:, 4x1 lg:)\n   - 최근 견적서 섹션\n   - 우측 상단 액션 버튼\n\n2. 통계 카드 구현\n   - Card 컴포넌트 래퍼\n   - CardHeader: 제목 + 아이콘 (Lucide)\n   - CardContent: 숫자 + 추세 (optional)\n   - Mock 데이터에서 자동 계산\n   - 예: TrendingUp 아이콘 + 색상\n\n3. InvoiceTable 통합\n   - lib/mock-data.ts에서 mockInvoices.slice(0, 5)\n   - 테이블이 비면 EmptyState 표시\n   - \"새 견적서 생성\" 버튼 (링크로 /invoices/new)\n\n4. 반응형 레이아웃\n   - 모바일: 1열 카드, 전체 너비 테이블\n   - 태블릿: 2열 카드, 스크롤 테이블\n   - 데스크톱: 4열 카드, 정상 테이블\n\n5. npm run build & npm run dev 검증",
-      "verificationCriteria": "- 통계 카드 4개 표시\n- 반응형 레이아웃 정상\n- InvoiceTable 상위 5개 표시\n- 데이터 없을 시 EmptyState 표시\n- 새 견적서 버튼 작동\n- 다크모드 지원\n- TypeScript 빌드 성공",
-      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
-    },
-    {
-      "id": "342af9e2-155b-4b5d-86a1-d38309c90cfa",
-      "name": "Task 007: 견적서 생성/수정 페이지 UI 완성",
-      "description": "견적서 생성(new) 및 수정([id]) 페이지의 폼 UI를 완성합니다.\n\n구성:\n1. 기본 정보: 제목, 설명, 클라이언트명, 이메일\n2. 항목 섹션: 동적 항목 관리 (useFieldArray)\n3. 총액: 자동 계산 (watch 활용)\n4. 액션 버튼: 저장, 취소, 삭제(수정만)\n5. 에러 표시: 필드 하단 에러 메시지\n6. 로딩 상태: 제출 중 버튼 disabled",
-      "notes": "가장 복잡한 폼. useFieldArray + watch 활용. 금액 계산은 간단한 곱셈만 (로직 NO)",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-19T09:03:58.100Z",
-      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "createdAt": "2026-01-20T06:08:04.247Z",
+      "updatedAt": "2026-01-20T06:08:04.247Z",
       "relatedFiles": [
         {
           "path": "app/(protected)/invoices/new/page.tsx",
           "type": "TO_MODIFY",
-          "description": "견적서 생성 페이지 (폼 UI 완성)",
-          "lineStart": 1,
-          "lineEnd": 100
+          "description": "onSubmit 함수에 API 연동 로직 추가",
+          "lineStart": 52,
+          "lineEnd": 70
+        },
+        {
+          "path": "lib/api-invoices.ts",
+          "type": "REFERENCE",
+          "description": "createInvoiceApi 함수 참조"
+        },
+        {
+          "path": "store/useInvoiceStore.ts",
+          "type": "REFERENCE",
+          "description": "addInvoice 액션 참조"
+        }
+      ],
+      "implementationGuide": "1. /invoices/new/page.tsx 수정\n   - useInvoiceStore import 추가\n   - onSubmit 함수 구현:\n     try {\n       const response = await createInvoiceApi(data);\n       useInvoiceStore().addInvoice(response);\n       toast.success('견적서가 생성되었습니다');\n       form.reset();\n       router.push(`/invoices/${response.id}`);\n     } catch (error) {\n       toast.error('견적서 생성 실패');\n     }\n   - 로딩 상태 처리 (isSubmitting)",
+      "verificationCriteria": "1. npm run build 성공\n2. 새 견적서 생성 페이지에서 폼 작성 후 저장 시 API 호출 확인\n3. 성공 시 toast.success 메시지 표시\n4. 상세 페이지로 자동 이동\n5. 실패 시 적절한 에러 메시지 표시",
+      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
+    },
+    {
+      "id": "86fc7a7f-a085-4129-ad85-752f486835e5",
+      "name": "Task 016-2: 견적서 수정 기능 구현",
+      "description": "견적서 상세 페이지에서 수정 기능을 구현합니다.\n\n현재 상태: /invoices/[id]/invoice-detail-content.tsx는 조회 기능만 구현, 수정 폼이 없음\n\n구현 방식 선택:\n1. invoice-detail-content.tsx에 수정 모드 추가 (더 복잡하지만 페이지 흐름 유지)\n2. 새로운 invoice-edit-content.tsx 파일 생성 (관심사 분리, 유지보수 용이)\n\n권장: 방식 2 (새로운 파일) - /invoices/[id]/invocie-edit-content.tsx\n\n구현 내용:\n1. InvoiceForm 컴포넌트 재사용\n2. useEffect에서 fetchInvoiceById() 호출\n3. 데이터 로드 후 form.reset() 으로 폼에 미리 채우기\n4. onSubmit에서 updateInvoiceApi() 호출\n5. useInvoiceStore().updateInvoice() 호출\n6. 성공 시: toast.success + 페이지 새로고침 또는 목록으로 이동\n7. 실패 시: toast.error\n\n항목 관리:\n- items 배열 수정 가능\n- 기존 항목 수정/삭제\n- 새 항목 추가\n- 소계 자동 계산",
+      "notes": "InvoiceForm의 showDeleteButton prop은 false로 설정 (상세 페이지에서 삭제 담당). 기존 데이터와 새 데이터의 형식 호환성 확인 필요. updateInvoiceApi는 부분 업데이트 지원(?).",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-20T06:08:04.247Z",
+      "updatedAt": "2026-01-20T06:08:04.247Z",
+      "relatedFiles": [
+        {
+          "path": "app/(protected)/invoices/[id]/invoice-edit-content.tsx",
+          "type": "CREATE",
+          "description": "수정 폼 컴포넌트 생성"
         },
         {
           "path": "app/(protected)/invoices/[id]/page.tsx",
           "type": "TO_MODIFY",
-          "description": "견적서 수정 페이지 (폼 UI, 수정 모드)",
-          "lineStart": 1,
-          "lineEnd": 100
+          "description": "수정 모드 판단 로직 추가 (선택)"
         },
         {
-          "path": "types/index.ts",
+          "path": "components/features/invoice-form.tsx",
           "type": "REFERENCE",
-          "description": "InvoiceItem, Invoice 타입 참조"
+          "description": "InvoiceForm 컴포넌트 재사용"
+        },
+        {
+          "path": "store/useInvoiceStore.ts",
+          "type": "REFERENCE",
+          "description": "updateInvoice 액션 참조"
+        }
+      ],
+      "implementationGuide": "1. 새 파일 생성: app/(protected)/invoices/[id]/invoice-edit-content.tsx\n   - InvoiceForm 컴포넌트 import\n   - useForm, useInvoiceStore, useRouter import\n   - useEffect에서 fetchInvoiceById(id) 호출\n   - onSubmit에서 updateInvoiceApi(id, data) 호출\n   - form.reset(invoiceData) 로 기존 데이터 로드\n\n2. /invoices/[id]/page.tsx 수정 (선택)\n   - invoice-edit-content.tsx import 추가\n   - 수정 모드 여부 판단 (query parameter 또는 상태로)\n\n3. 수정 버튼 구현\n   - 상세 페이지에서 \"수정\" 버튼 클릭\n   - 수정 모드로 전환 (또는 edit 페이지로 이동)",
+      "verificationCriteria": "1. 상세 페이지 편집 버튼 클릭 시 수정 폼 표시\n2. 기존 데이터가 폼에 미리 로드됨\n3. 폼 수정 후 저장 시 API 호출 확인\n4. 성공 시 toast.success 메시지 + 페이지 업데이트\n5. 실패 시 에러 메시지 표시",
+      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
+    },
+    {
+      "id": "319352d7-5ba8-433e-90d4-df36634b08af",
+      "name": "Task 016-3: 견적서 삭제 기능 구현",
+      "description": "견적서 상세 페이지에서 삭제 기능을 구현합니다.\n\n현재 상태: invoice-detail-content.tsx에 \"삭제\" 버튼 UI는 있지만 기능 구현 없음\n\n구현 내용:\n1. \"삭제\" 버튼 클릭 시 ConfirmDialog 표시\n2. 확인 시: deleteInvoiceApi(id) 호출\n3. useInvoiceStore().deleteInvoice(id) 호출\n4. 성공 시: toast.success 표시 + 목록 페이지로 이동\n5. 실패 시: toast.error 표시 + 상태 유지\n6. 삭제 중 로딩 상태 표시 (isDeleting 플래그)\n\n삭제 확인 다이얼로그:\n- 제목: \"견적서 삭제\"\n- 메시지: \"이 견적서를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.\"\n- 확인/취소 버튼",
+      "notes": "ConfirmDialog 컴포넌트 존재 여부 확인 필요. 없으면 Dialog + Button으로 직접 구현. 삭제 후 목록 페이지로 이동할 때 500ms 지연으로 토스트가 보임을 보장.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-20T06:08:04.247Z",
+      "updatedAt": "2026-01-20T06:08:04.247Z",
+      "relatedFiles": [
+        {
+          "path": "app/(protected)/invoices/[id]/invoice-detail-content.tsx",
+          "type": "TO_MODIFY",
+          "description": "handleDelete 함수 구현, ConfirmDialog 렌더링"
+        },
+        {
+          "path": "lib/api-invoices.ts",
+          "type": "REFERENCE",
+          "description": "deleteInvoiceApi 함수 참조"
+        },
+        {
+          "path": "store/useInvoiceStore.ts",
+          "type": "REFERENCE",
+          "description": "deleteInvoice 액션 참조"
         },
         {
           "path": "components/features/confirm-dialog.tsx",
-          "type": "DEPENDENCY",
-          "description": "삭제 확인 다이얼로그"
+          "type": "REFERENCE",
+          "description": "ConfirmDialog 컴포넌트 참조 (있으면)"
         }
       ],
-      "implementationGuide": "1. 폼 구조 (React Hook Form + Zod)\n   - Zod 스키마 정의 (title, description, clientName, clientEmail, items[])\n   - useForm 초기화 (resolver: zodResolver)\n   - items는 useFieldArray로 동적 관리\n\n2. 기본 정보 섹션\n   - Card 래퍼\n   - CardHeader: \"기본 정보\"\n   - Input 필드: title (required), description (optional)\n   - Input 필드: clientName (required), clientEmail (optional)\n   - 각 필드 하단에 에러 메시지\n\n3. 항목 섹션 (useFieldArray)\n   - \"항목 추가\" 버튼\n   - fields.map() 반복\n   - 각 항목: title, description, quantity, unit, unitPrice\n   - 소계: quantity × unitPrice (자동 계산, watch)\n   - 삭제 버튼 (최소 1개 유지)\n\n4. 총액 섹션\n   - Card 래퍼\n   - \"총액\" 레이블\n   - 숫자 표시 (watch로 실시간 계산)\n   - 포맷: 원화 (₩ prefix)\n\n5. 액션 버튼\n   - 저장: Button type='submit' (파란색)\n   - 취소: Button as='a' href='/dashboard' (회색)\n   - 삭제: Button (빨간색, 수정 모드에서만)\n   - ConfirmDialog 사용 (삭제 시)\n\n6. 반응형 폼 레이아웃\n   - 모바일: 1열\n   - 데스크톱: 기본 정보 2열, 항목 1열\n\n7. npm run build & npm run dev 검증",
-      "verificationCriteria": "- 폼 필드 모두 표시\n- 동적 항목 추가/삭제 가능 (UI)\n- 금액 실시간 계산\n- 에러 메시지 명확\n- 로딩 중 버튼 disabled\n- 반응형 레이아웃 정상\n- 다크모드 지원\n- TypeScript 빌드 성공",
-      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+      "implementationGuide": "1. invoice-detail-content.tsx 수정\n   - useState로 isDeleting 상태 관리\n   - deleteInvoiceApi, useInvoiceStore import\n   - handleDelete 함수 구현:\n     const handleDelete = async () => {\n       setIsDeleting(true);\n       try {\n         await deleteInvoiceApi(id);\n         await useInvoiceStore().deleteInvoice(id);\n         toast.success('견적서가 삭제되었습니다');\n         setTimeout(() => router.push('/invoices'), 500);\n       } catch (error) {\n         toast.error('삭제 실패');\n         setIsDeleting(false);\n       }\n     }\n   - ConfirmDialog 렌더링 (삭제 버튼 클릭 시)\n   - 삭제 중 버튼 disabled 처리",
+      "verificationCriteria": "1. 상세 페이지 삭제 버튼 클릭 시 확인 다이얼로그 표시\n2. 확인 선택 시 deleteInvoiceApi 호출 확인\n3. 성공 시 toast.success 메시지 표시\n4. 목록 페이지로 자동 이동\n5. 실패 시 에러 메시지 표시, 페이지 유지",
+      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
     },
     {
-      "id": "7b4200da-add1-4de3-b120-beef1b2dce9e",
-      "name": "Task 008: 견적서 상세 페이지 UI (관리자 모드)",
-      "description": "관리자가 발급한 견적서 상세 정보를 조회하는 페이지 UI를 완성합니다.\n\n구성:\n1. 상단 정보: 제목, 상태 배지, 클라이언트정보, 날짜\n2. 항목 목록: ItemsTable 사용\n3. 총액 표시\n4. 액션 버튼: 수정, 공유, 삭제\n5. 공유 링크 모달: 토큰 복사 UI",
-      "notes": "상세 조회 페이지. 모달은 UI만 (기능은 Phase 3)",
+      "id": "5340e33e-5eb7-4c1f-bdec-2813d7c2cf35",
+      "name": "Task 016-4: 항목 동적 관리 검증",
+      "description": "InvoiceForm 컴포넌트의 항목 동적 관리 기능이 정상 작동하는지 검증합니다.\n\n현재 상태: InvoiceForm에 useFieldArray로 항목 관리가 구현되어 있음\n\n검증 내용:\n1. \"항목 추가\" 버튼 클릭 시 새 항목 행 추가\n2. 기존 항목 수정 가능 (title, description, quantity, unitPrice)\n3. 수량 또는 단가 변경 시 소계 자동 계산 (quantity * unitPrice)\n4. \"항목 삭제\" 버튼으로 행 제거 가능\n5. 모든 항목 소계의 합 = 총액 (하단에 표시)\n6. 최소 1개 항목 필수 (폼 제출 시 검증)\n\n테스트 시나리오:\n- 항목 5개 추가 후 일부 삭제\n- 수량/단가 변경 시 소계 계산 확인\n- 모든 항목 삭제 시도 (에러 표시)\n- 생성/수정 시 항목 데이터 정상 저장",
+      "notes": "이미 완성된 기능이므로 주로 검증 작업. InvoiceForm의 코드를 읽고 동작 확인만 하면 됨. 필요시 미세 조정.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-19T09:03:58.100Z",
-      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "createdAt": "2026-01-20T06:08:04.247Z",
+      "updatedAt": "2026-01-20T06:08:04.247Z",
       "relatedFiles": [
         {
-          "path": "app/(protected)/invoices/[id]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "견적서 상세 페이지 (상세 조회 모드)",
-          "lineStart": 50,
-          "lineEnd": 150
-        },
-        {
-          "path": "lib/mock-data.ts",
+          "path": "components/features/invoice-form.tsx",
           "type": "REFERENCE",
-          "description": "mockInvoices 데이터"
-        },
-        {
-          "path": "components/features/items-table.tsx",
-          "type": "DEPENDENCY",
-          "description": "항목 목록 표시"
-        },
-        {
-          "path": "components/features/confirm-dialog.tsx",
-          "type": "DEPENDENCY",
-          "description": "삭제 확인"
+          "description": "항목 관리 로직 확인"
         }
       ],
-      "implementationGuide": "1. 페이지 구조\n   - Container 래퍼\n   - 헤더 섹션 (제목, 상태)\n   - 정보 카드 (클라이언트, 날짜)\n   - ItemsTable (항목 목록)\n   - 총액 표시\n   - 액션 버튼 섹션\n\n2. 상단 정보 섹션\n   - Card 래퍼\n   - CardHeader: 제목 + 상태 배지\n     - draft: 회색, \"임시저장\"\n     - sent: 파란색, \"발송됨\"\n     - accepted: 녹색, \"승인\"\n     - rejected: 빨간색, \"거절\"\n   - CardContent: 클라이언트명, 이메일, 작성 날짜\n\n3. ItemsTable 통합\n   - lib/mock-data.ts에서 mockInvoices 중 해당 ID로 찾기\n   - items 배열 표시\n   - 테이블 하단에 총액 표시\n\n4. 액션 버튼\n   - \"수정\" 버튼: href={`/invoices/${id}/edit`} (파란색)\n   - \"공유 링크\" 버튼: Dialog 열기 (초록색)\n   - \"삭제\" 버튼: ConfirmDialog (빨간색)\n   - \"목록으로\" 버튼: href='/dashboard' (회색)\n\n5. 공유 링크 모달\n   - Dialog 래퍼\n   - DialogHeader: \"공유 링크\"\n   - DialogContent: 공유 토큰 입력 (읽기 전용)\n   - \"복사\" 버튼: navigator.clipboard.writeText()\n   - 복사 성공 시 toast.success() + \"복사됨!\" 표시\n   - DialogFooter: \"닫기\" 버튼\n\n6. npm run build & npm run dev 검증",
-      "verificationCriteria": "- 견적서 정보 명확하게 표시\n- 상태 배지 올바른 색상\n- ItemsTable 정상 표시\n- 총액 정확\n- 액션 버튼 배치 명확\n- 공유 모달 UI 정상\n- 반응형 레이아웃\n- 다크모드 지원\n- TypeScript 빌드 성공",
-      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+      "implementationGuide": "1. InvoiceForm 컴포넌트 검증 (수정 불필요, 이미 구현됨)\n   - useFieldArray의 fields, append, remove 함수 확인\n   - watch를 활용한 소계 계산 확인\n   - 총액 계산 로직 확인\n\n2. 테스트 시나리오 실행 (브라우저 또는 Playwright)\n   - 생성 페이지에서 항목 추가/삭제 확인\n   - 수정 페이지에서 기존 항목 수정 확인\n   - 폼 제출 시 항목 데이터 정상 전송 확인",
+      "verificationCriteria": "1. \"항목 추가\" 버튼으로 새 행 추가 가능\n2. 항목 수정 시 소계 자동 계산\n3. \"항목 삭제\" 버튼으로 행 제거 가능\n4. 최소 1개 항목 필수 (폼 제출 시 에러)\n5. 생성/수정 후 항목 데이터 정상 저장",
+      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
     },
     {
-      "id": "9e6b3b16-691d-4c16-b800-5b3e1021be55",
-      "name": "Task 009: 견적서 목록 페이지 UI (클라이언트 공개)",
-      "description": "클라이언트가 공유받은 견적서 목록을 조회하는 공개 페이지(app/(protected)/share/[token]/page.tsx)를 완성합니다.\n\n구성:\n1. 헤더: 페이지 제목\n2. 카드 그리드: InvoiceCard 사용 (반응형)\n3. 필터: 상태 필터 (선택)\n4. Empty State: 데이터 없을 시\n5. 푸터: 간단한 브랜드 텍스트",
-      "notes": "공개 페이지. 클라이언트용 읽기 전용. 간단한 카드 그리드 표시",
+      "id": "997147e6-affb-4b17-95ad-9cb3f36bb7d1",
+      "name": "Task 016-5: 폼 검증 기능 확인",
+      "description": "인보이스 폼의 Zod 기반 검증이 정상 작동하는지 확인합니다.\n\n검증 필드:\n1. title: 필수, 1-100글자\n2. clientName: 필수, 1-50글자\n3. clientEmail: 선택, 유효한 이메일 형식\n4. description: 선택, 0-500글자\n5. items: 최소 1개, 각 항목의 필드 검증\n   - title: 필수\n   - description: 필수\n   - quantity: 최소 1\n   - unitPrice: 최소 0\n   - unit: 필수\n\n테스트 시나리오:\n- 필수 필드 누락 시 에러 메시지 표시\n- 이메일 형식 검증\n- 글자 수 제한 검증\n- 항목 없이 제출 시도 (에러)\n- 모든 검증 통과 후 정상 제출",
+      "notes": "invoiceSchema는 이미 완성되어 있으므로 주로 검증 작업. 필요시 에러 메시지 개선.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-19T09:03:58.100Z",
-      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "createdAt": "2026-01-20T06:08:04.247Z",
+      "updatedAt": "2026-01-20T06:08:04.247Z",
       "relatedFiles": [
         {
-          "path": "app/(protected)/share/[token]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "공개 목록 페이지",
-          "lineStart": 1,
-          "lineEnd": 50
-        },
-        {
-          "path": "lib/mock-data.ts",
+          "path": "components/features/invoice-form.tsx",
           "type": "REFERENCE",
-          "description": "mockInvoices 데이터"
-        },
-        {
-          "path": "components/features/invoice-card.tsx",
-          "type": "DEPENDENCY",
-          "description": "카드 표시"
-        },
-        {
-          "path": "components/features/empty-state.tsx",
-          "type": "DEPENDENCY",
-          "description": "데이터 없을 시"
+          "description": "invoiceSchema 및 검증 로직 확인",
+          "lineStart": 20,
+          "lineEnd": 62
         }
       ],
-      "implementationGuide": "1. 페이지 구조\n   - 전체 최소 높이 (min-h-screen)\n   - 상단: 헤더 (제목, 설명)\n   - 중앙: 카드 그리드\n   - 하단: 푸터\n\n2. 헤더 섹션\n   - Container 래퍼\n   - h1: \"공유된 견적서\"\n   - p: 설명 텍스트\n\n3. 카드 그리드\n   - grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4\n   - InvoiceCard 컴포넌트 사용\n   - lib/mock-data.ts에서 mockInvoices 사용\n   - 각 카드는 클릭하면 상세 페이지로 이동\n\n4. Empty State\n   - 데이터 없으면 EmptyState 표시\n   - 메시지: \"공유된 견적서가 없습니다\"\n   - icon: FileText 또는 Inbox\n\n5. 필터 (선택)\n   - Tabs 또는 Select로 상태 필터\n   - all, draft, sent, accepted, rejected\n   - UI만 (기능은 Phase 3)\n\n6. 푸터\n   - 작은 텍스트: 중앙 정렬\n   - \"Invoice Web - 디지털 견적서 관리 플랫폼\"\n   - 테두리 상단\n\n7. npm run build & npm run dev 검증",
-      "verificationCriteria": "- 카드 그리드 반응형 (1-3열)\n- InvoiceCard 정상 표시\n- 상태 배지 올바름\n- Empty state 표시됨\n- 반응형 레이아웃\n- 다크모드 지원\n- 푸터 표시\n- TypeScript 빌드 성공",
-      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+      "implementationGuide": "1. invoiceSchema (invoice-form.tsx에서) 검증\n   - 각 필드의 검증 규칙 확인\n   - 에러 메시지 한국어 확인\n\n2. 테스트 시나리오 실행 (브라우저)\n   - 빈 폼 제출 → 필드 에러 표시 확인\n   - 이메일 형식 오류 입력 → 에러 표시\n   - 항목 없이 제출 → 에러 표시\n   - 유효한 데이터로 제출 → 성공",
+      "verificationCriteria": "1. 필수 필드 누락 시 에러 메시지 표시\n2. 이메일 형식 검증 작동\n3. 글자 수 제한 검증 작동\n4. 항목 최소 1개 필수 검증\n5. 모든 검증 통과 후 정상 제출",
+      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
     },
     {
-      "id": "09e45689-0016-4545-b106-ce495324d692",
-      "name": "Task 010: 견적서 상세 페이지 UI (클라이언트 공개)",
-      "description": "클라이언트가 공개 페이지에서 공유받은 견적서 상세 정보를 조회합니다. (읽기 전용)\n\n구성:\n1. 상단 정보: 제목, 상태, 발급자정보, 클라이언트명, 날짜\n2. 항목 목록: ItemsTable (읽기 전용)\n3. 총액 표시\n4. 액션 버튼: PDF 다운로드, 목록으로\n5. 응답 폼: 수락/거절 버튼 (UI)",
-      "notes": "읽기 전용 상세 페이지. 클라이언트용. 응답 폼은 UI만",
+      "id": "eaef21d5-e441-4713-be4d-ad40985f8ac8",
+      "name": "Task 016-6: Playwright E2E 테스트 작성 및 실행",
+      "description": "Task 016 CRUD 기능의 전체 E2E 테스트를 Playwright로 작성하고 실행합니다.\n\n테스트 시나리오:\n1. 생성 플로우: 폼 입력 → 저장 → 상세 페이지 확인\n2. 수정 플로우: 기존 데이터 로드 → 수정 → 저장 → 변경 확인\n3. 삭제 플로우: 삭제 버튼 → 확인 모달 → 삭제 → 목록 확인\n4. 항목 관리: 항목 추가/삭제/계산\n5. 폼 검증: 필수 필드, 이메일 형식, 항목 최소 1개\n6. 오류 처리: 네트워크 오류 시나리오 (선택)\n\n테스트 파일: tests/task-016-invoice-crud.spec.ts\n\n테스트 범위:\n- 모든 CRUD 작업 정상 작동\n- 에러 메시지 정확함\n- 토스트 알림 표시\n- UI 상태 변화 확인",
+      "notes": "Playwright 테스트는 UI 기반 테스트로, API 호출이 실제로 일어남. 백엔드 API가 정상 작동해야 테스트 성공. Mock API 사용 고려 (선택).",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-19T09:03:58.100Z",
-      "updatedAt": "2026-01-19T09:03:58.100Z",
+      "createdAt": "2026-01-20T06:08:04.247Z",
+      "updatedAt": "2026-01-20T06:08:04.247Z",
       "relatedFiles": [
         {
-          "path": "app/(protected)/share/[token]/invoices/[id]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "공개 상세 페이지",
-          "lineStart": 1,
-          "lineEnd": 100
+          "path": "tests/task-016-invoice-crud.spec.ts",
+          "type": "CREATE",
+          "description": "E2E 테스트 파일 생성"
         },
         {
-          "path": "lib/mock-data.ts",
+          "path": "tests/task-015-invoice-query.spec.ts",
           "type": "REFERENCE",
-          "description": "mockInvoices 데이터"
-        },
-        {
-          "path": "components/features/items-table.tsx",
-          "type": "DEPENDENCY",
-          "description": "항목 목록 (읽기 전용)"
+          "description": "기존 테스트 참고"
         }
       ],
-      "implementationGuide": "1. 페이지 구조\n   - Container 래퍼\n   - 상단 정보 카드\n   - ItemsTable\n   - 액션 섹션\n   - 응답 섹션 (선택)\n\n2. 상단 정보 섹션\n   - Card 래퍼\n   - CardHeader: 제목 + 상태 배지\n   - CardContent:\n     - 발급자명, 이메일\n     - 클라이언트명\n     - 작성 날짜\n   - 읽기 전용 필드 (input disabled 또는 텍스트)\n\n3. ItemsTable\n   - lib/mock-data.ts에서 해당 견적서의 items\n   - 읽기 전용 (수정 불가)\n   - 총액 표시\n\n4. 액션 버튼\n   - \"PDF 다운로드\": Button onClick={() => {}} (icon: Download)\n   - \"목록으로\": Button href='/share/[token]' (회색)\n\n5. 응답 폼 (선택, UI)\n   - Card 래퍼 (조건부: 상태가 sent일 때만)\n   - \"이 견적서를 수락합니다\" 버튼 (녹색)\n   - \"이 견적서를 거절합니다\" 버튼 (빨간색)\n   - onclick={() => {}} (기능은 Phase 3)\n\n6. npm run build & npm run dev 검증",
-      "verificationCriteria": "- 견적서 정보 명확하게 표시\n- ItemsTable 정상 표시\n- 총액 정확\n- 액션 버튼 배치 명확\n- 상태 배지 올바름\n- 반응형 레이아웃\n- 다크모드 지원\n- 응답 버튼 UI 정상\n- TypeScript 빌드 성공",
-      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
-    },
-    {
-      "id": "3ec21357-a5fc-468f-95c7-a4b5da391674",
-      "name": "Task 011: 에러 처리 및 알림 UI 통합",
-      "description": "모든 페이지에 일관된 에러 처리 및 알림 UI를 통합합니다.\n\n구성:\n1. Sonner 토스트: 성공/에러/정보/경고 메시지\n2. 폼 필드 에러: 필드 하단에 에러 메시지\n3. 로딩 상태: 버튼 disabled + 로딩 텍스트\n4. EmptyState: 목록이 비어있을 때\n5. ConfirmDialog: 삭제 시 확인",
-      "notes": "에러 처리 통합 작업. 이미 구현된 패턴 검증 및 모든 페이지에 적용",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-19T09:03:58.100Z",
-      "updatedAt": "2026-01-19T09:03:58.100Z",
-      "relatedFiles": [
-        {
-          "path": "app/page.tsx",
-          "type": "REFERENCE",
-          "description": "기존 에러 처리 패턴"
-        },
-        {
-          "path": "app/(protected)/dashboard/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "EmptyState 통합"
-        },
-        {
-          "path": "app/(protected)/invoices/new/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "폼 에러, 토스트 통합"
-        },
-        {
-          "path": "app/(protected)/invoices/[id]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "에러 처리 통합"
-        },
-        {
-          "path": "app/(protected)/share/[token]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "EmptyState 통합"
-        },
-        {
-          "path": "app/(protected)/share/[token]/invoices/[id]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "에러 처리 통합"
-        }
-      ],
-      "implementationGuide": "1. Sonner 토스트 통합\n   - 성공: toast.success('저장되었습니다') - 초록색\n   - 에러: toast.error('오류가 발생했습니다') - 빨간색\n   - 정보: toast.info('복사되었습니다') - 파란색\n   - 경고: toast.warning('정말 삭제하시겠습니까?') - 노란색\n   - 위치: Task 005-011의 모든 폼/액션 포함\n\n2. 폼 필드 에러 표시\n   - 모든 폼에서 필드 하단에 에러 메시지\n   - 구조: AlertCircle 아이콘 + 텍스트\n   - 색상: text-red-500\n   - 기존 구현 검증 (app/page.tsx 참고)\n   - Task 007 폼에서 모든 필드에 적용\n\n3. 로딩 상태\n   - 제출 중: 버튼 disabled + 로딩 텍스트\n   - 예: isSubmitting ? '로그인 중...' : '로그인하기'\n   - 모든 폼 제출 버튼에 적용\n\n4. EmptyState 사용\n   - 목록이 비어있을 때 표시\n   - 상황별 메시지:\n     - \"견적서가 없습니다\" (대시보드)\n     - \"항목이 없습니다\" (항목 테이블)\n     - \"공유된 견적서가 없습니다\" (공개 페이지)\n\n5. ConfirmDialog 사용\n   - 삭제 시: \"정말 삭제하시겠습니까?\" 확인\n   - 위험한 작업 시 빨간 버튼\n   - Task 007, 008에서 사용\n\n6. 페이지별 통합\n   - Task 005: 로그인 폼 (기존 검증)\n   - Task 006: 데이터 없을 시 EmptyState\n   - Task 007: 폼 필드 에러, 제출 토스트, 삭제 확인\n   - Task 008: 공유 토스트, 삭제 확인\n   - Task 009-010: Empty state (선택)\n\n7. npm run build 검증\n   - TypeScript 에러 0개\n   - 모든 페이지에서 일관된 에러 처리",
-      "verificationCriteria": "- 모든 페이지에서 일관된 에러 처리\n- 토스트 메시지 명확\n- 폼 필드 에러 시각적으로 강조\n- 로딩 중 버튼 disabled\n- 확인 다이얼로그 위험한 작업 시 표시\n- Empty state가 모든 목록 페이지에 있음\n- TypeScript 빌드 성공\n- npm run dev에서 시각적 일관성 검증",
-      "analysisResult": "Phase 2: UI/UX 마크업 완성 (7개 Task, Task 005-011)\n\n프로젝트 현황:\n- Task 001-003 완료: 라우팅, 타입정의, 레이아웃 골격\n- Task 004 완료: 5가지 핵심 UI 컴포넌트 (EmptyState, ItemsTable, InvoiceCard, InvoiceTable, ConfirmDialog)\n- 빌드 성공: npm run build ✓\n- Mock 데이터 준비됨: lib/mock-data.ts ✓\n\n목표:\n- 모든 주요 페이지의 정적 마크업 완성\n- 반응형 디자인 (Mobile First)\n- 다크모드 지원\n- 접근성 WCAG AA 준수\n- TypeScript 빌드 성공\n\n특징:\n- 기능 구현 제외 (UI/UX만)\n- Mock 데이터 사용\n- 플레이스홀더 이벤트 핸들러\n- Tailwind CSS + shadcn/ui + React Hook Form 패턴"
+      "implementationGuide": "1. 테스트 파일 생성: tests/task-016-invoice-crud.spec.ts\n\n2. 테스트 케이스 작성:\n   - test('생성 플로우: 폼 입력 → 저장 → 상세 페이지')\n   - test('수정 플로우: 기존 데이터 로드 → 수정 → 저장')\n   - test('삭제 플로우: 삭제 버튼 → 확인 → 완료')\n   - test('항목 관리: 추가/삭제/계산')\n   - test('폼 검증: 필수 필드 누락')\n   - test('폼 검증: 이메일 형식')\n   - test('폼 검증: 항목 최소 1개')\n\n3. 테스트 실행: npm run mcp:playwright 또는 npx playwright test\n\n4. 결과 확인:\n   - 모든 테스트 pass 여부\n   - 실패 시 원인 파악 및 수정",
+      "verificationCriteria": "1. Playwright 테스트 모두 pass\n2. 생성/수정/삭제 플로우 정상 작동\n3. 폼 검증 에러 메시지 표시\n4. 토스트 알림 표시\n5. UI 상태 변화 확인",
+      "analysisResult": "Task 016: 견적서 생성/수정/삭제 기능 구현 - 최종 설계\\n\\n핵심 원칙:\\n1. 기존 InvoiceForm, API 함수, Store 액션 재사용 → 새 파일 최소화\\n2. 각 페이지에서 API 연동 로직 추가 → 관심사 분리\\n3. Zustand store로 중앙 집중식 상태 관리\\n4. Toast + 로딩 상태로 UX 개선\\n5. ConfirmDialog로 위험 작업 보호\\n6. Playwright E2E 테스트로 검증\\n\\n구현 순서:\\n1. 생성 기능 (create) - 가장 간단\\n2. 수정 기능 (update) - 생성 완성 후\\n3. 삭제 기능 (delete) - 수정 완성 후\\n4. 항목 관리 + 검증 확인\\n5. E2E 테스트\\n\\n의존성 그래프:\\n016-1 → 016-2 → 016-3 → 016-6\\n         ↓         ↓\\n       016-4    016-5\\n       (독립)\\n\\n기대 기간: 3-4일 (Task 015 이후 진행 가능)\""
     }
   ]
 }
