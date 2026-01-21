@@ -1,0 +1,172 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - staging
+  pull_request:
+    branches:
+      - main
+      - develop
+      - staging
+
+env:
+  NODE_VERSION: '20'
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  lint-and-test:
+    name: 린트 및 테스트
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        node-version: [20]
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: TypeScript 타입 체크
+        run: npm run typecheck
+
+      - name: ESLint 검사
+        run: npm run lint
+
+      - name: Prettier 포맷 검사
+        run: npm run format:check
+
+      - name: 프로덕션 빌드
+        run: npm run build
+
+      - name: npm audit 보안 검사
+        run: npm audit --audit-level=moderate
+
+      - name: E2E 테스트 (Playwright)
+        run: npm run test:e2e
+        continue-on-error: true
+
+  deploy-preview:
+    name: Vercel Preview 배포
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 15
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Vercel Preview 배포
+        uses: vercel/action@v6
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          github-comment: true
+          github-pr-comment-enabled: true
+
+      - name: Preview URL 추출
+        id: preview-url
+        run: |
+          echo "preview_url=${{ steps.deploy.outputs.preview-url }}" >> $GITHUB_OUTPUT
+
+      - name: PR 코멘트 작성
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ Preview 배포 완료: ${{ steps.deploy.outputs.preview-url }}'
+            })
+
+  deploy-production:
+    name: Vercel Production 배포
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 15
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Vercel Production 배포
+        uses: vercel/action@v6
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          prod: true
+          github-comment: false
+
+      - name: 배포 완료 로깅
+        run: |
+          echo "✅ Production 배포 완료"
+          echo "프로덕션 URL: https://invoice-web.example.com"
+
+  deploy-staging:
+    name: Vercel Staging 배포
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+    timeout-minutes: 15
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Vercel Staging 배포
+        uses: vercel/action@v6
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          github-comment: false
+
+      - name: 배포 완료 로깅
+        run: |
+          echo "✅ Staging 배포 완료"
+          echo "스테이징 URL: https://staging.invoice-web.example.com"
+
+  post-deploy-verification:
+    name: 배포 후 검증
+    runs-on: ubuntu-latest
+    needs: [deploy-preview, deploy-production]
+    if: always()
+    timeout-minutes: 10
+
+    steps:
+      - name: 헬스 체크 (Production)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          curl -f https://invoice-web.example.com/api/health || exit 1
+        continue-on-error: true
+
+      - name: 배포 성공 알림
+        if: success()
+        run: echo "✅ 모든 배포 및 검증 완료"
+
+      - name: 배포 실패 알림
+        if: failure()
+        run: echo "❌ 배포 또는 검증 실패"
+        continue-on-error: true

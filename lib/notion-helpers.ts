@@ -259,3 +259,28 @@ export function handleNotionError(error: unknown): string {
   // 기본 메시지
   return 'Notion 서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
 }
+
+/**
+ * Notion Page를 Invoice 타입으로 변환 (별칭)
+ *
+ * @param page - Notion PageObjectResponse
+ * @returns 변환된 Invoice 객체
+ */
+export function parseNotionInvoice(page: PageObjectResponse): Invoice {
+  return notionPageToInvoice(page);
+}
+
+/**
+ * Notion Page를 InvoiceItem 타입으로 변환 (별칭)
+ *
+ * @param page - Notion PageObjectResponse
+ * @param invoiceId - Invoice ID (선택사항, 직접 설정 가능)
+ * @returns 변환된 InvoiceItem 객체
+ */
+export function parseNotionItem(page: PageObjectResponse, invoiceId?: string): InvoiceItem {
+  const item = notionPageToInvoiceItem(page);
+  if (invoiceId) {
+    item.invoiceId = invoiceId;
+  }
+  return item;
+}
