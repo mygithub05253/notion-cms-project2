@@ -4,6 +4,9 @@
   "description": "견적서 발급자와 수신자 간의 견적서 관리를 디지털화한 웹 플랫폼",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
