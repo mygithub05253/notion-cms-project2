@@ -18,7 +18,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "check-all": "npm run typecheck && npm run lint && npm run format",
-    "prepare": "husky",
+    "prepare": "husky install || true",
     "mcp:playwright": "playwright-mcp",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
