@@ -41,16 +41,16 @@ export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
       return;
     }
 
-    // 미인증 사용자 리디렉션
+    // 미인증 사용자는 로그인 분기 페이지로 리디렉션
     if (!isAuthenticated) {
-      router.push('/');
+      router.push('/login');
       return;
     }
 
     // 역할 기반 접근 제어 (requiredRole이 지정된 경우)
     if (requiredRole && currentUser?.role !== requiredRole) {
       // 접근 불가 페이지로 리디렉션 (또는 대시보드)
-      router.push('/');
+      router.push('/login');
       return;
     }
   }, [isAuthenticated, currentUser, requiredRole, isLoading, router]);
