@@ -8,54 +8,6 @@
       "main": true
     }
   },
-  "env": {
-    "NEXT_PUBLIC_APP_URL": {
-      "description": "애플리케이션의 공개 URL"
-    },
-    "NEXT_PUBLIC_API_URL": {
-      "description": "API 서버 URL"
-    },
-    "JWT_SECRET": {
-      "description": "JWT 토큰 시크릿 (최소 32자)",
-      "required": true
-    },
-    "CSRF_SECRET": {
-      "description": "CSRF 토큰 시크릿 (최소 32자)",
-      "required": true
-    },
-    "NOTION_API_KEY": {
-      "description": "Notion API 인증 토큰",
-      "required": true
-    },
-    "NOTION_DATABASE_ID": {
-      "description": "Notion 데이터베이스 ID",
-      "required": true
-    },
-    "NOTION_ITEMS_DATABASE_ID": {
-      "description": "Notion Items 데이터베이스 ID",
-      "required": true
-    },
-    "NOTION_SHARES_DATABASE_ID": {
-      "description": "Notion Shares 데이터베이스 ID",
-      "required": false
-    },
-    "NOTION_USERS_DATABASE_ID": {
-      "description": "Notion Users 데이터베이스 ID",
-      "required": false
-    },
-    "NODE_ENV": {
-      "description": "Node 환경 (development, staging, production)",
-      "value": "production"
-    },
-    "NEXT_PUBLIC_ENABLE_ANALYTICS": {
-      "description": "애널리틱스 활성화 여부",
-      "value": "true"
-    },
-    "SENTRY_DSN": {
-      "description": "Sentry 에러 추적 DSN (선택사항)",
-      "required": false
-    }
-  },
   "regions": ["icn1", "sfo1"],
   "functions": {
     "api/**/*.ts": {
