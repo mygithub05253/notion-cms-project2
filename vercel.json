@@ -8,7 +8,7 @@
       "main": true
     }
   },
-  "regions": ["icn1", "sfo1"],
+  "regions": ["icn1"],
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 30
