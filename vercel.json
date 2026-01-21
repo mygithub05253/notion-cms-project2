@@ -9,10 +9,5 @@
     }
   },
   "regions": ["icn1"],
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
   "crons": []
 }
