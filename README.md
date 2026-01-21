@@ -295,7 +295,10 @@ invoice-web/
 
 - [PRD (Product Requirements Document)](./docs/PRD.md) - 상세 요구사항
 - [ROADMAP](./docs/ROADMAP.md) - 개발 로드맵
-- [CLAUDE.md](./CLAUDE.md) - 개발 가이드
+- [개발자 가이드](./docs/DEVELOPER.md) - 새로운 개발자 온보딩 및 개발 환경 설정
+- [API 문서](./docs/API.md) - 모든 API 엔드포인트 및 사용 방법
+- [배포 가이드](./docs/DEPLOYMENT.md) - Vercel 배포 단계별 가이드
+- [개발 규칙](./CLAUDE.md) - 코딩 컨벤션 및 개발 표준
 
 ## 🙏 기여
 
@@ -303,9 +306,13 @@ invoice-web/
 
 ## 📄 라이선스
 
-[라이선스 정보]
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](./LICENSE) 파일을 참조하세요.
+
+## 💬 지원
+
+질문이나 문제가 있으시면 이슈를 등록해주세요. 최대한 빠르게 답변드리겠습니다.
 
 ---
 
-**마지막 업데이트**: 2026년 1월 16일
-**현재 버전**: 0.1.0 (MVP 준비 단계)
+**마지막 업데이트**: 2026년 1월 21일
+**현재 버전**: 0.2.0 (문서화 단계)
