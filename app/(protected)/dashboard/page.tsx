@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useInvoiceStore } from '@/store/useInvoiceStore';
+import { useFetchInvoices } from '@/hooks/useFetchInvoices';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/layout/container';
@@ -23,18 +24,22 @@ import { EmptyState } from '@/components/features/empty-state';
  * 대시보드 페이지 (관리자)
  * F002, F004, F006 기능 구현
  * 관리자가 모든 견적서를 확인하고 생성/삭제할 수 있는 페이지
+ * SWR을 사용한 API 캐싱 적용
  */
 
 export default function DashboardPage() {
-  // Zustand store에서 상태 및 액션 가져오기
-  const { invoices, isLoading, error, fetchInvoices, deleteInvoice } = useInvoiceStore();
+  // SWR을 사용한 API 캐싱
+  const { invoices, isLoading, isError, error, mutate } = useFetchInvoices();
 
-  // 페이지 로드 시 견적서 목록 조회
+  // Zustand store에서 deleteInvoice 액션만 가져오기
+  const { deleteInvoice } = useInvoiceStore();
+
+  // 데이터 에러 처리
   useEffect(() => {
-    fetchInvoices().catch(() => {
-      // 에러는 store의 error 상태에서 처리됨
-    });
-  }, [fetchInvoices]);
+    if (isError && error) {
+      toast.error('견적서 조회 실패: ' + (error instanceof Error ? error.message : '다시 시도해주세요'));
+    }
+  }, [isError, error]);
 
   // 통계 계산
   const totalInvoices = invoices.length;
@@ -49,11 +54,11 @@ export default function DashboardPage() {
 
   /**
    * 대시보드 새로고침 핸들러
-   * Zustand store에서 견적서 목록 다시 조회
+   * SWR의 mutate를 사용하여 데이터 재검증
    */
   const handleRefresh = async () => {
     try {
-      await fetchInvoices();
+      await mutate();
       toast.success('대시보드가 새로고쳐졌습니다');
     } catch {
       toast.error('새로고침 실패: 다시 시도해주세요');
@@ -70,11 +75,12 @@ export default function DashboardPage() {
 
   /**
    * 견적서 삭제 핸들러
-   * Zustand store의 deleteInvoice 액션 호출
+   * Zustand store의 deleteInvoice 액션 호출 후 SWR 데이터 재검증
    */
   const handleDelete = async (id: string) => {
     try {
       await deleteInvoice(id);
+      await mutate(); // SWR 캐시 업데이트
       toast.success('견적서가 삭제되었습니다');
     } catch {
       toast.error('삭제 실패: 다시 시도해주세요');

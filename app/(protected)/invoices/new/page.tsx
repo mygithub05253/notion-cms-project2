@@ -5,16 +5,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { InvoiceForm, invoiceSchema, type InvoiceFormData } from '@/components/features/invoice-form';
+import { useFetchInvoices } from '@/hooks/useFetchInvoices';
 
 /**
  * 견적서 생성 페이지
  * F004, F010 기능 구현
  * InvoiceForm 컴포넌트를 활용한 동적 항목 관리
  * 관리자가 새로운 견적서를 작성하고 저장할 수 있음
+ * SWR을 사용한 API 캐싱 적용
  */
 
 export default function NewInvoicePage() {
   const router = useRouter();
+  const { mutate } = useFetchInvoices(); // SWR 캐시 업데이트용
 
   /**
    * React Hook Form 초기화
@@ -60,6 +63,9 @@ export default function NewInvoicePage() {
 
       // Zustand store에 새 견적서 추가
       store.addInvoice(createdInvoice);
+
+      // SWR 캐시 업데이트
+      await mutate();
 
       // 저장 성공 토스트
       toast.success('견적서가 생성되었습니다');

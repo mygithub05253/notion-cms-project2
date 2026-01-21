@@ -1,287 +1,479 @@
 {
   "tasks": [
     {
-      "id": "e5d5a4a4-79ad-42f9-b0fd-46364f4a4eeb",
-      "name": "Task 017-1: useInvoiceStore에 공유 상태 및 액션 추가",
-      "description": "Zustand store에 공유 링크 생성, 검증, 조회 기능을 추가합니다. API 호출 로직을 store에 통합하고, 공유 상태(isSharing, sharedInvoices, shareLink)를 관리합니다.",
-      "notes": "동적 임포트로 순환 의존성 방지. 기존 updateInvoice 패턴 참고. useLocalStorage에서 토큰 관리 확인 필수.",
-      "status": "completed",
-      "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.656Z",
-      "updatedAt": "2026-01-20T09:39:35.808Z",
-      "relatedFiles": [
-        {
-          "path": "store/useInvoiceStore.ts",
-          "type": "TO_MODIFY",
-          "description": "공유 상태 및 액션 추가",
-          "lineStart": 1,
-          "lineEnd": 154
-        },
-        {
-          "path": "lib/api-share.ts",
-          "type": "REFERENCE",
-          "description": "공유 API 함수 참고"
-        }
-      ],
-      "implementationGuide": "1. store/useInvoiceStore.ts 수정: 공유 관련 상태 추가 (shareLinks: InvoiceShare[], isSharing: boolean)\\n2. 액션 추가: createShareLink(invoiceId), deleteShareLink(shareId), getMyShareLinks()\\n3. 각 액션은 lib/api-share.ts의 함수를 동적 임포트로 호출\\n4. 에러 처리 및 로딩 상태 관리 (기존 패턴 따르기)\\n5. 주석: JSDoc + 한국어 설명 추가",
-      "verificationCriteria": "1. useInvoiceStore에서 createShareLink, deleteShareLink, getMyShareLinks 액션 호출 가능\\n2. 공유 상태가 정확하게 업데이트됨 (isSharing, shareLinks)\\n3. npm run build 성공\\n4. 타입 안전성 보장 (any 사용 금지)",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다.",
-      "summary": "useInvoiceStore에 공유 링크 기능 완벽하게 구현. createShareLink, deleteShareLink, getMyShareLinks 액션 추가. 동적 임포트로 순환 의존성 방지, 에러 처리 완비, 타입 안전성 보장. npm run build 성공, TypeScript Strict Mode 준수.",
-      "completedAt": "2026-01-20T09:39:35.803Z"
-    },
-    {
-      "id": "2bac7a46-acdc-4f6e-8a61-18c491f9e673",
-      "name": "Task 017-2: 견적서 상세 페이지에 공유 링크 생성 버튼 추가",
-      "description": "관리자용 견적서 상세 페이지(/app/(protected)/invoices/[id]/page.tsx)에 '공유 링크 생성' 버튼을 추가하고, 공유 링크 생성 기능을 구현합니다.",
-      "notes": "공유 모달은 Task 017-3에서 구현. 토스트 알림은 sonner 라이브러리 사용 (이미 설치됨).",
-      "status": "completed",
-      "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.656Z",
-      "updatedAt": "2026-01-20T09:40:37.633Z",
-      "relatedFiles": [
-        {
-          "path": "app/(protected)/invoices/[id]/invoice-detail-content.tsx",
-          "type": "TO_MODIFY",
-          "description": "공유 버튼 추가 및 로직 구현"
-        },
-        {
-          "path": "components/features/share-modal.tsx",
-          "type": "DEPENDENCY",
-          "description": "공유 모달 컴포넌트 (Task 017-3에서 생성)"
-        }
-      ],
-      "implementationGuide": "1. invoice-detail-content.tsx에 '공유 링크 생성' 버튼 추가 (상단 우측)\\n2. 버튼 클릭 시 useInvoiceStore().createShareLink(invoiceId) 호출\\n3. 성공 시 toast.success('공유 링크가 생성되었습니다') + 공유 모달 표시\\n4. 실패 시 toast.error(에러 메시지) 표시\\n5. 로딩 상태 동안 버튼 disabled 처리\\n6. 기존 삭제 버튼 패턴 참고 (ConfirmDialog 사용)",
-      "verificationCriteria": "1. '공유 링크 생성' 버튼이 견적서 상세 페이지에 표시됨\\n2. 버튼 클릭 시 공유 링크 생성 API 호출됨\\n3. 성공/실패 토스트 알림이 표시됨\\n4. 로딩 중 버튼이 disabled 상태로 변함",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다.",
-      "summary": "invoice-detail-content.tsx에 공유 링크 생성 기능 구현 완료. useInvoiceStore의 createShareLink 액션 호출, 만료 기한 계산, 로딩 상태 표시. 성공/실패 토스트 알림 구현. npm run build 성공.",
-      "completedAt": "2026-01-20T09:40:37.626Z"
-    },
-    {
-      "id": "3b18e472-91eb-4771-bf89-bb6cd2fc5ff3",
-      "name": "Task 017-3: 공유 URL 모달 컴포넌트 생성 및 URL 복사 기능",
-      "description": "공유 링크 생성 후 공유 URL을 표시하고 클립보드에 복사할 수 있는 모달 컴포넌트를 만듭니다.",
-      "notes": "Dialog는 shadcn/ui에서 이미 설치됨. Clipboard API는 최신 브라우저에서 지원.",
-      "status": "completed",
-      "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.656Z",
-      "updatedAt": "2026-01-20T09:41:30.639Z",
-      "relatedFiles": [
-        {
-          "path": "components/features/share-modal.tsx",
-          "type": "CREATE",
-          "description": "공유 URL 모달 컴포넌트"
-        },
-        {
-          "path": "components/ui/dialog.tsx",
-          "type": "REFERENCE",
-          "description": "shadcn/ui Dialog 컴포넌트"
-        }
-      ],
-      "implementationGuide": "1. components/features/share-modal.tsx 신규 생성 (use client)\\n2. Dialog 컴포넌트로 모달 구성\\n3. 공유 URL 표시 (복사 가능한 텍스트 input)\\n4. '복사' 버튼 구현 (Clipboard API 또는 react-copy-to-clipboard)\\n5. 복사 성공 시 toast.success('URL이 복사되었습니다')\\n6. '닫기' 버튼\\n7. 토큰 만료 표시 (있으면)\\n8. 접근성: aria-label, aria-describedby 추가",
-      "verificationCriteria": "1. 모달에 공유 URL이 표시됨\\n2. '복사' 버튼 클릭 시 클립보드에 URL 저장됨\\n3. 복사 완료 토스트 알림 표시\\n4. 다크모드에서도 가독성 우수\\n5. 모바일 화면에서도 모달이 정상 표시됨",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다.",
-      "summary": "components/features/share-modal.tsx 생성 완료. 공유 URL 표시, 클립보드 복사 기능, 만료 기한 설정, 접근성 완비 (aria-label, aria-describedby). TypeScript Strict Mode 준수, 한국어 주석 추가. npm run build 성공.",
-      "completedAt": "2026-01-20T09:41:30.627Z"
-    },
-    {
-      "id": "121996af-2163-4128-9a45-a0da5362d0e7",
-      "name": "Task 017-4: 공개 페이지 토큰 검증 및 공유 링크 조회 로직 추가",
-      "description": "공개 견적서 목록(/app/share/[token]/page.tsx)과 상세 페이지에서 토큰을 검증하고 공유된 견적서를 조회하는 로직을 추가합니다.",
-      "notes": "공개 페이지는 인증 불필요. API는 lib/api-share.ts에서 getSharedInvoicesApi, getSharedInvoiceApi 사용. 토큰 검증은 매번 수행 (만료 가능).",
-      "status": "in_progress",
-      "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:41:36.049Z",
-      "relatedFiles": [
-        {
-          "path": "app/share/[token]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "토큰 검증 및 공유 목록 조회 로직"
-        },
-        {
-          "path": "app/share/[token]/invoices/[id]/page.tsx",
-          "type": "TO_MODIFY",
-          "description": "토큰 검증 및 공유 상세 조회 로직"
-        },
-        {
-          "path": "lib/api-share.ts",
-          "type": "REFERENCE",
-          "description": "공유 API 함수"
-        }
-      ],
-      "implementationGuide": "1. app/share/[token]/page.tsx: useEffect에서 validateShareTokenApi(token) 호출\\n2. 유효한 토큰: getSharedInvoicesApi(token) 호출 -> 견적서 목록 표시\\n3. 유효하지 않은 토큰: EmptyState 컴포넌트로 '링크가 존재하지 않거나 만료됨' 메시지\\n4. app/share/[token]/invoices/[id]/page.tsx: 동일한 검증 로직 + 특정 견적서 조회\\n5. 로딩 중: Spinner 표시\\n6. 에러 처리: toast.error(에러 메시지)\\n7. 각 페이지에서 share-invoices-content.tsx, share-invoice-detail-content.tsx 활용",
-      "verificationCriteria": "1. 유효한 토큰으로 접근 시 공유 견적서 목록 조회됨\\n2. 유효하지 않은 토큰 시 에러 메시지 표시\\n3. 만료된 토큰 시 적절한 에러 메시지\\n4. 공개 페이지에서 로그인 페이지로 리디렉션되지 않음\\n5. 공개 목록과 상세 페이지 모두 정상 작동",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
-    },
-    {
-      "id": "95ed7477-c1d8-464c-9a16-a7e0b5c3f948",
-      "name": "Task 018-1: PDF 라이브러리 설치 및 설정",
-      "description": "프로젝트에 PDF 생성 라이브러리를 설치하고 기본 설정을 완료합니다.",
-      "notes": "jsPDF + html2canvas 조합이 더 유연. html2pdf는 단순한 경우에 좋음. 프로젝트에서는 복잡한 스타일링이 필요하므로 jsPDF + html2canvas 권장.",
+      "id": "fd4fa514-4f63-489e-a2c5-7cfba7bdc264",
+      "name": "Task 020-1: next.config.ts 성능 최적화 설정",
+      "description": "Next.js 빌드 및 렌더링 성능 최적화를 위한 next.config.ts 설정. Image 최적화, 압축 활성화, 보안 헤더 설정, 정적 최적화를 포함합니다.",
+      "notes": "보안 헤더는 middleware.ts와 중복될 수 있으므로 둘 중 하나 선택 (middleware 권장). 이 단계에서는 next.config.ts에만 설정하고 Task 021-1에서 middleware.ts로 이동.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
+      "createdAt": "2026-01-21T02:44:38.743Z",
+      "updatedAt": "2026-01-21T02:44:38.743Z",
       "relatedFiles": [
+        {
+          "path": "next.config.ts",
+          "type": "TO_MODIFY",
+          "description": "성능 및 보안 설정 추가",
+          "lineStart": 1,
+          "lineEnd": 10
+        }
+      ],
+      "implementationGuide": "1. next.config.ts에 이미지 최적화 설정 추가:\\n   - image: { formats: ['image/avif', 'image/webp'] } 추가\\n   - deviceSizes, imageSizes 최적화\\n2. SWC 기반 압축 활성화:\\n   - compress: true (기본값 유지)\\n3. 보안 헤더 설정 (next.config.ts의 headers 함수):\\n   - X-Content-Type-Options: nosniff\\n   - X-Frame-Options: DENY\\n   - X-XSS-Protection: 1; mode=block\\n4. 정적 최적화:\\n   - swcMinify: true\\n   - productionBrowserSourceMaps: false\\n5. npm run build 실행하여 성공 확인",
+      "verificationCriteria": "npm run build 성공, next.config.ts 설정 확인, 보안 헤더 설정 확인, 타입 에러 없음",
+      "analysisResult": "Phase 4: 고급 기능 및 최적화\\n\\n목표: Lighthouse 80점 이상, 페이지 로드 시간 < 2초, OWASP Top 10 준수, Vercel 자동 배포, 완전한 문서화\\n\\n기존 상태: Next.js 16.1.1, TypeScript strict mode, 모든 핵심 기능 구현, API 클라이언트 (lib/api-config.ts), 인증 시스템 (lib/api-auth.ts), E2E 테스트 (Playwright)\\n\\n재사용 가능한 코드: lib/api-config.ts (Bearer 토큰 인증), lib/env.ts (환경 변수 검증 패턴), 모든 UI 컴포넌트\\n\\n신규 생성 필요: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .github/workflows/deploy.yml (CI/CD), 문서화 파일들 (docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md)"
+    },
+    {
+      "id": "e1e4cfc6-2af9-412b-b2f7-1de4445b967f",
+      "name": "Task 020-2: @next/bundle-analyzer 설치 및 번들 분석",
+      "description": "번들 크기 파악 및 최적화 대상 찾기 위해 @next/bundle-analyzer 설치 및 분석 수행.",
+      "notes": "분석 리포트를 docs/BUNDLE_ANALYSIS.md에 정리. Dynamic import 가능성 검토 (jsPDF 사용 시에만 로드).",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:44:38.743Z",
+      "updatedAt": "2026-01-21T02:44:38.743Z",
+      "relatedFiles": [
+        {
+          "path": "next.config.ts",
+          "type": "TO_MODIFY",
+          "description": "번들 분석 플러그인 통합",
+          "lineStart": 1,
+          "lineEnd": 10
+        },
         {
           "path": "package.json",
           "type": "TO_MODIFY",
-          "description": "PDF 라이브러리 의존성 추가"
+          "description": "분석 스크립트 추가",
+          "lineStart": 5,
+          "lineEnd": 21
         }
       ],
-      "implementationGuide": "1. npm install jspdf html2canvas 실행\\n2. 또는 npm install html2pdf.js (대안)\\n3. package.json 확인 및 버전 기록\\n4. TypeScript 타입 설정: npm install --save-dev @types/jspdf (필요시)\\n5. npm run build 실행하여 설치 완료 확인",
-      "verificationCriteria": "1. npm install 성공\\n2. npm run build 성공\\n3. package.json에서 jspdf, html2canvas 버전 확인 가능",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
+      "implementationGuide": "1. @next/bundle-analyzer 설치:\\n   npm install --save-dev @next/bundle-analyzer\\n2. next.config.ts에 플러그인 통합:\\n   const withBundleAnalyzer = require('@next/bundle-analyzer')(\\n     { enabled: process.env.ANALYZE === 'true' }\\n   );\\n   export default withBundleAnalyzer(nextConfig);\\n3. 분석 명령어 추가 (package.json):\\n   \"analyze\": \"ANALYZE=true next build\"\\n4. npm run analyze 실행 (또는 ANALYZE=true npm run build)\\n5. .next/analyze 결과 확인 (HTML 보고서)\\n6. jsPDF, html2canvas 번들 크기 확인 및 최적화 대상 리스트 작성",
+      "verificationCriteria": "번들 분석 완료, 분석 리포트 생성, 최적화 대상 리스트 작성, npm run build 성공",
+      "analysisResult": "Phase 4: 고급 기능 및 최적화\\n\\n목표: Lighthouse 80점 이상, 페이지 로드 시간 < 2초, OWASP Top 10 준수, Vercel 자동 배포, 완전한 문서화\\n\\n기존 상태: Next.js 16.1.1, TypeScript strict mode, 모든 핵심 기능 구현, API 클라이언트 (lib/api-config.ts), 인증 시스템 (lib/api-auth.ts), E2E 테스트 (Playwright)\\n\\n재사용 가능한 코드: lib/api-config.ts (Bearer 토큰 인증), lib/env.ts (환경 변수 검증 패턴), 모든 UI 컴포넌트\\n\\n신규 생성 필요: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .github/workflows/deploy.yml (CI/CD), 문서화 파일들 (docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md)"
     },
     {
-      "id": "0df2f56a-41ea-44f9-be2b-c38762079164",
-      "name": "Task 018-2: lib/invoice-pdf.ts 생성 - PDF 생성 로직 구현",
-      "description": "견적서 데이터를 PDF 형식으로 변환하는 함수를 구현합니다.",
-      "notes": "HTML 템플림릿은 숨겨진 div(display:none)에 생성 후 렌더링. 모바일에서도 동작하도록 테스트 필수. 성능: 큰 견적서(100+ 항목)는 시간이 걸릴 수 있음.",
+      "id": "008d47f3-c3aa-441b-8af6-bd995d4c688e",
+      "name": "Task 020-3: 렌더링 성능 최적화",
+      "description": "불필요한 React 재렌더링 방지를 위해 React.memo, useMemo, useCallback 적용.",
+      "notes": "과도한 메모이제이션은 오버헤드 유발하므로 필요한 곳에만 적용. 주요 컴포넌트(InvoiceTable, InvoiceForm, InvoiceCard)에만 우선 적용.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
+      "createdAt": "2026-01-21T02:44:38.743Z",
+      "updatedAt": "2026-01-21T02:44:38.743Z",
       "relatedFiles": [
         {
-          "path": "lib/invoice-pdf.ts",
-          "type": "CREATE",
-          "description": "PDF 생성 함수 구현"
-        }
-      ],
-      "implementationGuide": "1. lib/invoice-pdf.ts 신규 생성\\n2. generateInvoicePdf(invoice: Invoice): Promise<void> 함수 구현\\n3. HTML 템플릿 생성: 견적서 제목, 클라이언트 정보, 항목 테이블, 총액\\n4. html2canvas로 DOM을 캔버스로 변환\\n5. jsPDF로 캔버스를 PDF로 변환\\n6. 파일명: invoice_${invoiceId}_${현재 날짜}.pdf\\n7. 스타일: 인쇄 친화적 (흰 배경, 검은 텍스트, 명확한 폰트)\\n8. 페이지 나누기: 큰 항목 목록은 여러 페이지로 분할\\n9. 에러 처리: try-catch로 사용자 친화적 메시지 반환",
-      "verificationCriteria": "1. generateInvoicePdf 함수 호출 시 PDF 파일 생성\\n2. PDF에 모든 견적서 정보 포함 (제목, 클라이언트, 항목, 총액)\\n3. PDF 스타일이 인쇄 친화적\\n4. 큰 견적서도 정상 생성\\n5. 파일명이 올바른 형식",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
-    },
-    {
-      "id": "9edad6bb-8029-414d-a2dd-cc86ed1b04c0",
-      "name": "Task 018-3: 공개 상세 페이지에 PDF 다운로드 버튼 추가",
-      "description": "공개 견적서 상세 페이지(/app/share/[token]/invoices/[id]/page.tsx)에 'PDF 다운로드' 버튼을 추가하고 기능을 구현합니다.",
-      "notes": "PDF 생성 시간이 걸릴 수 있으므로 로딩 상태 표시 필수. 버튼은 shadcn/ui Button 컴포넌트 사용.",
-      "status": "pending",
-      "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
-      "relatedFiles": [
-        {
-          "path": "app/share/[token]/invoices/[id]/share-invoice-detail-content.tsx",
+          "path": "components/features/invoice-table.tsx",
           "type": "TO_MODIFY",
-          "description": "PDF 다운로드 버튼 추가"
+          "description": "React.memo 적용"
         },
         {
-          "path": "lib/invoice-pdf.ts",
+          "path": "components/features/invoice-form.tsx",
+          "type": "TO_MODIFY",
+          "description": "useMemo, useCallback 적용"
+        },
+        {
+          "path": "components/features/invoice-card.tsx",
+          "type": "TO_MODIFY",
+          "description": "React.memo 적용"
+        }
+      ],
+      "implementationGuide": "1. InvoiceTable 컴포넌트에 React.memo 적용:\\n   export const InvoiceTable = React.memo(function InvoiceTable(props) { ... });\\n2. InvoiceForm에서 useMemo 적용 (formSchema 등 계산 값):\\n   const schema = useMemo(() => invoiceSchema, []);\\n3. 이벤트 핸들러에 useCallback 적용:\\n   const handleDelete = useCallback((id) => { ... }, []);\\n   const handleEdit = useCallback((id) => { ... }, []);\\n4. 변경사항 확인: Chrome DevTools > Profiler > 재렌더링 횟수 비교\\n5. npm run build 성공 확인",
+      "verificationCriteria": "주요 컴포넌트 메모이제이션 완료, DevTools에서 재렌더링 감소 확인, npm run build 성공, 기능 동작 확인",
+      "analysisResult": "Phase 4: 고급 기능 및 최적화\\n\\n목표: Lighthouse 80점 이상, 페이지 로드 시간 < 2초, OWASP Top 10 준수, Vercel 자동 배포, 완전한 문서화\\n\\n기존 상태: Next.js 16.1.1, TypeScript strict mode, 모든 핵심 기능 구현, API 클라이언트 (lib/api-config.ts), 인증 시스템 (lib/api-auth.ts), E2E 테스트 (Playwright)\\n\\n재사용 가능한 코드: lib/api-config.ts (Bearer 토큰 인증), lib/env.ts (환경 변수 검증 패턴), 모든 UI 컴포넌트\\n\\n신규 생성 필요: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .github/workflows/deploy.yml (CI/CD), 문서화 파일들 (docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md)"
+    },
+    {
+      "id": "11b98997-8af9-46b6-a9e2-cec0ab5843e7",
+      "name": "Task 020-4: API 캐싱 전략 구현",
+      "description": "반복 API 요청 제거로 성능 개선. SWR 패키지 설치 및 API 캐싱 훅 구현.",
+      "notes": "SWR은 자동으로 백그라운드에서 재검증하므로 데이터 신선도 유지. 대시보드가 주요 대상이며 필요시 다른 페이지로 확장.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:44:38.743Z",
+      "updatedAt": "2026-01-21T02:44:38.743Z",
+      "relatedFiles": [
+        {
+          "path": "hooks/useFetchInvoices.ts",
+          "type": "CREATE",
+          "description": "SWR 기반 API 캐싱 훅"
+        },
+        {
+          "path": "app/(protected)/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "SWR 적용"
+        },
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "SWR 의존성 추가"
+        }
+      ],
+      "implementationGuide": "1. SWR 설치:\\n   npm install swr\\n2. hooks/useFetchInvoices.ts 생성:\\n   import useSWR from 'swr';\\n   export function useFetchInvoices() {\\n     const { data, error, isLoading, mutate } = useSWR('/invoices', fetcher);\\n     return { invoices: data, error, isLoading, refetch: mutate };\\n   }\\n3. 대시보드 페이지에 SWR 적용:\\n   const { invoices, isLoading } = useFetchInvoices();\\n4. 캐싱 무효화 로직 (폼 제출 후 리페치):\\n   const { mutate } = useFetchInvoices();\\n   await createInvoiceApi(data);\\n   mutate();\\n5. npm run build 성공 확인",
+      "verificationCriteria": "SWR 설치 및 설정 완료, API 캐싱 훅 작동 확인, 중복 요청 감소 확인, npm run build 성공",
+      "analysisResult": "Phase 4: 고급 기능 및 최적화\\n\\n목표: Lighthouse 80점 이상, 페이지 로드 시간 < 2초, OWASP Top 10 준수, Vercel 자동 배포, 완전한 문서화\\n\\n기존 상태: Next.js 16.1.1, TypeScript strict mode, 모든 핵심 기능 구현, API 클라이언트 (lib/api-config.ts), 인증 시스템 (lib/api-auth.ts), E2E 테스트 (Playwright)\\n\\n재사용 가능한 코드: lib/api-config.ts (Bearer 토큰 인증), lib/env.ts (환경 변수 검증 패턴), 모든 UI 컴포넌트\\n\\n신규 생성 필요: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .github/workflows/deploy.yml (CI/CD), 문서화 파일들 (docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md)"
+    },
+    {
+      "id": "3ae60f1b-51d7-4f3e-9e89-997961914f30",
+      "name": "Task 020-5: Lighthouse 성능 검증",
+      "description": "Chrome DevTools Lighthouse로 성능 기준 달성 확인. 각 페이지 분석 및 성능 리포트 문서화.",
+      "notes": "성능 기준을 달성하지 못한 경우 Task 020-1/3/4 재검토. 캐시, 네트워크 조절 해제 후 분석.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:44:38.743Z",
+      "updatedAt": "2026-01-21T02:44:38.743Z",
+      "relatedFiles": [
+        {
+          "path": "docs/PERFORMANCE.md",
+          "type": "CREATE",
+          "description": "Lighthouse 분석 결과 및 성능 최적화 문서"
+        }
+      ],
+      "implementationGuide": "1. npm run dev로 개발 서버 실행\\n2. Chrome 브라우저에서 각 페이지 방문\\n3. DevTools > Lighthouse 탭\\n4. 분석 실행 (Mobile, Desktop 모두)\\n5. 각 페이지별 결과 기록:\\n   - 대시보드 페이지\\n   - 견적서 목록 페이지\\n   - 견적서 상세 페이지\\n   - 공개 목록 페이지\\n   - 공개 상세 페이지\\n6. FCP, LCP, CLS 확인:\\n   - First Contentful Paint < 1.5s\\n   - Largest Contentful Paint < 2.5s\\n   - Cumulative Layout Shift < 0.1\\n7. docs/PERFORMANCE.md 작성:\\n   - 분석 결과 스크린샷\\n   - 성능 기준 달성 여부\\n   - 개선 사항 (있는 경우)",
+      "verificationCriteria": "Lighthouse 80점 이상 달성 (모든 페이지), FCP < 1.5s 달성, LCP < 2.5s 달성, docs/PERFORMANCE.md 작성 완료",
+      "analysisResult": "Phase 4: 고급 기능 및 최적화\\n\\n목표: Lighthouse 80점 이상, 페이지 로드 시간 < 2초, OWASP Top 10 준수, Vercel 자동 배포, 완전한 문서화\\n\\n기존 상태: Next.js 16.1.1, TypeScript strict mode, 모든 핵심 기능 구현, API 클라이언트 (lib/api-config.ts), 인증 시스템 (lib/api-auth.ts), E2E 테스트 (Playwright)\\n\\n재사용 가능한 코드: lib/api-config.ts (Bearer 토큰 인증), lib/env.ts (환경 변수 검증 패턴), 모든 UI 컴포넌트\\n\\n신규 생성 필요: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .github/workflows/deploy.yml (CI/CD), 문서화 파일들 (docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md)"
+    },
+    {
+      "id": "72516e02-379a-4d54-8390-df25a0121e4b",
+      "name": "Task 021-1: middleware.ts 보안 설정",
+      "description": "Next.js middleware에서 요청 수준의 보안 헤더 및 인증 확인 구현. 모든 요청에 보안 헤더를 추가합니다.",
+      "notes": "Content-Security-Policy는 광범위할 수 있으므로 필요에 따라 조정. Tailwind, shadcn 리소스 허용 필요.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:02.679Z",
+      "updatedAt": "2026-01-21T02:45:02.679Z",
+      "relatedFiles": [
+        {
+          "path": "middleware.ts",
+          "type": "CREATE",
+          "description": "보안 헤더 추가"
+        },
+        {
+          "path": "next.config.ts",
+          "type": "TO_MODIFY",
+          "description": "middleware 지원 확인 (Next.js 16에서는 기본 지원)"
+        }
+      ],
+      "implementationGuide": "1. middleware.ts 생성 (프로젝트 루트):\\n   import { NextRequest, NextResponse } from 'next/server';\\n   export function middleware(request: NextRequest) {\\n     const response = NextResponse.next();\\n     response.headers.set('X-Content-Type-Options', 'nosniff');\\n     response.headers.set('X-Frame-Options', 'DENY');\\n     response.headers.set('X-XSS-Protection', '1; mode=block');\\n     response.headers.set('Content-Security-Policy', \"default-src 'self'\");\\n     return response;\\n   }\\n2. matcher 설정으로 (protected) 라우트만 보호:\\n   export const config = { matcher: ['/(protected|api)/:path*'] };\\n3. npm run build 성공 확인\\n4. 로컬 개발 환경에서 DevTools > Network 탭에서 응답 헤더 확인",
+      "verificationCriteria": "middleware.ts 생성, 보안 헤더 설정 확인, npm run build 성공, DevTools에서 헤더 확인",
+      "analysisResult": "Phase 4 보안 강화 (Task 021): OWASP Top 10 준수, 보안 헤더, CSRF 검증, 환경 변수 보안\\n\\n기존 상태: lib/api-config.ts에 Bearer 토큰만 구현, 보안 헤더 없음, CSRF 미구현\\n\\n신규 생성: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .env.example (환경 변수), docs/SECURITY.md (보안 문서)\\n\\n재사용: lib/api-config.ts 확장 (CSRF 토큰 추가), lib/env.ts 확장 (보안 환경 변수 추가)"
+    },
+    {
+      "id": "9fce4151-74de-4f5f-96cf-0250fa9c2e1b",
+      "name": "Task 021-2: lib/security.ts 유틸 함수",
+      "description": "CSRF 토큰 생성/검증, API 키 마스킹 등 보안 관련 유틸리티 함수 구현.",
+      "notes": "generateCsrfToken은 클라이언트에서 호출 가능하므로 Server Component에서 호출. timingSafeEqual은 타이밍 공격 방지.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:02.679Z",
+      "updatedAt": "2026-01-21T02:45:02.679Z",
+      "relatedFiles": [
+        {
+          "path": "lib/security.ts",
+          "type": "CREATE",
+          "description": "보안 유틸 함수"
+        },
+        {
+          "path": "types/index.ts",
+          "type": "TO_MODIFY",
+          "description": "SecurityContext 타입 추가"
+        }
+      ],
+      "implementationGuide": "1. lib/security.ts 생성:\\n   import crypto from 'crypto';\\n   export function generateCsrfToken(): string {\\n     return crypto.randomBytes(32).toString('hex');\\n   }\\n   export function validateCsrfToken(token: string, storedToken: string): boolean {\\n     return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(storedToken));\\n   }\\n   export function maskApiKey(key: string): string {\\n     return key.slice(0, 4) + '*'.repeat(key.length - 8) + key.slice(-4);\\n   }\\n2. 타입 정의 (types/index.ts에 추가):\\n   export interface SecurityContext {\\n     csrfToken: string;\\n     createdAt: number;\\n   }\\n3. npm run build 성공 확인",
+      "verificationCriteria": "lib/security.ts 생성, 모든 함수 타입 안전, npm run build 성공, 함수 동작 검증",
+      "analysisResult": "Phase 4 보안 강화 (Task 021): OWASP Top 10 준수, 보안 헤더, CSRF 검증, 환경 변수 보안\\n\\n기존 상태: lib/api-config.ts에 Bearer 토큰만 구현, 보안 헤더 없음, CSRF 미구현\\n\\n신규 생성: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .env.example (환경 변수), docs/SECURITY.md (보안 문서)\\n\\n재사용: lib/api-config.ts 확장 (CSRF 토큰 추가), lib/env.ts 확장 (보안 환경 변수 추가)"
+    },
+    {
+      "id": "2fedb19e-f688-434f-9ed3-7947b5719c45",
+      "name": "Task 021-3: API 클라이언트 보안 헤더 추가",
+      "description": "lib/api-config.ts 확장하여 CSRF 토큰 자동 추가 및 에러 처리 강화.",
+      "notes": "CSRF 토큰은 서버에서 발급하고 세션 초기화 시 설정. 현재는 더미 구현이므로 백엔드 구현과 맞춰야 함.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:02.679Z",
+      "updatedAt": "2026-01-21T02:45:02.679Z",
+      "relatedFiles": [
+        {
+          "path": "lib/api-config.ts",
+          "type": "TO_MODIFY",
+          "description": "CSRF 토큰 자동 추가, 에러 처리 강화"
+        }
+      ],
+      "implementationGuide": "1. lib/api-config.ts createHeaders 함수 확장:\\n   export function createHeaders(customHeaders?: Record<string, string>): HeadersInit {\\n     const headers: Record<string, string> = {\\n       'Content-Type': 'application/json',\\n       ...customHeaders,\\n     };\\n     const token = getToken();\\n     if (token) headers.Authorization = `Bearer ${token}`;\\n     const csrfToken = getCsrfToken();\\n     if (csrfToken) headers['X-CSRF-Token'] = csrfToken;\\n     return headers;\\n   }\\n2. getCsrfToken() 함수 구현 (localStorage에서 읽기):\\n   export function getCsrfToken(): string | null {\\n     return localStorage.getItem('csrfToken');\\n   }\\n3. 401/403 에러 처리 강화:\\n   if (response.status === 401) { clearAuthData(); throw new Error(...); }\\n   if (response.status === 403) { throw new Error('권한이 없습니다.'); }\\n4. npm run build 성공 확인",
+      "verificationCriteria": "API 클라이언트 CSRF 토큰 자동 추가, 401/403 에러 처리, npm run build 성공, E2E 테스트 통과",
+      "analysisResult": "Phase 4 보안 강화 (Task 021): OWASP Top 10 준수, 보안 헤더, CSRF 검증, 환경 변수 보안\\n\\n기존 상태: lib/api-config.ts에 Bearer 토큰만 구현, 보안 헤더 없음, CSRF 미구현\\n\\n신규 생성: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .env.example (환경 변수), docs/SECURITY.md (보안 문서)\\n\\n재사용: lib/api-config.ts 확장 (CSRF 토큰 추가), lib/env.ts 확장 (보안 환경 변수 추가)"
+    },
+    {
+      "id": "d2361a0c-3c5f-4481-b422-63c8249c307b",
+      "name": "Task 021-4: 환경 변수 보안",
+      "description": ".env.example 작성 및 lib/env.ts 확장으로 보안 환경 변수 관리.",
+      "notes": ".env.example은 git에 커밋, .env.local은 커밋하면 안됨. 프로덕션에서는 Vercel 환경 변수 사용.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:02.679Z",
+      "updatedAt": "2026-01-21T02:45:02.679Z",
+      "relatedFiles": [
+        {
+          "path": ".env.example",
+          "type": "CREATE",
+          "description": "환경 변수 템플릿"
+        },
+        {
+          "path": "lib/env.ts",
+          "type": "TO_MODIFY",
+          "description": "보안 환경 변수 함수 추가"
+        },
+        {
+          "path": ".gitignore",
+          "type": "TO_MODIFY",
+          "description": ".env.local 확인"
+        }
+      ],
+      "implementationGuide": "1. .env.example 파일 생성:\\n   NEXT_PUBLIC_APP_URL=http://localhost:3000\\n   NEXT_PUBLIC_API_URL=http://localhost:3000/api\\n   JWT_SECRET=your-jwt-secret-key-change-in-production\\n   CSRF_SECRET=your-csrf-secret-key-change-in-production\\n   NOTION_API_KEY=your-notion-api-key\\n   NOTION_DATABASE_ID=your-database-id\\n   NOTION_ITEMS_DATABASE_ID=your-items-database-id\\n2. lib/env.ts 확장:\\n   export function getSecurityConfig(): SecurityConfig {\\n     return {\\n       jwtSecret: process.env.JWT_SECRET || 'default-secret',\\n       csrfSecret: process.env.CSRF_SECRET || 'default-csrf-secret',\\n     };\\n   }\\n3. .gitignore 확인:\\n   .env.local 포함되어 있는지 확인\\n4. 환경별 파일 생성 (선택):\\n   .env.development, .env.staging, .env.production\\n5. npm run build 성공 확인",
+      "verificationCriteria": ".env.example 생성, 모든 필수 변수 나열, .gitignore 확인, 환경별 파일 설정 (선택), npm run build 성공",
+      "analysisResult": "Phase 4 보안 강화 (Task 021): OWASP Top 10 준수, 보안 헤더, CSRF 검증, 환경 변수 보안\\n\\n기존 상태: lib/api-config.ts에 Bearer 토큰만 구현, 보안 헤더 없음, CSRF 미구현\\n\\n신규 생성: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .env.example (환경 변수), docs/SECURITY.md (보안 문서)\\n\\n재사용: lib/api-config.ts 확장 (CSRF 토큰 추가), lib/env.ts 확장 (보안 환경 변수 추가)"
+    },
+    {
+      "id": "6d4118f9-439c-4ffd-b881-c979ab858b08",
+      "name": "Task 021-5: OWASP 기준 검증",
+      "description": "OWASP Top 10 체크리스트 작성, npm audit 실행, 보안 문서 작성.",
+      "notes": "OWASP Top 10 2021 기준 사용. 프론트엔드에서 해결 가능한 항목들 포함.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:02.679Z",
+      "updatedAt": "2026-01-21T02:45:02.679Z",
+      "relatedFiles": [
+        {
+          "path": "docs/SECURITY.md",
+          "type": "CREATE",
+          "description": "OWASP 보안 기준 및 해결 방법"
+        },
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "audit 결과 확인"
+        }
+      ],
+      "implementationGuide": "1. npm audit 실행:\\n   npm audit --production\\n2. 취약점 있는 경우 npm audit fix 실행\\n3. docs/SECURITY.md 작성:\\n   - OWASP Top 10 체크리스트 (10개 항목)\\n   - 각 항목별 해결 방법\\n   - 예: A01 Injection → Zod 스키마 검증\\n   - 예: A02 Broken Authentication → Bearer 토큰, 로컬 스토리지\\n   - 예: A03 Broken Access Control → (protected) 라우트, AuthGuard\\n   - 예: A07 Cross-Site Scripting → React 자동 이스케이프\\n   - 예: A08 Software and Data Integrity Failures → npm audit\\n4. 각 항목에 대한 구현 방법 설명\\n5. 최종 검증 체크리스트",
+      "verificationCriteria": "OWASP 체크리스트 완료, npm audit 취약점 없음 (또는 해결됨), 보안 문서 (docs/SECURITY.md) 작성 완료",
+      "analysisResult": "Phase 4 보안 강화 (Task 021): OWASP Top 10 준수, 보안 헤더, CSRF 검증, 환경 변수 보안\\n\\n기존 상태: lib/api-config.ts에 Bearer 토큰만 구현, 보안 헤더 없음, CSRF 미구현\\n\\n신규 생성: middleware.ts (보안 헤더), lib/security.ts (CSRF 유틸), .env.example (환경 변수), docs/SECURITY.md (보안 문서)\\n\\n재사용: lib/api-config.ts 확장 (CSRF 토큰 추가), lib/env.ts 확장 (보안 환경 변수 추가)"
+    },
+    {
+      "id": "c5f0afd8-fd16-4d05-a3bb-425476f457c7",
+      "name": "Task 022-1: 배포 환경 설정",
+      "description": "Vercel 프로젝트 생성 및 환경 변수 추가. .env.example을 기반으로 프로덕션 환경 변수 설정.",
+      "notes": "각 환경 변수는 .env.example에서 확인. 프로덕션 환경에서는 강력한 비밀키 사용. Vercel 무료 플랜으로 충분.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:27.541Z",
+      "updatedAt": "2026-01-21T02:45:27.541Z",
+      "relatedFiles": [
+        {
+          "path": ".env.example",
           "type": "REFERENCE",
-          "description": "PDF 생성 함수"
+          "description": "환경 변수 참조"
         }
       ],
-      "implementationGuide": "1. share-invoice-detail-content.tsx 수정\\n2. '목록으로' 버튼 옆에 'PDF 다운로드' 버튼 추가 (주목도 높음)\\n3. 버튼 클릭 시 generateInvoicePdf(invoice) 호출\\n4. 로딩 중: 버튼 disabled + '다운로드 중...' 텍스트\\n5. 성공: toast.success('PDF가 다운로드되었습니다')\\n6. 실패: toast.error(에러 메시지)\\n7. 접근성: aria-label, title 속성 추가",
-      "verificationCriteria": "1. '공개 견적서 상세 페이지에 'PDF 다운로드' 버튼 표시됨\\n2. 버튼 클릭 시 PDF 파일 다운로드 시작\\n3. 로딩 중 버튼 상태 변함\\n4. 다운로드 완료 후 토스트 알림 표시\\n5. 다양한 화면 크기에서 버튼 접근 가능",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
+      "implementationGuide": "1. Vercel 가입 및 로그인 (https://vercel.com)\\n2. GitHub 계정과 Vercel 연동\\n3. 프로젝트 import:\\n   - New Project → Import Git Repository\\n   - GitHub에서 invoice-web 리포지토리 선택\\n4. 프로젝트 설정:\\n   - Framework: Next.js (자동 감지)\\n   - Build Command: npm run build (기본값)\\n   - Output Directory: .next (기본값)\\n   - Install Command: npm ci (기본값)\\n5. 환경 변수 설정 (Settings → Environment Variables):\\n   - NEXT_PUBLIC_APP_URL: 프로덕션 URL\\n   - NEXT_PUBLIC_API_URL: 백엔드 API URL\\n   - JWT_SECRET: 프로덕션 JWT 비밀키\\n   - CSRF_SECRET: 프로덕션 CSRF 비밀키\\n   - NOTION_API_KEY, NOTION_DATABASE_ID 등\\n6. Deploy 클릭하여 첫 배포\\n7. 배포 완료 후 Preview URL 확인",
+      "verificationCriteria": "Vercel 프로젝트 생성, 환경 변수 모두 추가, Preview 배포 성공, 기본 페이지 로드 확인",
+      "analysisResult": "Phase 4 배포 준비 (Task 022): Vercel 자동 배포, GitHub Actions CI/CD, 환경 변수 관리, 배포 후 모니터링\\n\\n기존 상태: 배포 환경 설정 없음, CI/CD 파이프라인 미구현, 헬스 체크 없음\\n\\n신규 생성: .github/workflows/deploy.yml (GitHub Actions), vercel.json (Vercel 설정), api/health 엔드포인트, 환경별 .env 파일\\n\\n재사용: package.json 스크립트 (build, lint, test:e2e)"
     },
     {
-      "id": "8b900ed7-bb0c-44bb-890d-0d2636686729",
-      "name": "Task 018-4: 관리자 상세 페이지에 PDF 다운로드 버튼 추가 (선택사항)",
-      "description": "관리자용 견적서 상세 페이지(/app/(protected)/invoices/[id]/page.tsx)에도 'PDF 다운로드' 버튼을 추가합니다.",
-      "notes": "선택사항이지만, 관리자가 견적서를 미리 확인할 수 있으므로 추천. 공개 상세 페이지와 동일한 구현.",
+      "id": "57cecbdd-5b8f-4e75-8578-5f760bf1b21e",
+      "name": "Task 022-2: Vercel 자동 배포 설정",
+      "description": "GitHub 푸시 시 자동으로 Vercel에 배포되도록 설정. Preview 및 Production 배포 분리.",
+      "notes": "git push 후 3-5분 내에 배포 완료. 배포 로그는 Vercel 대시보드에서 확인 가능.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
-      "relatedFiles": [
-        {
-          "path": "app/(protected)/invoices/[id]/invoice-detail-content.tsx",
-          "type": "TO_MODIFY",
-          "description": "PDF 다운로드 버튼 추가"
-        }
-      ],
-      "implementationGuide": "1. invoice-detail-content.tsx 수정\\n2. '돌아가기' 또는 '취소' 버튼 옆에 'PDF 다운로드' 버튼 추가\\n3. 공개 상세 페이지와 동일한 로직 (generateInvoicePdf 호출)\\n4. 로딩/성공/실패 상태 처리\\n5. 버튼 순서: 삭제 → 공유 → PDF 다운로드 → 취소",
-      "verificationCriteria": "1. 관리자 상세 페이지에도 'PDF 다운로드' 버튼 표시됨\\n2. 클릭 시 PDF 파일 다운로드\\n3. 공개 상세 페이지와 동일한 동작",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
+      "createdAt": "2026-01-21T02:45:27.541Z",
+      "updatedAt": "2026-01-21T02:45:27.541Z",
+      "relatedFiles": [],
+      "implementationGuide": "1. Vercel 프로젝트 설정에서 Git Integration 확인:\\n   - Settings → Git\\n   - GitHub 리포지토리가 연결되어 있는지 확인\\n2. 자동 배포 설정:\\n   - Production Deployment: main 브랜치\\n   - Preview Deployment: 다른 브랜치 및 Pull Request\\n3. Deploy Hooks 설정 (선택):\\n   - Settings → Deploy Hooks\\n   - 배포 후 실행할 웹훅 (Slack 알림 등) 추가\\n4. Custom Domain 설정 (선택):\\n   - Settings → Domains\\n   - 커스텀 도메인 추가\\n5. git push main 실행하여 자동 배포 확인\\n6. Vercel 대시보드에서 배포 상황 확인\\n7. Preview URL 생성 확인",
+      "verificationCriteria": "git push → Vercel 자동 배포 확인, Preview URL 생성, Production 배포 성공, 배포된 사이트 정상 작동 확인",
+      "analysisResult": "Phase 4 배포 준비 (Task 022): Vercel 자동 배포, GitHub Actions CI/CD, 환경 변수 관리, 배포 후 모니터링\\n\\n기존 상태: 배포 환경 설정 없음, CI/CD 파이프라인 미구현, 헬스 체크 없음\\n\\n신규 생성: .github/workflows/deploy.yml (GitHub Actions), vercel.json (Vercel 설정), api/health 엔드포인트, 환경별 .env 파일\\n\\n재사용: package.json 스크립트 (build, lint, test:e2e)"
     },
     {
-      "id": "f6bef13b-29dc-4a7a-ace4-8716f0de0166",
-      "name": "Task 019-1: Playwright 테스트 환경 설정",
-      "description": "Playwright MCP를 이용한 E2E 테스트 환경을 설정하고 기본 테스트 구조를 만듭니다.",
-      "notes": "npm run mcp:playwright 명령어로 실행. 기존 설정이 있으면 확인 후 필요시 수정.",
+      "id": "5e45c4db-b415-4e6e-bfbd-71182067b6e5",
+      "name": "Task 022-3: GitHub Actions CI/CD",
+      "description": "GitHub Actions 워크플로우 생성. 테스트 자동 실행 후 Vercel 배포.",
+      "notes": "Vercel 토큰은 민감하므로 GitHub Secrets에만 저장. CI/CD 파이프라인은 테스트 실패 시 배포 중단.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
+      "createdAt": "2026-01-21T02:45:27.541Z",
+      "updatedAt": "2026-01-21T02:45:27.541Z",
       "relatedFiles": [
         {
-          "path": "playwright.config.ts",
+          "path": ".github/workflows/deploy.yml",
           "type": "CREATE",
-          "description": "Playwright 설정 파일"
+          "description": "GitHub Actions 배포 워크플로우"
+        }
+      ],
+      "implementationGuide": "1. .github/workflows 디렉토리 생성\\n2. .github/workflows/deploy.yml 생성:\\n   name: CI/CD\\n   on:\\n     push:\\n       branches: [main, develop]\\n   jobs:\\n     build-and-test:\\n       runs-on: ubuntu-latest\\n       steps:\\n         - uses: actions/checkout@v3\\n         - uses: actions/setup-node@v3\\n           with: {node-version: '20'}\\n         - run: npm ci\\n         - run: npm run build\\n         - run: npm run lint\\n         - run: npm run test:e2e\\n         - run: npx vercel --prod (조건부)\\n3. GitHub Secrets 설정 (Settings → Secrets and variables → Actions):\\n   - VERCEL_TOKEN: Vercel API 토큰\\n   - VERCEL_ORG_ID: Vercel Organization ID\\n   - VERCEL_PROJECT_ID: Vercel Project ID\\n4. 토큰 발급:\\n   - Vercel 대시보드 → Settings → Tokens\\n   - Personal access token 생성 및 복사\\n   - GitHub Secrets에 VERCEL_TOKEN으로 저장\\n5. git push로 워크플로우 실행 확인",
+      "verificationCriteria": "GitHub Actions 워크플로우 생성, Secrets 설정 완료, git push 시 자동 테스트 및 배포, 워크플로우 로그 확인",
+      "analysisResult": "Phase 4 배포 준비 (Task 022): Vercel 자동 배포, GitHub Actions CI/CD, 환경 변수 관리, 배포 후 모니터링\\n\\n기존 상태: 배포 환경 설정 없음, CI/CD 파이프라인 미구현, 헬스 체크 없음\\n\\n신규 생성: .github/workflows/deploy.yml (GitHub Actions), vercel.json (Vercel 설정), api/health 엔드포인트, 환경별 .env 파일\\n\\n재사용: package.json 스크립트 (build, lint, test:e2e)"
+    },
+    {
+      "id": "78813576-ffbb-4cfa-a73d-b29818afc1c2",
+      "name": "Task 022-4: 환경별 설정 관리",
+      "description": "Development, Staging, Production 환경별 설정 파일 분리. 각 환경에서 올바른 변수 로드.",
+      "notes": "프로덕션 비밀키는 .env.production에 저장하지 말고 Vercel 환경 변수에만 저장. .gitignore에서 .env.*.local 제외하여 로컬 환경 변수 오버라이드 가능하게.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:27.541Z",
+      "updatedAt": "2026-01-21T02:45:27.541Z",
+      "relatedFiles": [
+        {
+          "path": ".env.development",
+          "type": "CREATE",
+          "description": "개발 환경 변수"
         },
         {
-          "path": "tests/e2e/.gitkeep",
+          "path": ".env.staging",
           "type": "CREATE",
-          "description": "테스트 디렉토리"
+          "description": "스테이징 환경 변수"
+        },
+        {
+          "path": ".env.production",
+          "type": "CREATE",
+          "description": "프로덕션 환경 변수"
+        },
+        {
+          "path": ".gitignore",
+          "type": "TO_MODIFY",
+          "description": ".env.*.local 패턴 확인"
         }
       ],
-      "implementationGuide": "1. playwright.config.ts 생성 (또는 기존 확인)\\n2. baseURL 설정: http://localhost:3000\\n3. 브라우저 설정: chromium, firefox, webkit\\n4. 테스트 디렉토리 설정: tests/e2e\\n5. 헤드리스 모드 설정 (CI/CD 대비)\\n6. 타임아웃 설정: navigationTimeout: 30s, actionTimeout: 10s\\n7. screenshot/video 기록 설정 (실패 시)\\n8. .gitignore에 test-results/ 추가",
-      "verificationCriteria": "1. playwright.config.ts 생성됨\\n2. npm run mcp:playwright 실행 가능\\n3. 테스트 디렉토리 생성됨",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
+      "implementationGuide": "1. .env 파일들 생성:\\n   - .env (기본, 모든 환경 공통)\\n   - .env.development (개발)\\n   - .env.staging (스테이징)\\n   - .env.production (프로덕션)\\n2. .env 파일 내용 (공통):\\n   NODE_ENV={환경별로 설정됨}\\n   NEXT_PUBLIC_APP_URL={환경별}\\n3. .env.development:\\n   NEXT_PUBLIC_APP_URL=http://localhost:3000\\n   NEXT_PUBLIC_API_URL=http://localhost:3000/api\\n   JWT_SECRET=dev-secret\\n4. .env.staging:\\n   NEXT_PUBLIC_APP_URL=https://staging.example.com\\n   NEXT_PUBLIC_API_URL=https://staging-api.example.com\\n5. .env.production:\\n   NEXT_PUBLIC_APP_URL=https://example.com\\n   NEXT_PUBLIC_API_URL=https://api.example.com\\n6. package.json 스크립트 확인:\\n   - npm run dev (NODE_ENV=development)\\n   - npm run build (NODE_ENV=production)\\n7. 각 환경에서 테스트",
+      "verificationCriteria": "환경 파일 모두 생성, 각 환경에서 올바른 변수 로드 확인, npm run dev/build 성공, 배포 테스트 성공",
+      "analysisResult": "Phase 4 배포 준비 (Task 022): Vercel 자동 배포, GitHub Actions CI/CD, 환경 변수 관리, 배포 후 모니터링\\n\\n기존 상태: 배포 환경 설정 없음, CI/CD 파이프라인 미구현, 헬스 체크 없음\\n\\n신규 생성: .github/workflows/deploy.yml (GitHub Actions), vercel.json (Vercel 설정), api/health 엔드포인트, 환경별 .env 파일\\n\\n재사용: package.json 스크립트 (build, lint, test:e2e)"
     },
     {
-      "id": "aa9f3437-ba62-4ad1-a58a-dbafb8a6776b",
-      "name": "Task 019-2: 관리자 플로우 E2E 테스트 (로그인 ~ 공유)",
-      "description": "관리자의 전체 사용자 여정을 Playwright로 테스트합니다: 로그인 → 대시보드 → 견적서 생성 → 공유 → 로그아웃",
-      "notes": "테스트 데이터: 고정된 이메일/비밀번호 사용 (seed 데이터). 브라우저 저장소 초기화: page.context().clearCookies().",
+      "id": "bd61974f-c342-4bfc-99f4-c9c26b597bdd",
+      "name": "Task 022-5: 배포 후 검증 및 모니터링",
+      "description": "헬스 체크 엔드포인트 생성 및 Vercel Analytics 활성화. 배포 후 정상 작동 확인.",
+      "notes": "헬스 체크는 배포 자동화 및 모니터링에 사용. Vercel Analytics는 기본적으로 활성화되어 있음.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
+      "createdAt": "2026-01-21T02:45:27.541Z",
+      "updatedAt": "2026-01-21T02:45:27.541Z",
       "relatedFiles": [
         {
-          "path": "tests/e2e/admin-flow.spec.ts",
+          "path": "app/api/health/route.ts",
           "type": "CREATE",
-          "description": "관리자 플로우 E2E 테스트"
+          "description": "헬스 체크 엔드포인트"
         }
       ],
-      "implementationGuide": "1. tests/e2e/admin-flow.spec.ts 생성\\n2. 테스트 케이스: test('Admin full flow: login to logout')\\n3. 단계 1: 로그인 페이지 접근 → 계정 입력 → 비밀번호 입력 → 로그인\\n4. 단계 2: 대시보드 로드 확인 (견적서 목록 표시)\\n5. 단계 3: '새 견적서' 버튼 클릭 → 생성 페이지 이동\\n6. 단계 4: 폼 입력 (제목, 클라이언트, 항목) → 저장\\n7. 단계 5: 상세 페이지 로드 확인\\n8. 단계 6: '공유 링크 생성' 버튼 클릭 → 공유 URL 복사\\n9. 단계 7: 로그아웃 버튼 클릭 → 로그인 페이지 리디렉션\\n10. 각 단계에서 expect()로 결과 검증",
-      "verificationCriteria": "1. 모든 단계 통과 (로그인 ~ 로그아웃)\\n2. 각 페이지에서 예상 요소 찾음 (버튼, 입력 필드)\\n3. 공유 링크 생성 후 URL이 클립보드에 저장됨\\n4. 테스트 실행 시간 < 30초",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
+      "implementationGuide": "1. app/api/health/route.ts 생성:\\n   export async function GET() {\\n     return Response.json({\\n       status: 'ok',\\n       timestamp: new Date().toISOString(),\\n       version: '1.0.0'\\n     });\\n   }\\n2. Vercel Analytics 활성화:\\n   - Vercel 대시보드 → Analytics\\n   - Enable Web Analytics (자동 설정)\\n3. 배포 후 검증:\\n   - https://[deployed-url]/api/health 접속하여 응답 확인\\n   - Vercel 대시보드에서 배포 로그 확인\\n4. 주요 페이지 접근 테스트:\\n   - 로그인 페이지\\n   - 대시보드\\n   - 견적서 목록\\n   - 견적서 상세\\n   - 공개 공유 페이지\\n5. E2E 테스트 실행 (프로덕션 환경):\\n   - npm run test:e2e (프로덕션 URL로 설정)\\n6. 모니터링 대시보드 확인:\\n   - Vercel 분석 데이터\\n   - 성능 지표 (FCP, LCP, CLS)",
+      "verificationCriteria": "헬스 체크 엔드포인트 작동, Vercel Analytics 활성화, 배포 후 모든 기능 테스트 통과, 모니터링 대시보드 접근 가능",
+      "analysisResult": "Phase 4 배포 준비 (Task 022): Vercel 자동 배포, GitHub Actions CI/CD, 환경 변수 관리, 배포 후 모니터링\\n\\n기존 상태: 배포 환경 설정 없음, CI/CD 파이프라인 미구현, 헬스 체크 없음\\n\\n신규 생성: .github/workflows/deploy.yml (GitHub Actions), vercel.json (Vercel 설정), api/health 엔드포인트, 환경별 .env 파일\\n\\n재사용: package.json 스크립트 (build, lint, test:e2e)"
     },
     {
-      "id": "0afc226d-16a3-49ef-a7db-71c74beb265d",
-      "name": "Task 019-3: 클라이언트 플로우 E2E 테스트 (공개 URL ~ PDF 다운로드)",
-      "description": "클라이언트의 공개 페이지 사용자 여정을 테스트합니다: 공유 URL 접근 → 목록 조회 → 상세 조회 → PDF 다운로드",
-      "notes": "공유 토큰은 고정값 또는 환경 변수로 설정. 파일 다운로드 검증: page.on('download', ...)\\n다운로드 파일명 확인: invoice_*.pdf 패턴",
+      "id": "700db393-bcd6-4d78-9fb6-a3a6cd1a7a55",
+      "name": "Task 023-1: README.md 업데이트",
+      "description": "프로젝트 소개, 주요 기능, 기술 스택, 설치 및 실행 방법, 폴더 구조, 링크 등 종합적인 프로젝트 문서 작성.",
+      "notes": "GitHub에 프로젝트 공개 시 첫 인상이 중요. 명확하고 간결한 설명 필수.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
+      "createdAt": "2026-01-21T02:45:53.934Z",
+      "updatedAt": "2026-01-21T02:45:53.934Z",
       "relatedFiles": [
         {
-          "path": "tests/e2e/client-flow.spec.ts",
-          "type": "CREATE",
-          "description": "클라이언트 플로우 E2E 테스트"
+          "path": "README.md",
+          "type": "TO_MODIFY",
+          "description": "프로젝트 문서 업데이트"
         }
       ],
-      "implementationGuide": "1. tests/e2e/client-flow.spec.ts 생성\\n2. 테스트 케이스: test('Client full flow: shared URL to PDF')\\n3. 전제: 유효한 공유 토큰이 필요 (Task 019-2에서 생성된 공유 링크 사용 또는 고정 토큰)\\n4. 단계 1: 공유 URL(http://localhost:3000/share/[token]) 접근\\n5. 단계 2: 공개 목록 페이지 로드 확인 (견적서 카드 표시)\\n6. 단계 3: 견적서 클릭 → 상세 페이지 이동\\n7. 단계 4: 상세 정보 확인 (제목, 클라이언트, 항목, 총액)\\n8. 단계 5: 'PDF 다운로드' 버튼 클릭\\n9. 단계 6: 파일 다운로드 확인 (downloads 폴더)\\n10. 각 단계에서 expect()로 결과 검증",
-      "verificationCriteria": "1. 공개 URL 접근 시 목록 페이지 로드됨\\n2. 견적서 선택 후 상세 페이지 표시\\n3. 모든 견적서 정보 확인 가능\\n4. 'PDF 다운로드' 버튼 클릭 시 파일 다운로드 시작\\n5. 다운로드된 파일이 올바른 형식 (PDF)",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
+      "implementationGuide": "README.md에 다음 섹션 추가:\\n1. 프로젝트 제목 및 설명 (3-5줄)\\n2. 주요 기능 (불릿 포인트)\\n   - 관리자 인증\\n   - 견적서 CRUD\\n   - 공유 링크\\n   - PDF 다운로드\\n3. 기술 스택\\n   - Frontend: Next.js 16, React 19, TypeScript, Tailwind CSS, shadcn/ui\\n   - State: Zustand\\n   - Forms: React Hook Form + Zod\\n   - Testing: Playwright\\n4. 스크린샷 (선택)\\n5. 설치 및 실행\\n   npm install\\n   npm run dev\\n6. 프로젝트 구조 (트리 형식)\\n7. 개발 가이드 링크\\n8. API 문서 링크\\n9. 배포 가이드 링크\\n10. 기여 방법 (선택)\\n11. 라이센스 링크",
+      "verificationCriteria": "README.md 작성 완료, 모든 주요 섹션 포함, 명령어 정확, 링크 동작 확인",
+      "analysisResult": "Phase 4 문서화 (Task 023): README, API 문서, 개발자 가이드, 배포 가이드, 보안 문서, 성능 문서, CHANGELOG, LICENSE\\n\\n기존 상태: 기본 CLAUDE.md 문서만 존재, 프로젝트 전체 문서 없음\\n\\n신규 생성: README.md 업데이트, docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md, LICENSE\\n\\n참조: 프로젝트의 모든 핵심 파일 (package.json, next.config.ts, API 클라이언트, 컴포넌트 구조)"
     },
     {
-      "id": "e68516cc-7dc2-49d7-8119-09daa002b3eb",
-      "name": "Task 019-4: 에러 시나리오 및 성능 테스트",
-      "description": "에러 케이스와 성능 기준을 테스트합니다: 유효하지 않은 토큰, 존재하지 않는 견적서, 네트워크 오류, 페이지 로드 시간",
-      "notes": "에러 메시지는 toast 또는 페이지 텍스트로 확인. 성능 측정: page.goto() 시간, page.waitForLoadState('networkidle')\\nPerformanceObserver 활용 가능.",
+      "id": "178ba315-0399-41cf-8553-252906b483af",
+      "name": "Task 023-2: API 문서 (docs/API.md)",
+      "description": "모든 API 엔드포인트 문서화. 인증, 요청/응답 형식, 예제, 에러 코드 설명.",
+      "notes": "각 엔드포인트는 lib/api-*.ts 파일 참조. 실제 사용 예제 포함하면 이해도 향상.",
       "status": "pending",
       "dependencies": [],
-      "createdAt": "2026-01-20T09:37:23.657Z",
-      "updatedAt": "2026-01-20T09:37:23.657Z",
+      "createdAt": "2026-01-21T02:45:53.934Z",
+      "updatedAt": "2026-01-21T02:45:53.934Z",
       "relatedFiles": [
         {
-          "path": "tests/e2e/error-scenarios.spec.ts",
+          "path": "docs/API.md",
           "type": "CREATE",
-          "description": "에러 시나리오 및 성능 테스트"
+          "description": "API 엔드포인트 문서"
         }
       ],
-      "implementationGuide": "1. tests/e2e/error-scenarios.spec.ts 생성\\n2. 에러 케이스 1: 유효하지 않은 공유 토큰 (invalid-token) → 에러 메시지 표시\\n3. 에러 케이스 2: 존재하지 않는 견적서 ID → 404 에러\\n4. 에러 케이스 3: 잘못된 로그인 (비밀번호 틀림) → 에러 메시지\\n5. 에러 케이스 4: 권한 없는 견적서 조회 (다른 관리자 견적서) → 403 에러\\n6. 성능 테스트: 각 페이지 로드 시간 측정 (목표 < 2초)\\n7. PDF 생성 시간 측정 (목표 < 3초)\\n8. 결과: expect() 또는 console.log로 기록",
-      "verificationCriteria": "1. 모든 에러 케이스에서 사용자 친화적 메시지 표시\\n2. 페이지 로드 시간 < 2초\\n3. PDF 생성 시간 < 3초\\n4. 네트워크 오류 발생 시에도 UI가 충돌하지 않음\\n5. 테스트 실행 중 에러 발생 시 스크린샷/비디오 기록됨",
-      "analysisResult": "Phase 3 핵심 기능 구현의 최종 단계 - Task 017(공유 링크), Task 018(PDF 다운로드), Task 019(E2E 테스트)를 구현합니다. 기존의 Task 012-016(인증, API 클라이언트, 조회, CRUD)을 기반으로 하며, 공유 API 클라이언트는 이미 완비되어 있습니다. 각 Task는 1-3일 내에 완료 가능하도록 설계되었으며, Playwright MCP를 활용한 E2E 테스트 검증이 필수입니다. TypeScript Strict Mode 준수, 한국어 주석, 기존 코딩 스타일 일관성 유지가 핵심 원칙입니다."
+      "implementationGuide": "docs/API.md 생성 후 다음 내용 추가:\\n1. API 기본 정보\\n   - Base URL: {API_URL}\\n   - 인증: Bearer Token\\n   - Content-Type: application/json\\n2. 인증 관련\\n   - POST /auth/login - 로그인\\n   - POST /auth/logout - 로그아웃\\n   - GET /auth/me - 현재 사용자 정보\\n3. 견적서 관련\\n   - GET /invoices - 목록 조회\\n   - GET /invoices/{id} - 상세 조회\\n   - POST /invoices - 생성\\n   - PUT /invoices/{id} - 수정\\n   - DELETE /invoices/{id} - 삭제\\n4. 공유 관련\\n   - POST /invoices/{id}/share - 공유 링크 생성\\n   - GET /share/{token}/invoices - 공유 목록\\n   - GET /share/{token}/invoices/{id} - 공유 상세\\n5. 각 엔드포인트별:\\n   - 요청 형식\\n   - 응답 형식\\n   - 예제 (curl 또는 JavaScript)\\n   - 에러 코드\\n6. 인증 에러\\n   - 401 Unauthorized\\n   - 403 Forbidden\\n7. 일반 에러\\n   - 400 Bad Request\\n   - 404 Not Found\\n   - 500 Internal Server Error",
+      "verificationCriteria": "docs/API.md 생성, 모든 엔드포인트 문서화, 요청/응답 예제 포함, 에러 코드 설명 완료",
+      "analysisResult": "Phase 4 문서화 (Task 023): README, API 문서, 개발자 가이드, 배포 가이드, 보안 문서, 성능 문서, CHANGELOG, LICENSE\\n\\n기존 상태: 기본 CLAUDE.md 문서만 존재, 프로젝트 전체 문서 없음\\n\\n신규 생성: README.md 업데이트, docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md, LICENSE\\n\\n참조: 프로젝트의 모든 핵심 파일 (package.json, next.config.ts, API 클라이언트, 컴포넌트 구조)"
+    },
+    {
+      "id": "17aa5bef-c8ed-47e9-81cd-1da75ccb3f88",
+      "name": "Task 023-3: 개발자 가이드 (docs/DEVELOPER.md)",
+      "description": "새로운 개발자 온보딩을 위한 종합 가이드. 개발 환경 설정, 구조, 컨벤션, E2E 테스트.",
+      "notes": "새로운 개발자가 빠르게 시작할 수 있도록 명확하고 예제 중심으로 작성.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:53.934Z",
+      "updatedAt": "2026-01-21T02:45:53.934Z",
+      "relatedFiles": [
+        {
+          "path": "docs/DEVELOPER.md",
+          "type": "CREATE",
+          "description": "개발자 온보딩 가이드"
+        }
+      ],
+      "implementationGuide": "docs/DEVELOPER.md 생성 후 다음 내용 추가:\\n1. 개발 환경 설정\\n   - Node.js 20+ 요구\\n   - npm install\\n   - .env.local 설정\\n   - npm run dev\\n2. 프로젝트 구조\\n   - app/ - Next.js 라우트\\n   - components/ - React 컴포넌트\\n   - lib/ - 유틸리티 및 API 클라이언트\\n   - hooks/ - 커스텀 훅\\n   - store/ - Zustand 상태 관리\\n   - types/ - TypeScript 타입\\n3. 기술 스택 상세\\n   - Next.js App Router 패턴\\n   - TypeScript strict mode\\n   - Tailwind CSS + shadcn/ui\\n   - React Hook Form + Zod\\n4. 코딩 컨벤션\\n   - 변수명: camelCase\\n   - 컴포넌트: PascalCase\\n   - 한국어 주석\\n5. 컴포넌트 개발 가이드\\n   - 컴포넌트 구조\\n   - Props 정의\\n   - 예제 컴포넌트\\n6. 상태 관리\\n   - Zustand 사용 방법\\n   - 전역 vs 로컬 상태\\n7. API 클라이언트\\n   - lib/api-config.ts 사용\\n   - 요청 만드는 방법\\n8. E2E 테스트\\n   - Playwright 설정\\n   - 테스트 작성 방법\\n   - npm run test:e2e 실행\\n9. 디버깅\\n   - Chrome DevTools\\n   - 로그 확인\\n   - 타입 에러\\n10. 자주 묻는 질문",
+      "verificationCriteria": "docs/DEVELOPER.md 생성, 모든 주요 주제 포함, 예제 코드 포함, 명확한 설명 완료",
+      "analysisResult": "Phase 4 문서화 (Task 023): README, API 문서, 개발자 가이드, 배포 가이드, 보안 문서, 성능 문서, CHANGELOG, LICENSE\\n\\n기존 상태: 기본 CLAUDE.md 문서만 존재, 프로젝트 전체 문서 없음\\n\\n신규 생성: README.md 업데이트, docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md, LICENSE\\n\\n참조: 프로젝트의 모든 핵심 파일 (package.json, next.config.ts, API 클라이언트, 컴포넌트 구조)"
+    },
+    {
+      "id": "4cddd698-d989-49a2-823f-ce97c3df259a",
+      "name": "Task 023-4: 배포 가이드 (docs/DEPLOYMENT.md)",
+      "description": "Vercel 배포 단계별 가이드. GitHub Actions, 환경 변수, 커스텀 도메인, 문제 해결.",
+      "notes": "배포 가이드는 처음 배포하는 개발자를 위해 단계별로 자세히 작성.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:53.934Z",
+      "updatedAt": "2026-01-21T02:45:53.934Z",
+      "relatedFiles": [
+        {
+          "path": "docs/DEPLOYMENT.md",
+          "type": "CREATE",
+          "description": "배포 프로세스 가이드"
+        }
+      ],
+      "implementationGuide": "docs/DEPLOYMENT.md 생성 후 다음 내용 추가:\\n1. Vercel 배포\\n   - 가입 및 로그인\\n   - GitHub 리포지토리 import\\n   - 환경 변수 설정\\n   - Deploy 버튼\\n2. 환경 변수 설정\\n   - .env.example 참조\\n   - 각 환경별 변수\\n3. GitHub Actions CI/CD\\n   - .github/workflows/deploy.yml\\n   - Secrets 설정\\n   - 워크플로우 확인\\n4. 커스텀 도메인 (선택)\\n   - Vercel에서 도메인 추가\\n   - DNS 설정\\n5. 배포 후 검증\\n   - /api/health 엔드포인트\\n   - 주요 기능 테스트\\n   - E2E 테스트 실행\\n6. 모니터링\\n   - Vercel Analytics\\n   - 성능 지표\\n7. 배포 이전\\n   - npm run build\\n   - npm run lint\\n   - npm run test:e2e\\n8. 문제 해결\\n   - 배포 실패\\n   - 환경 변수 오류\\n   - 성능 저하\\n9. 롤백\\n   - 이전 배포로 돌리기\\n10. 모범 사례\\n   - 정기적인 배포\\n   - 모니터링\\n   - 백업",
+      "verificationCriteria": "docs/DEPLOYMENT.md 생성, 배포 단계별 가이드 완료, 환경 변수 설명, 문제 해결 팁 포함",
+      "analysisResult": "Phase 4 문서화 (Task 023): README, API 문서, 개발자 가이드, 배포 가이드, 보안 문서, 성능 문서, CHANGELOG, LICENSE\\n\\n기존 상태: 기본 CLAUDE.md 문서만 존재, 프로젝트 전체 문서 없음\\n\\n신규 생성: README.md 업데이트, docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md, LICENSE\\n\\n참조: 프로젝트의 모든 핵심 파일 (package.json, next.config.ts, API 클라이언트, 컴포넌트 구조)"
+    },
+    {
+      "id": "0c9348ed-d76e-438c-a30c-96352c07a488",
+      "name": "Task 023-5: CHANGELOG 및 LICENSE",
+      "description": "CHANGELOG.md로 버전 관리 기록, LICENSE 파일로 라이센스 명시.",
+      "notes": "CHANGELOG는 사용자들이 업데이트 내용을 쉽게 파악할 수 있도록. MIT 라이센스는 오픈 소스 프로젝트에 일반적.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-01-21T02:45:53.934Z",
+      "updatedAt": "2026-01-21T02:45:53.934Z",
+      "relatedFiles": [
+        {
+          "path": "CHANGELOG.md",
+          "type": "CREATE",
+          "description": "버전 변경 기록"
+        },
+        {
+          "path": "LICENSE",
+          "type": "CREATE",
+          "description": "프로젝트 라이센스 (MIT)"
+        },
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "license 필드 확인"
+        }
+      ],
+      "implementationGuide": "1. CHANGELOG.md 생성 (Keep a Changelog 형식):\\n   # Changelog\\n   ## [1.0.0] - 2026-01-21\\n   ### Added\\n   - 인증 시스템 구현\\n   - 견적서 CRUD 기능\\n   - 공유 링크 기능\\n   - PDF 다운로드\\n   - E2E 테스트\\n   ### Changed\\n   - UI 최적화\\n   - 성능 개선\\n   ### Fixed\\n   - 버그 수정\\n   ### Security\\n   - 보안 헤더 추가\\n   - CSRF 토큰 검증\\n2. LICENSE 파일 생성 (MIT):\\n   MIT License\\n   Copyright (c) 2026 [Your Name]\\n   ...\\n   [MIT 라이센스 전체 텍스트]\\n3. package.json에 라이센스 필드 확인:\\n   \\\"license\\\": \\\"MIT\\\"\\n4. README.md에 LICENSE 링크 추가",
+      "verificationCriteria": "CHANGELOG.md 생성, 주요 버전 기록 완료, LICENSE 파일 생성, package.json license 필드 확인",
+      "analysisResult": "Phase 4 문서화 (Task 023): README, API 문서, 개발자 가이드, 배포 가이드, 보안 문서, 성능 문서, CHANGELOG, LICENSE\\n\\n기존 상태: 기본 CLAUDE.md 문서만 존재, 프로젝트 전체 문서 없음\\n\\n신규 생성: README.md 업데이트, docs/API.md, docs/DEVELOPER.md, docs/DEPLOYMENT.md, docs/SECURITY.md, docs/PERFORMANCE.md, CHANGELOG.md, LICENSE\\n\\n참조: 프로젝트의 모든 핵심 파일 (package.json, next.config.ts, API 클라이언트, 컴포넌트 구조)"
     }
   ]
 }

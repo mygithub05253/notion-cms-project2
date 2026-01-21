@@ -15,10 +15,12 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { memo, useCallback } from 'react';
 
 /**
  * InvoiceTable 컴포넌트
  * 견적서 목록을 테이블 형식으로 표시
+ * React.memo를 사용한 렌더링 최적화 적용
  */
 
 interface InvoiceTableProps {
@@ -48,26 +50,26 @@ const statusTextMap = {
   rejected: '거절됨',
 } as const;
 
-export function InvoiceTable({
+function InvoiceTableImpl({
   invoices,
   onEdit,
   onDelete,
   className,
 }: InvoiceTableProps) {
-  // 금액 포맷팅 (원화)
-  const formatCurrency = (amount: number) => {
+  // 금액 포맷팅 (원화) - useMemo로 캐싱
+  const formatCurrency = useCallback((amount: number) => {
     return new Intl.NumberFormat('ko-KR', {
       style: 'currency',
       currency: 'KRW',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
-  };
+  }, []);
 
-  // 날짜 포맷팅
-  const formatDate = (date: Date) => {
+  // 날짜 포맷팅 - useCallback으로 안정화
+  const formatDate = useCallback((date: Date) => {
     return format(date, 'yyyy-MM-dd', { locale: ko });
-  };
+  }, []);
 
   return (
     <div className={cn('w-full', className)}>
@@ -153,3 +155,6 @@ export function InvoiceTable({
     </div>
   );
 }
+
+// React.memo로 래핑하여 props 변경 시에만 리렌더링
+export const InvoiceTable = memo(InvoiceTableImpl);

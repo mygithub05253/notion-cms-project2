@@ -6,10 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { memo, useMemo } from 'react';
 
 /**
  * InvoiceCard 컴포넌트
  * 견적서 한 건을 카드 형식으로 표시
+ * React.memo를 사용한 렌더링 최적화 적용
  */
 
 interface InvoiceCardProps {
@@ -37,25 +39,27 @@ const statusTextMap = {
   rejected: '거절됨',
 } as const;
 
-export function InvoiceCard({
+function InvoiceCardImpl({
   invoice,
   onClick,
   className,
 }: InvoiceCardProps) {
-  // 금액 포맷팅 (원화)
-  const formatCurrency = (amount: number) => {
+  // 금액 포맷팅 (원화) - useMemo로 캐싱
+  const formattedAmount = useMemo(() => {
     return new Intl.NumberFormat('ko-KR', {
       style: 'currency',
       currency: 'KRW',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount);
-  };
+    }).format(invoice.totalAmount);
+  }, [invoice.totalAmount]);
 
-  // 날짜 포맷팅
-  const formattedDate = format(invoice.createdAt, 'yyyy년 MM월 dd일', {
-    locale: ko,
-  });
+  // 날짜 포맷팅 - useMemo로 캐싱
+  const formattedDate = useMemo(() => {
+    return format(invoice.createdAt, 'yyyy년 MM월 dd일', {
+      locale: ko,
+    });
+  }, [invoice.createdAt]);
 
   return (
     <Card
@@ -96,7 +100,7 @@ export function InvoiceCard({
           <div>
             <p className="text-xs text-muted-foreground mb-1">총액</p>
             <p className="text-xl font-bold">
-              {formatCurrency(invoice.totalAmount)}
+              {formattedAmount}
             </p>
           </div>
           <div className="text-right">
@@ -115,3 +119,6 @@ export function InvoiceCard({
     </Card>
   );
 }
+
+// React.memo로 래핑하여 props 변경 시에만 리렌더링
+export const InvoiceCard = memo(InvoiceCardImpl);

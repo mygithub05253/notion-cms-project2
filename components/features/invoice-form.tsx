@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Container } from '@/components/layout/container';
 import { cn } from '@/lib/utils';
+import { useCallback, useMemo } from 'react';
 
 /**
  * 견적서 폼 컴포넌트
@@ -120,10 +121,29 @@ export function InvoiceForm({
   // 모든 항목 감시 (금액 계산용)
   const items = watch('items');
 
-  // 총액 계산
-  const total = items.reduce((sum, item) => {
-    return sum + (item.quantity * item.unitPrice);
-  }, 0);
+  // 총액 계산 - useMemo로 캐싱
+  const total = useMemo(() => {
+    return items.reduce((sum, item) => {
+      return sum + (item.quantity * item.unitPrice);
+    }, 0);
+  }, [items]);
+
+  // 항목 추가 콜백 - useCallback으로 안정화
+  const handleAddItem = useCallback(() => {
+    append({
+      title: '',
+      description: '',
+      quantity: 1,
+      unit: '개',
+      unitPrice: 0,
+      subtotal: 0,
+    });
+  }, [append]);
+
+  // 항목 제거 콜백 - useCallback으로 안정화
+  const handleRemoveItem = useCallback((index: number) => {
+    remove(index);
+  }, [remove]);
 
   return (
     <Container className="flex flex-1 flex-col gap-8 py-8">
@@ -239,16 +259,7 @@ export function InvoiceForm({
             <CardTitle className="text-lg font-semibold">견적서 항목</CardTitle>
             <Button
               type="button"
-              onClick={() =>
-                append({
-                  title: '',
-                  description: '',
-                  quantity: 1,
-                  unit: '개',
-                  unitPrice: 0,
-                  subtotal: 0,
-                })
-              }
+              onClick={handleAddItem}
               size="sm"
               className="gap-2"
             >
@@ -281,7 +292,7 @@ export function InvoiceForm({
                     {fields.length > 1 && (
                       <Button
                         type="button"
-                        onClick={() => remove(index)}
+                        onClick={() => handleRemoveItem(index)}
                         size="sm"
                         variant="ghost"
                         className="text-destructive hover:bg-destructive/10 hover:text-destructive"
