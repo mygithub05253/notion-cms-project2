@@ -8,6 +8,7 @@ import type { User } from '@/types';
 const STORAGE_KEYS = {
   TOKEN: 'invoiceWebToken',
   USER: 'invoiceWebUser',
+  CSRF_TOKEN: 'invoiceWebCSRFToken',
 } as const;
 
 /**
@@ -90,5 +91,51 @@ export const clearAuthData = (): void => {
     window.localStorage.removeItem(STORAGE_KEYS.USER);
   } catch (error) {
     console.error('인증 데이터 삭제 중 오류:', error);
+  }
+};
+
+/**
+ * 로컬 스토리지에서 CSRF 토큰을 조회합니다.
+ * @returns 저장된 CSRF 토큰 또는 null
+ */
+export const getCSRFToken = (): string | null => {
+  try {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    const token = window.localStorage.getItem(STORAGE_KEYS.CSRF_TOKEN);
+    return token;
+  } catch (error) {
+    console.error('CSRF 토큰 조회 중 오류:', error);
+    return null;
+  }
+};
+
+/**
+ * CSRF 토큰을 로컬 스토리지에 저장합니다.
+ * @param token - 저장할 CSRF 토큰
+ */
+export const saveCSRFToken = (token: string): void => {
+  try {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.localStorage.setItem(STORAGE_KEYS.CSRF_TOKEN, token);
+  } catch (error) {
+    console.error('CSRF 토큰 저장 중 오류:', error);
+  }
+};
+
+/**
+ * 로컬 스토리지에서 CSRF 토큰을 삭제합니다.
+ */
+export const clearCSRFToken = (): void => {
+  try {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.localStorage.removeItem(STORAGE_KEYS.CSRF_TOKEN);
+  } catch (error) {
+    console.error('CSRF 토큰 삭제 중 오류:', error);
   }
 };

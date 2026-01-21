@@ -5,7 +5,8 @@
  * 환경 변수에서 API URL을 읽고, 자동으로 인증 토큰을 헤더에 추가합니다.
  */
 
-import { getToken } from '@/hooks/useLocalStorage';
+import { getToken, getCSRFToken, saveCSRFToken } from '@/hooks/useLocalStorage';
+import { validateCSRFToken, maskApiKey } from '@/lib/security';
 
 /**
  * API Base URL 설정
@@ -20,12 +21,16 @@ export const API_BASE_URL =
  * 요청 헤더에 자동으로 추가될 Authorization 토큰을 포함한 헤더 객체를 생성합니다.
  *
  * @param customHeaders - 추가 커스텀 헤더 (선택사항)
+ * @param method - HTTP 메서드 (POST, PUT, DELETE인 경우 CSRF 토큰 추가)
  * @returns 기본 헤더와 Authorization 헤더를 포함한 Headers 객체
  *
  * @example
- * const headers = createHeaders({ 'X-Custom-Header': 'value' });
+ * const headers = createHeaders({ 'X-Custom-Header': 'value' }, 'POST');
  */
-export function createHeaders(customHeaders?: Record<string, string>): HeadersInit {
+export function createHeaders(
+  customHeaders?: Record<string, string>,
+  method?: string
+): HeadersInit {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...customHeaders,
@@ -35,6 +40,19 @@ export function createHeaders(customHeaders?: Record<string, string>): HeadersIn
   const token = getToken();
   if (token) {
     headers.Authorization = `Bearer ${token}`;
+  }
+
+  // POST, PUT, DELETE 요청에 CSRF 토큰 추가
+  if (method && ['POST', 'PUT', 'DELETE'].includes(method.toUpperCase())) {
+    let csrfToken = getCSRFToken();
+
+    // CSRF 토큰이 없으면 새로 생성
+    if (!csrfToken) {
+      // 토큰 생성은 백엔드 또는 클라이언트에서 처리
+      // 여기서는 localStorage에서만 조회
+    } else {
+      headers['X-CSRF-Token'] = csrfToken;
+    }
   }
 
   return headers;
@@ -92,7 +110,10 @@ export async function apiFetch<T>(
     // 요청 옵션 설정
     const requestOptions: RequestInit = {
       ...fetchOptions,
-      headers: createHeaders(fetchOptions.headers as Record<string, string>),
+      headers: createHeaders(
+        fetchOptions.headers as Record<string, string>,
+        fetchOptions.method
+      ),
       signal: controller.signal,
     };
 
@@ -106,6 +127,28 @@ export async function apiFetch<T>(
       clearAuthData();
 
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+    }
+
+    // 403 Forbidden 처리 (CSRF 검증 실패 또는 권한 부족)
+    if (response.status === 403) {
+      const contentType = response.headers.get('content-type');
+
+      // JSON 응답인 경우 에러 메시지 추출
+      if (contentType?.includes('application/json')) {
+        const errorData = await response.json();
+        // CSRF 검증 실패 여부 확인
+        if (
+          errorData.message &&
+          errorData.message.includes('CSRF')
+        ) {
+          throw new Error(
+            'CSRF 검증 실패: 요청이 거부되었습니다. 페이지를 새로고침하고 다시 시도해주세요.'
+          );
+        }
+        throw new Error(errorData.message || '요청이 거부되었습니다.');
+      }
+
+      throw new Error('요청이 거부되었습니다 (권한 부족 또는 CSRF 검증 실패).');
     }
 
     // 다른 HTTP 에러 처리 (4xx, 5xx)

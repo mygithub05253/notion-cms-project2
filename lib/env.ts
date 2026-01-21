@@ -31,6 +31,8 @@ export interface AppConfig {
   apiUrl: string;
   /** JWT 비밀키 */
   jwtSecret: string;
+  /** CSRF 토큰 검증용 시크릿 */
+  csrfSecret: string;
 }
 
 /**
@@ -95,6 +97,7 @@ export function getAppConfig(): AppConfig {
     appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
     jwtSecret: process.env.JWT_SECRET || 'default-secret-change-in-production',
+    csrfSecret: process.env.CSRF_SECRET || 'default-csrf-secret-change-in-production',
   };
 }
 
@@ -134,5 +137,58 @@ export function validateNotionEnv(): void {
       throw new Error(`[Notion 환경 설정 오류] ${error.message}`);
     }
     throw error;
+  }
+}
+
+/**
+ * 보안 관련 환경 변수 검증 함수
+ * 프로덕션 환경에서 필수 보안 환경 변수 확인
+ *
+ * @throws {Error} 필수 환경 변수가 설정되지 않은 경우
+ *
+ * @example
+ * // middleware.ts에서 호출
+ * validateSecurityEnv();
+ */
+export function validateSecurityEnv(): void {
+  if (process.env.NODE_ENV === 'production') {
+    const config = getAppConfig();
+
+    // JWT_SECRET 검증
+    if (
+      !config.jwtSecret ||
+      config.jwtSecret === 'default-secret-change-in-production'
+    ) {
+      throw new Error(
+        '[보안 설정 오류] JWT_SECRET 환경 변수가 설정되지 않았습니다. ' +
+          '.env.local 파일을 확인하고 최소 32자 이상의 복잡한 문자열을 설정해주세요.'
+      );
+    }
+
+    // CSRF_SECRET 검증
+    if (
+      !config.csrfSecret ||
+      config.csrfSecret === 'default-csrf-secret-change-in-production'
+    ) {
+      throw new Error(
+        '[보안 설정 오류] CSRF_SECRET 환경 변수가 설정되지 않았습니다. ' +
+          '.env.local 파일을 확인하고 최소 32자 이상의 복잡한 문자열을 설정해주세요.'
+      );
+    }
+
+    // 시크릿 길이 검증 (최소 32자)
+    if (config.jwtSecret.length < 32) {
+      throw new Error(
+        '[보안 설정 오류] JWT_SECRET의 길이가 최소 32자 이상이어야 합니다. ' +
+          `현재 길이: ${config.jwtSecret.length}자`
+      );
+    }
+
+    if (config.csrfSecret.length < 32) {
+      throw new Error(
+        '[보안 설정 오류] CSRF_SECRET의 길이가 최소 32자 이상이어야 합니다. ' +
+          `현재 길이: ${config.csrfSecret.length}자`
+      );
+    }
   }
 }
