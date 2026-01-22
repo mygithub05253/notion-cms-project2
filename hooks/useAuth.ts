@@ -30,6 +30,7 @@ export function useAuth() {
     isLoading,
     error,
     login,
+    loginClient,
     logout,
     initializeAuth,
     setCurrentUser,
@@ -46,6 +47,7 @@ export function useAuth() {
 
     // 액션
     login,
+    loginClient,
     logout,
     initializeAuth,
     setCurrentUser,

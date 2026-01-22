@@ -29,7 +29,7 @@ type ClientLoginFormData = z.infer<typeof clientLoginSchema>;
 
 export default function ClientLoginPage() {
   const router = useRouter();
-  const { isAuthenticated, login, isLoading, currentUser } = useAuth();
+  const { isAuthenticated, loginClient, isLoading, currentUser } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 이미 로그인한 사용자 처리
@@ -54,8 +54,8 @@ export default function ClientLoginPage() {
   const onSubmit = async (data: ClientLoginFormData) => {
     setIsSubmitting(true);
     try {
-      // useAuthStore의 login 액션 호출
-      await login(data.email, data.password);
+      // useAuthStore의 loginClient 액션 호출
+      await loginClient(data.email, data.password);
 
       // 성공 토스트
       toast.success('클라이언트 로그인 성공했습니다!');

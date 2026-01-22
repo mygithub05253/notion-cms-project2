@@ -16,6 +16,7 @@ interface AuthStore {
 
   // 액션
   login: (email: string, password: string) => Promise<void>;
+  loginClient: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   initializeAuth: () => Promise<void>;
   setCurrentUser: (user: User | null) => void;
@@ -40,6 +41,37 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       // 백엔드 API 호출
       const response = await loginApi(email, password);
+
+      // 토큰 저장
+      setToken(response.token);
+      setStoredUser(response.user);
+
+      // 상태 업데이트
+      set({
+        currentUser: response.user,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '로그인 실패';
+      set({
+        error: errorMessage,
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  // 클라이언트 로그인
+  loginClient: async (email: string, password: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      // API 호출을 동적으로 임포트하여 순환 의존성 방지
+      const { loginClientApi } = await import('@/lib/api-auth');
+      const { setToken, setStoredUser } = await import('@/hooks/useLocalStorage');
+
+      // 백엔드 API 호출
+      const response = await loginClientApi(email, password);
 
       // 토큰 저장
       setToken(response.token);
