@@ -51,6 +51,41 @@ export async function loginApi(email: string, password: string): Promise<LoginRe
 }
 
 /**
+ * 클라이언트 로그인 API 함수
+ *
+ * 이메일과 비밀번호로 클라이언트를 인증하고 JWT 토큰을 받아옵니다.
+ *
+ * @param email - 사용자 이메일
+ * @param password - 사용자 비밀번호
+ * @returns 토큰과 사용자 정보
+ * @throws {Error} 로그인 실패 또는 네트워크 오류
+ *
+ * @example
+ * const response = await loginClientApi('client@example.com', 'password123');
+ * console.log(response.token); // JWT 토큰
+ * console.log(response.user);  // 사용자 정보
+ */
+export async function loginClientApi(email: string, password: string): Promise<LoginResponse> {
+  try {
+    const response = await apiPost<LoginResponse>('/auth/login-client', {
+      email,
+      password,
+    });
+
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      // 에러 메시지 개선
+      if (error.message.includes('네트워크')) {
+        throw new Error('네트워크 연결을 확인해주세요.');
+      }
+      throw error;
+    }
+    throw new Error('로그인 중 오류가 발생했습니다.');
+  }
+}
+
+/**
  * 로그아웃 API 함수
  *
  * 사용자를 로그아웃합니다. 서버에서 토큰을 무효화하거나 세션을 종료할 수 있습니다.

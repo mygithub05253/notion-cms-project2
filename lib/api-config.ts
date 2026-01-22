@@ -10,12 +10,16 @@ import { validateCSRFToken, maskApiKey } from '@/lib/security';
 
 /**
  * API Base URL 설정
- * NEXT_PUBLIC_API_URL 환경 변수에서 읽기, 기본값: http://localhost:5000
+ * Next.js API Routes를 사용하므로 같은 도메인의 /api 경로 사용
+ * - 클라이언트: window.location.origin + '/api' (현재 도메인 자동 감지)
+ * - 서버: 환경 변수 또는 기본값 http://localhost:3000/api
+ *
+ * Vercel 배포 시 자동으로 현재 도메인으로 감지됩니다 (https://your-app.vercel.app/api)
  */
 export const API_BASE_URL =
-  typeof window !== 'undefined' && process.env.NEXT_PUBLIC_API_URL
-    ? process.env.NEXT_PUBLIC_API_URL
-    : 'http://localhost:5000';
+  typeof window !== 'undefined'
+    ? `${window.location.origin}/api`  // 클라이언트: 동적 감지
+    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';  // 서버
 
 /**
  * 요청 헤더에 자동으로 추가될 Authorization 토큰을 포함한 헤더 객체를 생성합니다.
